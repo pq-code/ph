@@ -45,7 +45,7 @@ __renderjsModules.c0c7256a = (() => {
     default: () => stdin_default
   });
 
-  // ../../../../../../Users/pq/code/minlHoldAll/照片工具/uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.render.js
+  // ../../../../../../Users/pq/code/ph/uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.render.js
   var offset = { x: 0, y: 0 };
   var scale = 1;
   var minScale = 1;

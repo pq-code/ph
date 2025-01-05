@@ -300,8 +300,10 @@ const _sfc_main = {
       const ctx = common_vendor.index.createCanvasContext("myCanvas");
       ctx.setFillStyle("#e8e8e8");
       ctx.fillRect(0, 0, width, height);
-      fileList.value.forEach((item, index) => {
-        console.log(";", item.url);
+      let ruse = JSON.parse(JSON.stringify(fileList.value));
+      ruse.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1));
+      console.log("fileList.value", ruse);
+      ruse.forEach((item, index) => {
         drawItem(ctx, item);
       });
       ctx.draw(true, () => {
@@ -343,68 +345,69 @@ const _sfc_main = {
         count,
         // 数量控制
         sizeType: ["original"],
-        //可以指定是原图还是压缩图，默认二者都有
+        // 可以指定是原图还是压缩图，默认二者都有
         sourceType: ["album"],
-        //从相册选择
+        // 从相册选择
         success: function(res) {
-          const ctx = common_vendor.index.createCanvasContext("myCanvas");
-          res.tempFilePaths.forEach((item, index) => {
-            fileList.value[index].width;
-            fileList.value[index].height;
-            fileList.value[index].width / fileList.value[index].height;
-            fileListBackups.value[index] = {
-              ...fileListBackups.value[index],
-              url: item,
-              // 原图
-              status: "success",
-              message: `${index}`
-            };
-            common_vendor.index.getImageInfo({
-              src: item,
-              // 图片路径
-              success: function(imageInfo) {
-                let imageW = imageInfo.width;
-                let imageH = imageInfo.height;
-                let drawX = 0;
-                let drawY = 0;
-                if (imageW < imageH) {
-                  drawY = imageH / 2 - imageW / 2;
-                  imageH = imageW;
-                } else {
-                  drawX = imageW / 2 - imageH / 2;
-                  imageW = imageH;
-                }
-                ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(item, drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
-                ctx.draw(true, () => {
-                  common_vendor.index.canvasToTempFilePath({
-                    canvasId: "myCanvas",
-                    success: (res1) => {
-                      const cropImage2 = res1.tempFilePath;
-                      fileList.value[index] = {
-                        ...fileList.value[index],
-                        url: cropImage2,
-                        status: "success",
-                        message: `${index}`
-                      };
-                      clearCanvas();
-                    },
-                    fail: (err) => {
-                      console.error("导入图片失败:", err);
-                      common_vendor.index.showToast({
-                        title: "导入图片失败",
-                        icon: "none"
-                      });
-                    }
-                  });
-                });
-              },
-              fail: function(error) {
-                console.error("获取图片信息失败: ", error);
+          res.tempFilePaths.forEach(async (item, index) => {
+            try {
+              const ctx = common_vendor.index.createCanvasContext("myCanvas");
+              const { width, height } = fileList.value[index];
+              const proportion = width / height;
+              fileListBackups.value[index] = {
+                ...fileListBackups.value[index],
+                url: item,
+                // 原图
+                status: "success",
+                message: `${index}`
+              };
+              const imageInfo = await getImageInfo(item);
+              let imageW = imageInfo.width;
+              let imageH = imageInfo.height;
+              let drawX = 0;
+              let drawY = 0;
+              if (imageW < imageH) {
+                drawY = imageH / 2 - imageW / 2;
+                imageH = imageW;
+              } else {
+                drawX = imageW / 2 - imageH / 2;
+                imageW = imageH;
               }
-            });
+              ctx.imageSmoothingEnabled = false;
+              await ctx.drawImage(item, drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
+              await ctx.draw(true);
+              const cropImage2 = (await common_vendor.index.canvasToTempFilePath({ canvasId: "myCanvas" })).tempFilePath;
+              await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
+              await ctx.draw();
+              console.log("cropImage", cropImage2);
+              fileList.value[index] = {
+                ...fileList.value[index],
+                url: cropImage2,
+                status: "success",
+                message: `${index}`
+              };
+            } catch (error) {
+              console.error("处理图片失败: ", error);
+              fileListBackups.value[index] = {
+                ...fileListBackups.value[index],
+                status: "error",
+                message: error.message
+              };
+            }
           });
+        },
+        fail: function(error) {
+          console.error("选择图片失败: ", error);
         }
+      });
+    };
+    const getImageInfo = (src) => {
+      return new Promise((resolve, reject) => {
+        common_vendor.index.getImageInfo({
+          src,
+          success: resolve,
+          fail: reject
+        });
       });
     };
     const typeConfirm = (item) => {
@@ -442,7 +445,7 @@ const _sfc_main = {
       result.x = originalX;
       result.y = originalY;
       fileList.value[4] = {
-        // ...fileList.value[4],
+        ...fileList.value[4],
         x: result.x,
         y: result.x,
         width: result.width,

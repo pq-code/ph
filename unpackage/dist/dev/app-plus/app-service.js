@@ -637,7 +637,7 @@ if (uni.restoreGlobal) {
       vue.createCommentVNode(" <tabbar></tabbar> ")
     ]);
   }
-  const PagesHomeHome = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$m], ["__scopeId", "data-v-07e72d3c"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/pages/home/home.vue"]]);
+  const PagesHomeHome = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$m], ["__scopeId", "data-v-07e72d3c"], ["__file", "/Users/pq/code/ph/pages/home/home.vue"]]);
   const version$1 = "3";
   {
     formatAppLog("log", "at uni_modules/uview-plus/libs/config/config.js:5", `
@@ -2417,7 +2417,7 @@ if (uni.restoreGlobal) {
       /* NEED_HYDRATION */
     )) : vue.createCommentVNode("v-if", true);
   }
-  const __easycom_0$7 = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$l], ["__scopeId", "data-v-eadae74e"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-toolbar/u-toolbar.vue"]]);
+  const __easycom_0$7 = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$l], ["__scopeId", "data-v-eadae74e"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-toolbar/u-toolbar.vue"]]);
   const props$g = {
     props: {
       // 是否显示组件
@@ -2600,7 +2600,7 @@ if (uni.restoreGlobal) {
       /* CLASS, STYLE */
     )) : vue.createCommentVNode("v-if", true);
   }
-  const __easycom_0$6 = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$k], ["__scopeId", "data-v-2af81691"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-loading-icon/u-loading-icon.vue"]]);
+  const __easycom_0$6 = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$k], ["__scopeId", "data-v-2af81691"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-loading-icon/u-loading-icon.vue"]]);
   const props$f = {
     props: {
       // 是否展示组件
@@ -2741,7 +2741,7 @@ if (uni.restoreGlobal) {
       /* CLASS, STYLE, NEED_HYDRATION */
     )) : vue.createCommentVNode("v-if", true);
   }
-  const __easycom_1$3 = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$j], ["__scopeId", "data-v-5cec8177"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-transition/u-transition.vue"]]);
+  const __easycom_1$3 = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$j], ["__scopeId", "data-v-5cec8177"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-transition/u-transition.vue"]]);
   const props$e = {
     props: {
       // 是否显示遮罩
@@ -2805,7 +2805,7 @@ if (uni.restoreGlobal) {
       /* FORWARDED */
     }, 8, ["show", "duration", "custom-style", "onClick"]);
   }
-  const __easycom_0$5 = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$i], ["__scopeId", "data-v-9112bed9"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-overlay/u-overlay.vue"]]);
+  const __easycom_0$5 = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$i], ["__scopeId", "data-v-9112bed9"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-overlay/u-overlay.vue"]]);
   const props$d = {
     props: {
       bgColor: {
@@ -2843,7 +2843,7 @@ if (uni.restoreGlobal) {
       /* STYLE */
     );
   }
-  const __easycom_0$4 = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h], ["__scopeId", "data-v-eb8e0cdd"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-status-bar/u-status-bar.vue"]]);
+  const __easycom_0$4 = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h], ["__scopeId", "data-v-eb8e0cdd"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-status-bar/u-status-bar.vue"]]);
   const icons = {
     "uicon-level": "",
     "uicon-column-line": "",
@@ -3241,7 +3241,7 @@ if (uni.restoreGlobal) {
       /* CLASS */
     );
   }
-  const __easycom_3$2 = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$g], ["__scopeId", "data-v-ac70166d"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-icon/u-icon.vue"]]);
+  const __easycom_3$2 = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$g], ["__scopeId", "data-v-ac70166d"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-icon/u-icon.vue"]]);
   const props$b = {
     props: {}
   };
@@ -3275,7 +3275,7 @@ if (uni.restoreGlobal) {
       /* CLASS, STYLE */
     );
   }
-  const __easycom_3$1 = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$f], ["__scopeId", "data-v-f3d22cfe"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-safe-bottom/u-safe-bottom.vue"]]);
+  const __easycom_3$1 = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$f], ["__scopeId", "data-v-f3d22cfe"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-safe-bottom/u-safe-bottom.vue"]]);
   const props$a = {
     props: {
       // 是否展示弹窗
@@ -3533,7 +3533,7 @@ if (uni.restoreGlobal) {
       }, 8, ["show", "customStyle", "mode", "duration", "onAfterEnter", "onClick"])
     ]);
   }
-  const __easycom_2$1 = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$e], ["__scopeId", "data-v-05c24e9b"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-popup/u-popup.vue"]]);
+  const __easycom_2$1 = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$e], ["__scopeId", "data-v-05c24e9b"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-popup/u-popup.vue"]]);
   const props$9 = {
     props: {
       // 是否展示picker弹窗
@@ -3831,7 +3831,7 @@ if (uni.restoreGlobal) {
       /* STABLE */
     }, 8, ["show", "onClose"]);
   }
-  const __easycom_0$3 = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$d], ["__scopeId", "data-v-91b05052"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-picker/u-picker.vue"]]);
+  const __easycom_0$3 = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$d], ["__scopeId", "data-v-91b05052"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-picker/u-picker.vue"]]);
   const props$8 = {
     props: {
       // 图片地址
@@ -4076,7 +4076,7 @@ if (uni.restoreGlobal) {
       /* FORWARDED */
     }, 8, ["show", "duration"]);
   }
-  const __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$c], ["__scopeId", "data-v-abebd402"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-image/u-image.vue"]]);
+  const __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$c], ["__scopeId", "data-v-abebd402"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-image/u-image.vue"]]);
   const props$7 = {
     props: {
       // 绑定的值
@@ -4485,7 +4485,7 @@ if (uni.restoreGlobal) {
       /* CLASS, STYLE */
     );
   }
-  const __easycom_1$2 = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$b], ["__scopeId", "data-v-df79975b"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-input/u-input.vue"]]);
+  const __easycom_1$2 = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$b], ["__scopeId", "data-v-df79975b"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-input/u-input.vue"]]);
   const props$6 = {
     props: {
       color: {
@@ -4556,7 +4556,7 @@ if (uni.restoreGlobal) {
       /* STYLE */
     );
   }
-  const __easycom_1$1 = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$a], ["__scopeId", "data-v-72791e59"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-line/u-line.vue"]]);
+  const __easycom_1$1 = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$a], ["__scopeId", "data-v-72791e59"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-line/u-line.vue"]]);
   const props$5 = {
     props: {
       // input的label提示语
@@ -4758,7 +4758,7 @@ if (uni.restoreGlobal) {
       }, null, 8, ["color", "customStyle"])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const __easycom_2 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$9], ["__scopeId", "data-v-42bac3de"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-form-item/u-form-item.vue"]]);
+  const __easycom_2 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$9], ["__scopeId", "data-v-42bac3de"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-form-item/u-form-item.vue"]]);
   const props$4 = {
     props: {
       // 最小可选值
@@ -4862,7 +4862,7 @@ if (uni.restoreGlobal) {
       /* STYLE */
     );
   }
-  const __easycom_5 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$8], ["__scopeId", "data-v-7b84e269"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-slider/u-slider.vue"]]);
+  const __easycom_5 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$8], ["__scopeId", "data-v-7b84e269"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-slider/u-slider.vue"]]);
   const props$3 = {
     props: {
       // 当前form的需要验证字段的集合
@@ -5968,7 +5968,7 @@ if (uni.restoreGlobal) {
       vue.renderSlot(_ctx.$slots, "default")
     ]);
   }
-  const __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$7], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-form/u-form.vue"]]);
+  const __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$7], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-form/u-form.vue"]]);
   const block0 = (Comp) => {
     (Comp.$renderjs || (Comp.$renderjs = [])).push("cropper");
     (Comp.$renderjsModules || (Comp.$renderjsModules = {}))["cropper"] = "c0c7256a";
@@ -6655,7 +6655,7 @@ if (uni.restoreGlobal) {
   }
   if (typeof block0 === "function")
     block0(_sfc_main$7);
-  const __easycom_0$1 = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$6], ["__scopeId", "data-v-7129956f"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.vue"]]);
+  const __easycom_0$1 = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$6], ["__scopeId", "data-v-7129956f"], ["__file", "/Users/pq/code/ph/uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.vue"]]);
   const _sfc_main$6 = {
     __name: "imageCropper",
     props: {
@@ -6702,7 +6702,7 @@ if (uni.restoreGlobal) {
       }, null, 8, ["src"])
     ]);
   }
-  const PagesHomeComponentsImageCropperImageCropper = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$5], ["__scopeId", "data-v-60af6d12"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/pages/home/components/imageCropper/imageCropper.vue"]]);
+  const PagesHomeComponentsImageCropperImageCropper = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$5], ["__scopeId", "data-v-60af6d12"], ["__file", "/Users/pq/code/ph/pages/home/components/imageCropper/imageCropper.vue"]]);
   const props$2 = {
     props: {
       // 是否开启顶部安全区适配
@@ -6919,7 +6919,7 @@ if (uni.restoreGlobal) {
       )
     ]);
   }
-  const __easycom_0 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$4], ["__scopeId", "data-v-f631659b"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-navbar/u-navbar.vue"]]);
+  const __easycom_0 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$4], ["__scopeId", "data-v-f631659b"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-navbar/u-navbar.vue"]]);
   const props$1 = {
     props: {
       // 是否细边框
@@ -7274,7 +7274,7 @@ if (uni.restoreGlobal) {
       ))
     ], 46, ["hover-start-time", "hover-stay-time", "form-type", "open-type", "app-parameter", "hover-stop-propagation", "send-message-title", "send-message-path", "lang", "data-name", "session-from", "send-message-img", "show-message-card", "hover-class"]);
   }
-  const __easycom_1 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__scopeId", "data-v-5ce41ee6"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/uni_modules/uview-plus/components/u-button/u-button.vue"]]);
+  const __easycom_1 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$3], ["__scopeId", "data-v-5ce41ee6"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-button/u-button.vue"]]);
   const _sfc_main$3 = /* @__PURE__ */ vue.defineComponent({
     __name: "page",
     props: {
@@ -7379,7 +7379,7 @@ if (uni.restoreGlobal) {
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  const page$1 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2], ["__scopeId", "data-v-e4f1132a"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/components/pages/page.vue"]]);
+  const page$1 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$2], ["__scopeId", "data-v-e4f1132a"], ["__file", "/Users/pq/code/ph/components/pages/page.vue"]]);
   const _sfc_main$2 = {
     __name: "jigsawPuzzle",
     setup(__props, { expose: __expose }) {
@@ -7440,7 +7440,7 @@ if (uni.restoreGlobal) {
             };
           }
         });
-        fileList.value = fileListBackups.value;
+        fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
       };
       const l2r3 = () => {
         const widthL3R2R = (previewMain.value.width - spacing.value) * 0.3;
@@ -7466,7 +7466,7 @@ if (uni.restoreGlobal) {
             };
           }
         });
-        fileList.value = fileListBackups.value;
+        fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
       };
       const nineSquareGrid = () => {
         const width = (previewMain.value.width - spacing.value * 2) / 3;
@@ -7484,7 +7484,7 @@ if (uni.restoreGlobal) {
             url: ""
           };
         });
-        fileList.value = fileListBackups.value;
+        fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
       };
       const lrSymmetry = () => {
         const width = (previewMain.value.width - spacing.value) / 2;
@@ -7501,7 +7501,7 @@ if (uni.restoreGlobal) {
             url: ""
           };
         });
-        fileList.value = fileListBackups.value;
+        fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
       };
       const tbSymmetry = () => {
         const width = previewMain.value.width;
@@ -7518,7 +7518,7 @@ if (uni.restoreGlobal) {
             url: ""
           };
         });
-        fileList.value = fileListBackups.value;
+        fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
       };
       const showImageType = vue.ref(false);
       const columns = vue.reactive([
@@ -7647,12 +7647,12 @@ if (uni.restoreGlobal) {
           message: `${seletIndex.value}`
         };
       };
-      const drawItem = (ctx, item, x, y) => {
+      const drawItem = (ctx, item) => {
         if (item.url) {
-          ctx.drawImage(item.url, x, y, item.width, item.height);
+          ctx.drawImage(item.url, item.x, item.y, item.width, item.height);
         } else {
           ctx.setFillStyle("white");
-          ctx.fillRect(x, y, item.width, item.height);
+          ctx.fillRect(item.x, item.y, item.width, item.height);
         }
       };
       const getCanvasSize = async () => {
@@ -7661,10 +7661,11 @@ if (uni.restoreGlobal) {
         const ctx = uni.createCanvasContext("myCanvas");
         ctx.setFillStyle("#e8e8e8");
         ctx.fillRect(0, 0, width, height);
-        fileList.value.forEach((item, index2) => {
-          let x = item.x;
-          let y = item.y;
-          drawItem(ctx, item, x, y);
+        let ruse = JSON.parse(JSON.stringify(fileList.value));
+        ruse.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1));
+        formatAppLog("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:334", "fileList.value", ruse);
+        ruse.forEach((item, index2) => {
+          drawItem(ctx, item);
         });
         ctx.draw(true, () => {
           uni.canvasToTempFilePath({
@@ -7685,7 +7686,7 @@ if (uni.restoreGlobal) {
               });
             },
             fail: (err) => {
-              formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:355", "合并图片失败:", err);
+              formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:359", "合并图片失败:", err);
               uni.showToast({
                 title: "合并图片失败",
                 icon: "none"
@@ -7696,7 +7697,7 @@ if (uni.restoreGlobal) {
       };
       const clearCanvas = () => {
         const ctx = uni.createCanvasContext("myCanvas");
-        ctx.clearRect(0, 0, 370, 370);
+        ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
         ctx.draw();
       };
       const batchInput = () => {
@@ -7705,35 +7706,68 @@ if (uni.restoreGlobal) {
           count,
           // 数量控制
           sizeType: ["original"],
-          //可以指定是原图还是压缩图，默认二者都有
+          // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ["album"],
-          //从相册选择
+          // 从相册选择
           success: function(res) {
-            const ctx = uni.createCanvasContext("myCanvas");
-            ctx.setFillStyle("#e8e8e8");
-            ctx.fillRect(0, 0, previewMain.value.width + 20, previewMain.value.height + 20);
-            res.tempFilePaths.forEach((item, index2) => {
-              const width = fileList.value[index2].width;
-              const heigth = fileList.value[index2].heigth;
-              drawItem(ctx, {
-                width,
-                heigth
-              }, 0, 0);
-              debugger;
-              fileList.value[index2] = {
-                ...fileList.value[index2],
-                url: item,
-                status: "success",
-                message: `${index2}`
-              };
-              fileListBackups.value[index2] = {
-                ...fileList.value[index2],
-                url: item,
-                status: "success",
-                message: `${index2}`
-              };
+            res.tempFilePaths.forEach(async (item, index2) => {
+              try {
+                const ctx = uni.createCanvasContext("myCanvas");
+                const { width, height } = fileList.value[index2];
+                const proportion = width / height;
+                fileListBackups.value[index2] = {
+                  ...fileListBackups.value[index2],
+                  url: item,
+                  // 原图
+                  status: "success",
+                  message: `${index2}`
+                };
+                const imageInfo = await getImageInfo(item);
+                let imageW = imageInfo.width;
+                let imageH = imageInfo.height;
+                let drawX = 0;
+                let drawY = 0;
+                if (imageW < imageH) {
+                  drawY = imageH / 2 - imageW / 2;
+                  imageH = imageW;
+                } else {
+                  drawX = imageW / 2 - imageH / 2;
+                  imageW = imageH;
+                }
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(item, drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
+                await ctx.draw(true);
+                const cropImage2 = (await uni.canvasToTempFilePath({ canvasId: "myCanvas" })).tempFilePath;
+                clearCanvas();
+                formatAppLog("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:428", "cropImage", cropImage2);
+                fileList.value[index2] = {
+                  ...fileList.value[index2],
+                  url: cropImage2,
+                  status: "success",
+                  message: `${index2}`
+                };
+              } catch (error2) {
+                formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:438", "处理图片失败: ", error2);
+                fileListBackups.value[index2] = {
+                  ...fileListBackups.value[index2],
+                  status: "error",
+                  message: error2.message
+                };
+              }
             });
+          },
+          fail: function(error2) {
+            formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:448", "选择图片失败: ", error2);
           }
+        });
+      };
+      const getImageInfo = (src) => {
+        return new Promise((resolve, reject) => {
+          uni.getImageInfo({
+            src,
+            success: resolve,
+            fail: reject
+          });
         });
       };
       const typeConfirm = (item) => {
@@ -7771,7 +7805,7 @@ if (uni.restoreGlobal) {
         result.x = originalX;
         result.y = originalY;
         fileList.value[4] = {
-          // ...fileList.value[4],
+          ...fileList.value[4],
           x: result.x,
           y: result.x,
           width: result.width,
@@ -7779,7 +7813,7 @@ if (uni.restoreGlobal) {
           zIndex: 700
         };
       };
-      const __returned__ = { instance, previewMain, spacing, cropImage, seletIndex, isOpenCropper, iamgeMainMax, formData, editeImage, fileListBackups, fileList, l3r2, l2r3, nineSquareGrid, lrSymmetry, tbSymmetry, showImageType, columns, iamgeColumns, editPicture, editImagePicker, handleCrop, drawItem, getCanvasSize, clearCanvas, batchInput, typeConfirm, formDataScale, nextTick: vue.nextTick, onMounted: vue.onMounted, ref: vue.ref, reactive: vue.reactive, watch: vue.watch, get onLoad() {
+      const __returned__ = { instance, previewMain, spacing, cropImage, seletIndex, isOpenCropper, iamgeMainMax, formData, editeImage, fileListBackups, fileList, l3r2, l2r3, nineSquareGrid, lrSymmetry, tbSymmetry, showImageType, columns, iamgeColumns, editPicture, editImagePicker, handleCrop, drawItem, getCanvasSize, clearCanvas, batchInput, getImageInfo, typeConfirm, formDataScale, nextTick: vue.nextTick, onMounted: vue.onMounted, ref: vue.ref, reactive: vue.reactive, watch: vue.watch, get onLoad() {
         return onLoad;
       }, get onPullDownRefresh() {
         return onPullDownRefresh;
@@ -7963,7 +7997,7 @@ if (uni.restoreGlobal) {
       /* STABLE */
     });
   }
-  const PagesHomePhJigsawPuzzleJigsawPuzzle = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$1], ["__scopeId", "data-v-e8e9eaac"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue"]]);
+  const PagesHomePhJigsawPuzzleJigsawPuzzle = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$1], ["__scopeId", "data-v-e8e9eaac"], ["__file", "/Users/pq/code/ph/pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue"]]);
   const _sfc_main$1 = {
     __name: "addWatermark",
     setup(__props, { expose: __expose }) {
@@ -8202,7 +8236,7 @@ if (uni.restoreGlobal) {
       /* STABLE_FRAGMENT */
     );
   }
-  const PagesHomePhAddWatermarkAddWatermark = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__scopeId", "data-v-5bd6fc7f"], ["__file", "/Users/pq/code/minlHoldAll/照片工具/pages/home/ph/addWatermark/addWatermark.vue"]]);
+  const PagesHomePhAddWatermarkAddWatermark = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render], ["__scopeId", "data-v-5bd6fc7f"], ["__file", "/Users/pq/code/ph/pages/home/ph/addWatermark/addWatermark.vue"]]);
   __definePage("pages/home/home", PagesHomeHome);
   __definePage("pages/home/ph/jigsawPuzzle/jigsawPuzzle", PagesHomePhJigsawPuzzleJigsawPuzzle);
   __definePage("pages/home/ph/addWatermark/addWatermark", PagesHomePhAddWatermarkAddWatermark);
@@ -8218,7 +8252,7 @@ if (uni.restoreGlobal) {
       formatAppLog("log", "at App.vue:10", "App Hide");
     }
   };
-  const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__file", "/Users/pq/code/minlHoldAll/照片工具/App.vue"]]);
+  const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__file", "/Users/pq/code/ph/App.vue"]]);
   const mixin = {
     // 定义每个组件都可能需要用到的外部样式以及类名
     props: {

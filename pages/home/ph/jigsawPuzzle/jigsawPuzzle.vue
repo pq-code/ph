@@ -327,10 +327,14 @@
 		// 设置背景颜色
 		ctx.setFillStyle("#e8e8e8"); // 设置背景颜色为白色
 		ctx.fillRect(0, 0, width, height); // 填充整个画布
-
-		fileList.value.forEach((item, index) => {
-			console.log(';',item.url)
-			drawItem(ctx, item);
+		
+		let ruse = JSON.parse(JSON.stringify(fileList.value))
+		// 对 fileList 按 item.index 进行排序
+		ruse.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1));
+		console.log('fileList.value',ruse)
+		ruse.forEach((item, index) => {
+			// 根据index判断渲染的顺序
+			drawItem(ctx, item)
 		});
 
 		// 绘制完成后导出图片
@@ -372,91 +376,85 @@
 
 	// 批量录入
 	const batchInput = () => {
-		const count = fileListBackups.value.length
-		uni.chooseImage({
-			count, // 数量控制
-			sizeType: ["original", ], //可以指定是原图还是压缩图，默认二者都有
-			sourceType: ["album"], //从相册选择
-			success: function(res) {				
-				const ctx = uni.createCanvasContext("myCanvas");
-				// 设置背景颜色
-			
-				res.tempFilePaths.forEach((item, index) => {
-					// 调整图片大小和清晰度
-					const width = fileList.value[index].width
-					const height = fileList.value[index].height
-					const proportion = fileList.value[index].width / fileList.value[index].height
-					
-					// 保存原始数据
-					fileListBackups.value[index] = {
-						...fileListBackups.value[index],
-						url: item, // 原图
-						status: "success",
-						message: `${index}`,
-					};
+    const count = fileListBackups.value.length;
+    uni.chooseImage({
+        count, // 数量控制
+        sizeType: ["original"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album"], // 从相册选择
+        success: function(res) {
+            res.tempFilePaths.forEach(async (item, index) => {
+                try {
+					const ctx = uni.createCanvasContext("myCanvas");
+                    const { width, height } = fileList.value[index];
+                    const proportion = width / height;
+                    // 保存原始数据
+                    fileListBackups.value[index] = {
+                        ...fileListBackups.value[index],
+                        url: item, // 原图
+                        status: "success",
+                        message: `${index}`,
+                    };
 					
 					// 获取图片宽高做裁切
-					uni.getImageInfo({
-					    src: item, // 图片路径
-					    success: function (imageInfo) {
-							// 计算宽高比例最大限度不变形适配
-							let imageW = imageInfo.width;
-							let imageH = imageInfo.height;
-							
-							let drawX = 0
-							let drawY = 0
+                    const imageInfo = await getImageInfo(item);
+                    // 计算宽高比例最大限度不变形适配
+                    let imageW = imageInfo.width;
+                    let imageH = imageInfo.height;
+                    let drawX = 0;
+                    let drawY = 0;
 
-							const proportion = width / height
+                    if (imageW < imageH) {
+                        drawY = imageH / 2 - (imageW / 2);
+                        imageH = imageW;
+                    } else {
+                        drawX = imageW / 2 - (imageH / 2);
+                        imageW = imageH;
+                    }
 
-							// 判断长边，宽或高
-							if(imageW < imageH) {
-								drawY = imageH / 2 - (imageW / 2)
-								imageH = imageW
-							} else {
-								drawX = imageW / 2 - (imageH / 2)
-								imageW = imageH
-							}
-							
-							// 禁用图像平滑处理以保持清晰度
-							ctx.imageSmoothingEnabled = false;
-							
-							// (图片对象, 图像裁剪的x位置, 图像裁剪的y位置, 裁剪的宽度, 裁剪的高度, x位置, y位置, 宽度, 高度)
-							// 绘制图片
-							ctx.drawImage(item, drawX, drawY, imageW, imageH,0,0,previewMain.value.width, previewMain.value.height);
+                    // 禁用图像平滑处理以保持清晰度
+                    ctx.imageSmoothingEnabled = false;
 
-							// 绘制完成后导出图片
-							ctx.draw(true, () => {
-								uni.canvasToTempFilePath({
-									canvasId: "myCanvas",
-									success: (res1) => {
-										const cropImage = res1.tempFilePath;
+                    // 绘制图片
+                    await ctx.drawImage(item, drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
 
-										// 预览生成的图片
-										fileList.value[index] = {
-											...fileList.value[index],
-											url: cropImage,
-											status: "success",
-											message: `${index}`,
-										};
-										clearCanvas() // 清除
-									},
-									fail: (err) => {
-										console.error("导入图片失败:", err);
-										// 提示用户合并图片失败
-										uni.showToast({
-											title: "导入图片失败",
-											icon: "none",
-										});
-									},
-								});
-							});
-					    },
-					    fail: function (error) {
-					        console.error("获取图片信息失败: ", error);
-					    }
-					});
-				});
-			},
+                    // 绘制完成后导出图片
+                    await ctx.draw(true);
+                    const cropImage = (await uni.canvasToTempFilePath({ canvasId: "myCanvas" })).tempFilePath;
+					await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height); // 清空整个画布
+					await ctx.draw();// 清除
+					
+                    console.log('cropImage', cropImage);
+
+                    // 预览生成的图片
+                    fileList.value[index] = {
+                        ...fileList.value[index],
+                        url: cropImage,
+                        status: "success",
+                        message: `${index}`,
+                    };
+                } catch (error) {
+                    console.error("处理图片失败: ", error);
+                    fileListBackups.value[index] = {
+                        ...fileListBackups.value[index],
+                        status: "error",
+                        message: error.message,
+                    };
+                }
+            });
+        },
+        fail: function(error) {
+            console.error("选择图片失败: ", error);
+        }
+    });
+};
+
+	const getImageInfo = (src) => {
+		return new Promise((resolve, reject) => {
+			uni.getImageInfo({
+				src,
+				success: resolve,
+				fail: reject
+			});
 		});
 	};
 
@@ -509,7 +507,7 @@
 		result.y = originalY;
 
 		fileList.value[4] = {
-			// ...fileList.value[4],
+			...fileList.value[4],
 			x: result.x,
 			y: result.x,
 			width: result.width,

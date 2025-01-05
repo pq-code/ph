@@ -1549,6 +1549,7 @@ uni-view[data-v-5ce41ee6], uni-scroll-view[data-v-5ce41ee6], uni-swiper-item[dat
   width: calc(100vw - 20px);
   height: calc(100vw - 20px);
   display: node;
+  padding: 10px;
 }
 .content .content-main .preview-main[data-v-e8e9eaac] {
   padding: 10px;
