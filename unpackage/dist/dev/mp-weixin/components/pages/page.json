@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-navbar": "../../uni_modules/uview-plus/components/u-navbar/u-navbar",
+    "u-button": "../../uni_modules/uview-plus/components/u-button/u-button"
+  }
+}

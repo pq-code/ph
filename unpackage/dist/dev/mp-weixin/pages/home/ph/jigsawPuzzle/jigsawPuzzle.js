@@ -1,0 +1,551 @@
+"use strict";
+const common_vendor = require("../../../../common/vendor.js");
+if (!Array) {
+  const _easycom_u_picker2 = common_vendor.resolveComponent("u-picker");
+  const _easycom_u_image2 = common_vendor.resolveComponent("u-image");
+  const _easycom_u_input2 = common_vendor.resolveComponent("u-input");
+  const _easycom_u_icon2 = common_vendor.resolveComponent("u-icon");
+  const _easycom_u_form_item2 = common_vendor.resolveComponent("u-form-item");
+  const _easycom_u_slider2 = common_vendor.resolveComponent("u-slider");
+  const _easycom_u_form2 = common_vendor.resolveComponent("u-form");
+  (_easycom_u_picker2 + _easycom_u_image2 + _easycom_u_input2 + _easycom_u_icon2 + _easycom_u_form_item2 + _easycom_u_slider2 + _easycom_u_form2)();
+}
+const _easycom_u_picker = () => "../../../../uni_modules/uview-plus/components/u-picker/u-picker.js";
+const _easycom_u_image = () => "../../../../uni_modules/uview-plus/components/u-image/u-image.js";
+const _easycom_u_input = () => "../../../../uni_modules/uview-plus/components/u-input/u-input.js";
+const _easycom_u_icon = () => "../../../../uni_modules/uview-plus/components/u-icon/u-icon.js";
+const _easycom_u_form_item = () => "../../../../uni_modules/uview-plus/components/u-form-item/u-form-item.js";
+const _easycom_u_slider = () => "../../../../uni_modules/uview-plus/components/u-slider/u-slider.js";
+const _easycom_u_form = () => "../../../../uni_modules/uview-plus/components/u-form/u-form.js";
+if (!Math) {
+  (imageCropper + _easycom_u_picker + _easycom_u_image + _easycom_u_input + _easycom_u_icon + _easycom_u_form_item + _easycom_u_slider + _easycom_u_form + page)();
+}
+const imageCropper = () => "../../components/imageCropper/imageCropper2.js";
+const page = () => "../../../../components/pages/page.js";
+const _sfc_main = {
+  __name: "jigsawPuzzle",
+  setup(__props) {
+    const instance = common_vendor.getCurrentInstance();
+    const previewMain = common_vendor.ref({
+      width: 0,
+      height: 0
+    });
+    const spacing = common_vendor.ref(5);
+    const cropImage = common_vendor.ref();
+    const seletIndex = common_vendor.ref();
+    const isOpenCropper = common_vendor.ref(false);
+    common_vendor.ref(1);
+    const formData = common_vendor.reactive({
+      imageTypeText: "九宫格",
+      imageType: 1,
+      scale: 1
+    });
+    const editeImage = common_vendor.ref(false);
+    const fileListBackups = common_vendor.ref([]);
+    const fileList = common_vendor.ref([]);
+    common_vendor.onMounted(() => {
+      const query = common_vendor.index.createSelectorQuery().in(instance.proxy);
+      query.select("#contentMain").boundingClientRect((data) => {
+        if (data) {
+          console.log("元素的宽：" + data.width);
+          console.log("元素的高：" + data.height);
+          previewMain.value = {
+            width: data.width,
+            height: data.height
+          };
+        }
+        nineSquareGrid();
+      }).exec();
+    });
+    const l3r2 = () => {
+      const widthL3R2L = (previewMain.value.width - spacing.value) * 0.3;
+      const heightL3R2L = (previewMain.value.height - spacing.value * 2) / 3;
+      const widthL3R2R = (previewMain.value.width - spacing.value) * 0.7;
+      const heightL3R2R = (previewMain.value.height - spacing.value) / 2;
+      fileListBackups.value = new Array(5).fill({}).map((item, index) => {
+        if (index < 3) {
+          return {
+            width: widthL3R2L,
+            height: heightL3R2L,
+            x: 0,
+            y: index * (heightL3R2L + spacing.value),
+            url: ""
+          };
+        } else {
+          return {
+            width: widthL3R2R,
+            height: heightL3R2R,
+            x: widthL3R2L + spacing.value,
+            y: (index - 3) * (heightL3R2R + spacing.value),
+            url: ""
+          };
+        }
+      });
+      fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
+    };
+    const l2r3 = () => {
+      const widthL3R2R = (previewMain.value.width - spacing.value) * 0.3;
+      const heightL3R2R = (previewMain.value.height - spacing.value * 2) / 3;
+      const widthL3R2L = (previewMain.value.width - spacing.value) * 0.7;
+      const heightL3R2L = (previewMain.value.height - spacing.value) / 2;
+      fileListBackups.value = new Array(5).fill({}).map((item, index) => {
+        if (index < 2) {
+          return {
+            width: widthL3R2L,
+            height: heightL3R2L,
+            x: 0,
+            y: index * (heightL3R2L + spacing.value),
+            url: ""
+          };
+        } else {
+          return {
+            width: widthL3R2R,
+            height: heightL3R2R,
+            x: widthL3R2L + spacing.value,
+            y: (index - 2) * (heightL3R2R + spacing.value),
+            url: ""
+          };
+        }
+      });
+      fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
+    };
+    const nineSquareGrid = () => {
+      const width = (previewMain.value.width - spacing.value * 2) / 3;
+      const height = (previewMain.value.height - spacing.value * 2) / 3;
+      fileListBackups.value = new Array(9).fill({}).map((item, index) => {
+        let row = Math.floor(index / 3);
+        let col = index % 3;
+        let x = col * (width + spacing.value);
+        let y = row * (height + spacing.value);
+        return {
+          width,
+          height,
+          x,
+          y,
+          url: ""
+        };
+      });
+      fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
+    };
+    const lrSymmetry = () => {
+      const width = (previewMain.value.width - spacing.value) / 2;
+      const height = previewMain.value.height;
+      fileListBackups.value = new Array(2).fill({}).map((item, index) => {
+        let col = index % 2;
+        let x = col * (width + spacing.value);
+        let y = 0;
+        return {
+          width,
+          height,
+          x,
+          y,
+          url: ""
+        };
+      });
+      fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
+    };
+    const tbSymmetry = () => {
+      const width = previewMain.value.width;
+      const height = (previewMain.value.height - spacing.value) / 2;
+      fileListBackups.value = new Array(2).fill({}).map((item, index) => {
+        let col = index % 2;
+        let x = 0;
+        let y = col * (height + spacing.value);
+        return {
+          width,
+          height,
+          x,
+          y,
+          url: ""
+        };
+      });
+      fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
+    };
+    const showImageType = common_vendor.ref(false);
+    const columns = common_vendor.reactive([
+      [
+        {
+          label: "九宫格",
+          value: 1
+        },
+        {
+          label: "九宫格(中间放大)",
+          value: 2
+        },
+        {
+          label: "左右对称",
+          value: 3
+        },
+        {
+          label: "上下对称",
+          value: 4
+        },
+        {
+          label: "左三右二",
+          value: 5
+        },
+        {
+          label: "左二右三",
+          value: 6
+        }
+      ]
+    ]);
+    const iamgeColumns = common_vendor.reactive([
+      [
+        {
+          label: "添加图片",
+          value: 1
+        },
+        {
+          label: "编辑图片",
+          value: 2
+        },
+        {
+          label: "预览图片",
+          value: 3
+        },
+        {
+          label: "删除图片",
+          value: 4
+        }
+      ]
+    ]);
+    common_vendor.onPullDownRefresh(() => {
+      console.log("下拉刷新");
+    });
+    common_vendor.onShow(() => {
+    });
+    const editPicture = (item, index) => {
+      editeImage.value = true;
+      seletIndex.value = index;
+    };
+    const editImagePicker = (item) => {
+      editeImage.value = false;
+      if (item.value[0].value == 1) {
+        common_vendor.index.chooseImage({
+          count: 1,
+          //默认9
+          sizeType: ["original"],
+          //可以指定是原图还是压缩图，默认二者都有
+          sourceType: ["album"],
+          //从相册选择
+          success: function(res) {
+            cropImage.value = res.tempFilePaths[0];
+            isOpenCropper.value = true;
+            fileListBackups.value[seletIndex.value] = {
+              ...fileListBackups.value[seletIndex.value],
+              url: res.tempFilePaths[0],
+              status: "success",
+              message: `${seletIndex.value}`
+            };
+          }
+        });
+      }
+      if (item.value[0].value == 2) {
+        cropImage.value = fileListBackups.value[seletIndex.value];
+        isOpenCropper.value = true;
+      }
+      if (item.value[0].value == 3) {
+        common_vendor.index.previewImage({
+          urls: fileList.value.map((val) => val.url),
+          current: seletIndex.value,
+          longPressActions: {
+            itemList: ["发送给朋友", "保存图片", "收藏"],
+            success: function(data) {
+              console.log(
+                "选中了第" + (data.tapIndex + 1) + "个按钮,第" + (data.index + 1) + "张图片"
+              );
+            },
+            fail: function(err) {
+              console.log(err.errMsg);
+            }
+          }
+        });
+      }
+      if (item.value[0].value == 4) {
+        fileList.value[seletIndex.value] = {
+          ...fileList.value[seletIndex.value],
+          url: "",
+          status: "success",
+          message: `${seletIndex.value}`
+        };
+        fileListBackups.value[seletIndex.value] = {
+          ...fileListBackups.value[seletIndex.value],
+          url: "",
+          status: "success",
+          message: `${seletIndex.value}`
+        };
+      }
+    };
+    const handleCrop = (url) => {
+      isOpenCropper.value = false;
+      fileList.value[seletIndex.value] = {
+        ...fileList.value[seletIndex.value],
+        url,
+        status: "success",
+        message: `${seletIndex.value}`
+      };
+    };
+    const drawItem = (ctx, item) => {
+      if (item.url) {
+        ctx.drawImage(item.url, item.x, item.y, item.width, item.height);
+      } else {
+        ctx.setFillStyle("white");
+        ctx.fillRect(item.x, item.y, item.width, item.height);
+      }
+    };
+    const getCanvasSize = async () => {
+      const width = previewMain.value.width;
+      const height = previewMain.value.height;
+      const ctx = common_vendor.index.createCanvasContext("myCanvas");
+      ctx.setFillStyle("#e8e8e8");
+      ctx.fillRect(0, 0, width, height);
+      fileList.value.forEach((item, index) => {
+        console.log(";", item.url);
+        drawItem(ctx, item);
+      });
+      ctx.draw(true, () => {
+        common_vendor.index.canvasToTempFilePath({
+          canvasId: "myCanvas",
+          success: (res) => {
+            const tempFilePath = res.tempFilePath;
+            common_vendor.index.previewImage({
+              current: tempFilePath,
+              // 当前显示的图片链接
+              urls: [tempFilePath],
+              // 需要预览的图片链接列表
+              success: () => {
+                clearCanvas();
+              },
+              fail: () => {
+                clearCanvas();
+              }
+            });
+          },
+          fail: (err) => {
+            console.error("合并图片失败:", err);
+            common_vendor.index.showToast({
+              title: "合并图片失败",
+              icon: "none"
+            });
+          }
+        });
+      });
+    };
+    const clearCanvas = () => {
+      const ctx = common_vendor.index.createCanvasContext("myCanvas");
+      ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
+      ctx.draw();
+    };
+    const batchInput = () => {
+      const count = fileListBackups.value.length;
+      common_vendor.index.chooseImage({
+        count,
+        // 数量控制
+        sizeType: ["original"],
+        //可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album"],
+        //从相册选择
+        success: function(res) {
+          const ctx = common_vendor.index.createCanvasContext("myCanvas");
+          res.tempFilePaths.forEach((item, index) => {
+            fileList.value[index].width;
+            fileList.value[index].height;
+            fileList.value[index].width / fileList.value[index].height;
+            fileListBackups.value[index] = {
+              ...fileListBackups.value[index],
+              url: item,
+              // 原图
+              status: "success",
+              message: `${index}`
+            };
+            common_vendor.index.getImageInfo({
+              src: item,
+              // 图片路径
+              success: function(imageInfo) {
+                let imageW = imageInfo.width;
+                let imageH = imageInfo.height;
+                let drawX = 0;
+                let drawY = 0;
+                if (imageW < imageH) {
+                  drawY = imageH / 2 - imageW / 2;
+                  imageH = imageW;
+                } else {
+                  drawX = imageW / 2 - imageH / 2;
+                  imageW = imageH;
+                }
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(item, drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
+                ctx.draw(true, () => {
+                  common_vendor.index.canvasToTempFilePath({
+                    canvasId: "myCanvas",
+                    success: (res1) => {
+                      const cropImage2 = res1.tempFilePath;
+                      fileList.value[index] = {
+                        ...fileList.value[index],
+                        url: cropImage2,
+                        status: "success",
+                        message: `${index}`
+                      };
+                      clearCanvas();
+                    },
+                    fail: (err) => {
+                      console.error("导入图片失败:", err);
+                      common_vendor.index.showToast({
+                        title: "导入图片失败",
+                        icon: "none"
+                      });
+                    }
+                  });
+                });
+              },
+              fail: function(error) {
+                console.error("获取图片信息失败: ", error);
+              }
+            });
+          });
+        }
+      });
+    };
+    const typeConfirm = (item) => {
+      formData.imageType = item.value[0].value;
+      formData.imageTypeText = item.value[0].label;
+      showImageType.value = false;
+      formData.scale = 1;
+      const typeFunctions = {
+        1: nineSquareGrid,
+        3: lrSymmetry,
+        4: tbSymmetry,
+        5: l3r2,
+        6: l2r3
+      };
+      const selectedFunction = typeFunctions[formData.imageType];
+      if (selectedFunction) {
+        selectedFunction();
+      }
+    };
+    const formDataScale = (e) => {
+      formData.scale = e;
+      let result = {
+        x: fileList.value[3].x + fileList.value[3].width + spacing.value,
+        y: fileList.value[3].y + fileList.value[3].height + spacing.value,
+        width: 0,
+        height: 0
+      };
+      const originalWidth = fileList.value[3].width;
+      const originalHeight = fileList.value[3].height;
+      const scaleRatio = e / 100 + 1;
+      result.width = originalWidth * scaleRatio;
+      result.height = originalHeight * scaleRatio;
+      const originalX = result.x - (result.width - originalWidth) / 2;
+      const originalY = result.y - (result.height - originalHeight) / 2;
+      result.x = originalX;
+      result.y = originalY;
+      fileList.value[4] = {
+        // ...fileList.value[4],
+        x: result.x,
+        y: result.x,
+        width: result.width,
+        height: result.height,
+        zIndex: 700
+      };
+    };
+    return (_ctx, _cache) => {
+      return common_vendor.e({
+        a: isOpenCropper.value,
+        b: common_vendor.o(handleCrop),
+        c: common_vendor.p({
+          cropImage: cropImage.value
+        }),
+        d: common_vendor.o(($event) => showImageType.value = false),
+        e: common_vendor.o(typeConfirm),
+        f: common_vendor.p({
+          show: showImageType.value,
+          columns,
+          keyName: "label"
+        }),
+        g: common_vendor.o(($event) => editeImage.value = false),
+        h: common_vendor.o(editImagePicker),
+        i: common_vendor.p({
+          show: editeImage.value,
+          columns: iamgeColumns,
+          keyName: "label"
+        }),
+        j: common_vendor.f(fileList.value, (item, index, i0) => {
+          return {
+            a: "e8e9eaac-4-" + i0 + ",e8e9eaac-0",
+            b: common_vendor.p({
+              height: `${item.height}px`,
+              width: `${item.width}px`,
+              mode: "aspectFill",
+              src: item.url
+            }),
+            c: item.url || index,
+            d: `${item.width}px`,
+            e: `${item.height}px`,
+            f: `${item.y}px`,
+            g: `${item.x}px`,
+            h: `${item.zIndex || 666}`,
+            i: common_vendor.o(($event) => editPicture(item, index), item.url || index)
+          };
+        }),
+        k: previewMain.value.width + "px",
+        l: previewMain.value.height + "px",
+        m: common_vendor.o(($event) => showImageType.value = true),
+        n: common_vendor.o(($event) => formData.imageTypeText = $event),
+        o: common_vendor.p({
+          disabled: true,
+          disabledColor: "#ffffff",
+          placeholder: "请选择",
+          border: "none",
+          modelValue: formData.imageTypeText
+        }),
+        p: common_vendor.o(($event) => showImageType.value = true),
+        q: common_vendor.p({
+          name: "arrow-right"
+        }),
+        r: common_vendor.sr("imageType", "e8e9eaac-6,e8e9eaac-5"),
+        s: common_vendor.p({
+          label: "选择拼图类型",
+          prop: "imageType",
+          borderBottom: true,
+          border: "none",
+          placeholder: "请选择"
+        }),
+        t: formData.imageType == 2
+      }, formData.imageType == 2 ? {
+        v: common_vendor.o(formDataScale),
+        w: common_vendor.o(($event) => formData.scale = $event),
+        x: common_vendor.p({
+          min: "1",
+          max: "100",
+          modelValue: formData.scale
+        }),
+        y: common_vendor.t(`${formData.scale} %`),
+        z: common_vendor.sr("text", "e8e9eaac-9,e8e9eaac-5"),
+        A: common_vendor.p({
+          label: "中间图片大小",
+          prop: "opacity",
+          borderBottom: true
+        })
+      } : {}, {
+        B: common_vendor.sr("form1", "e8e9eaac-5,e8e9eaac-0"),
+        C: common_vendor.p({
+          labelWidth: "100px",
+          labelPosition: "left",
+          labelAlign: "left",
+          model: formData
+        }),
+        D: common_vendor.o(batchInput),
+        E: common_vendor.o(getCanvasSize),
+        F: common_vendor.p({
+          title: "拼图",
+          lButton: "批量录入",
+          rButton: "生成照片"
+        })
+      });
+    };
+  }
+};
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-e8e9eaac"]]);
+wx.createPage(MiniProgramPage);

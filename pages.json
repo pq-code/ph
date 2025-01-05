@@ -1,0 +1,79 @@
+{
+    "easycom": {
+        // 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+        "custom": {
+            "^u-(.*)": "uview-plus/components/u-$1/u-$1.vue"
+        }
+    },
+    "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+        {
+            "path": "pages/home/home",
+            "name": "home",
+            "permission": {
+                "scope.userLocation": {
+                    "desc": "你的位置信息将用于小程序位置接口的效果展示" // 高速公路行驶持续后台定位
+                },
+				"scope.userInfo": {
+				    "desc": "昵称和头像展示" // 
+				},
+				"scope.writePhotosAlbum": {
+				    "desc": "上传图片" // 
+				},
+				"scope.camera": {
+				    "desc": "头像设置" // 
+				}
+            },
+            "style": {
+                "navigationBarTitleText": "uni-app",
+                "navigationStyle": "custom"
+                // "navigationBarTextStyle": "white"
+            }
+        },
+        {
+        	"path" : "pages/home/ph/jigsawPuzzle/jigsawPuzzle",
+        	"name": "home.jigsawPuzzle",
+        	"style": {
+        	    "navigationBarTitleText": "",
+        	    "enablePullDownRefresh": false,
+        	    "navigationStyle": "custom"
+        	}
+        },
+		{
+			"path" : "pages/home/ph/addWatermark/addWatermark",
+			"name": "home.addWatermark",
+			"style": {
+			    "navigationBarTitleText": "",
+			    "enablePullDownRefresh": false,
+			    "navigationStyle": "custom"
+			}
+		},
+        {
+        	"path" : "pages/home/components/imageCropper/imageCropper",
+        	"style" : 
+        	{
+        		"navigationBarTitleText" : "",
+				"enablePullDownRefresh": false,
+				"disableScroll": true
+        	}
+        }
+    ],
+  //   "tabBar": {
+		// "color": "#1e1e1e",
+	 //    "selectedColor": "#0aa671",
+		// "borderStyle": "white",
+  //       "custom": true,
+  //       "list": [
+  //           {
+  //               "pagePath": "pages/home/home",
+		// 		"text": "首页"
+  //           }
+  //       ]
+  //   },
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "uni-app",
+        "navigationBarBackgroundColor": "#F8F8F8",
+        "backgroundColor": "#F8F8F8"
+    },
+    "uniIdRouter": {}
+}

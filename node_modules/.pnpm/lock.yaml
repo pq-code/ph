@@ -1,0 +1,65 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.10
+  uview-plus:
+    specifier: ^3.1.29
+    version: registry.npmmirror.com/uview-plus@3.1.41
+
+packages:
+
+  /dayjs@1.11.10:
+    resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==, tarball: https://registry.npmmirror.com/dayjs/-/dayjs-1.11.10.tgz}
+    dev: false
+
+  registry.npmmirror.com/clipboard@2.0.11:
+    resolution: {integrity: sha512-C+0bbOqkezLIsmWSvlsXS0Q0bmkugu7jcfMIACB+RDEntIzQIkdr148we28AfSloQLRdZlYL/QYyrq05j/3Faw==, tarball: https://registry.npmmirror.com/clipboard/-/clipboard-2.0.11.tgz}
+    name: clipboard
+    version: 2.0.11
+    dependencies:
+      good-listener: registry.npmmirror.com/good-listener@1.2.2
+      select: registry.npmmirror.com/select@1.1.2
+      tiny-emitter: registry.npmmirror.com/tiny-emitter@2.1.0
+    dev: false
+
+  registry.npmmirror.com/delegate@3.2.0:
+    resolution: {integrity: sha512-IofjkYBZaZivn0V8nnsMJGBr4jVLxHDheKSW88PyxS5QC4Vo9ZbZVvhzlSxY87fVq3STR6r+4cGepyHkcWOQSw==, tarball: https://registry.npmmirror.com/delegate/-/delegate-3.2.0.tgz}
+    name: delegate
+    version: 3.2.0
+    dev: false
+
+  registry.npmmirror.com/good-listener@1.2.2:
+    resolution: {integrity: sha512-goW1b+d9q/HIwbVYZzZ6SsTr4IgE+WA44A0GmPIQstuOrgsFcT7VEJ48nmr9GaRtNu0XTKacFLGnBPAM6Afouw==, tarball: https://registry.npmmirror.com/good-listener/-/good-listener-1.2.2.tgz}
+    name: good-listener
+    version: 1.2.2
+    dependencies:
+      delegate: registry.npmmirror.com/delegate@3.2.0
+    dev: false
+
+  registry.npmmirror.com/select@1.1.2:
+    resolution: {integrity: sha512-OwpTSOfy6xSs1+pwcNrv0RBMOzI39Lp3qQKUTPVVPRjCdNa5JH/oPRiqsesIskK8TVgmRiHwO4KXlV2Li9dANA==, tarball: https://registry.npmmirror.com/select/-/select-1.1.2.tgz}
+    name: select
+    version: 1.1.2
+    dev: false
+
+  registry.npmmirror.com/tiny-emitter@2.1.0:
+    resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==, tarball: https://registry.npmmirror.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz}
+    name: tiny-emitter
+    version: 2.1.0
+    dev: false
+
+  registry.npmmirror.com/uview-plus@3.1.41:
+    resolution: {integrity: sha512-xmbV8JK73GOKZXdpzj9Dm0VCE6cIc7nchyutF33SeixCXpRr4A5Y/QuDyFEg4Vzr/lgNVvml43Ayfq9Mm1a5AQ==, tarball: https://registry.npmmirror.com/uview-plus/-/uview-plus-3.1.41.tgz}
+    name: uview-plus
+    version: 3.1.41
+    engines: {HBuilderX: ^3.1.0}
+    dependencies:
+      clipboard: registry.npmmirror.com/clipboard@2.0.11
+      dayjs: 1.11.10
+    dev: false
