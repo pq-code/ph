@@ -3,11 +3,12 @@
   "enablePullDownRefresh": false,
   "navigationStyle": "custom",
   "usingComponents": {
-    "u-image": "../../../../uni_modules/uview-plus/components/u-image/u-image",
+    "u-picker": "../../../../uni_modules/uview-plus/components/u-picker/u-picker",
     "u-input": "../../../../uni_modules/uview-plus/components/u-input/u-input",
     "u-form-item": "../../../../uni_modules/uview-plus/components/u-form-item/u-form-item",
+    "u-image": "../../../../uni_modules/uview-plus/components/u-image/u-image",
+    "u-slider": "../../../../uni_modules/uview-plus/components/u-slider/u-slider",
     "u-form": "../../../../uni_modules/uview-plus/components/u-form/u-form",
-    "image-cropper": "../../components/imageCropper/imageCropper",
     "page": "../../../../components/pages/page"
   }
 }

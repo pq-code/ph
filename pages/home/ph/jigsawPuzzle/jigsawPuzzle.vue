@@ -200,7 +200,7 @@
 	]);
 
 	const iamgeColumns = reactive([
-		[{
+		[	{
 				label: "添加图片",
 				value: 1,
 			},
@@ -327,11 +327,11 @@
 		// 设置背景颜色
 		ctx.setFillStyle("#e8e8e8"); // 设置背景颜色为白色
 		ctx.fillRect(0, 0, width, height); // 填充整个画布
-		
+
 		let ruse = JSON.parse(JSON.stringify(fileList.value))
 		// 对 fileList 按 item.index 进行排序
 		ruse.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1));
-		console.log('fileList.value',ruse)
+
 		ruse.forEach((item, index) => {
 			// 根据index判断渲染的顺序
 			drawItem(ctx, item)
@@ -382,9 +382,9 @@
         sizeType: ["original"], // 可以指定是原图还是压缩图，默认二者都有
         sourceType: ["album"], // 从相册选择
         success: async function(res) {
-					for(let index =0 ; index < res.tempFilePaths.length; index++) {
-							try {
-									const ctx = uni.createCanvasContext("myCanvas");
+					for(let index = 0 ; index < res.tempFilePaths.length; index++) {
+					try {
+					const ctx = uni.createCanvasContext("myCanvas");
                     const { width, height } = fileList.value[index];
                     const proportion = width / height;
                     // 保存原始数据
@@ -404,10 +404,10 @@
 
                     if (imageW < imageH) {
                         drawY = imageH / 2 - (imageW / 2);
-                        imageH = imageW;
+                        imageH = imageW / proportion;
                     } else {
                         drawX = imageW / 2 - (imageH / 2);
-                        imageW = imageH;
+                        imageW = imageH / proportion;
                     }
 
                     // 禁用图像平滑处理以保持清晰度
@@ -421,7 +421,7 @@
                     const cropImage = (await uni.canvasToTempFilePath({ canvasId: "myCanvas" })).tempFilePath;
 										await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height); // 清空整个画布
 										await ctx.draw();// 清除
-					
+
                     console.log('cropImage', cropImage);
 
                     // 预览生成的图片
@@ -522,9 +522,9 @@
 	<page title="拼图" lButton="批量录入" rButton="生成照片" @lButton="batchInput" @rButton="getCanvasSize">
 		<imageCropper v-show="isOpenCropper" :cropImage="cropImage" @handleCrop="handleCrop"></imageCropper>
 		<u-picker :show="showImageType" :columns="columns" keyName="label" @cancel="showImageType = false"
-			@confirm="typeConfirm"></u-picker>
+			@confirm="typeConfirm" :closeOnClickOverlay='true'></u-picker>
 		<u-picker :show="editeImage" :columns="iamgeColumns" keyName="label" @cancel="editeImage = false"
-			@confirm="editImagePicker"></u-picker>
+			@confirm="editImagePicker" :closeOnClickOverlay='true'></u-picker>
 		<view class="content">
 			<view class="content-main">
 				<view id="contentMain" class="image-container">
@@ -533,12 +533,12 @@
 					  height: `${item.height}px`,
 					  top: `${item.y}px`,
 					  left: `${item.x}px`,
-								 'z-index': `${item.zIndex || 666}`
+						'z-index': `${item.zIndex || 666}`
 					}" @click.stop="editPicture(item, index)">
-											<u-image :height="`${item.height}px`" :width="`${item.width}px`" mode="aspectFill"
-												:src="item.url">
-											</u-image>
-										</view>
+							<u-image :height="`${item.height}px`" :width="`${item.width}px`" mode="aspectFill"
+								:src="item.url">
+							</u-image>
+						</view>
 				</view>
 
 				<view class="preview-main-bottom">
@@ -550,11 +550,11 @@
 			<view class="controlPanel">
 				<u-form labelWidth="100px" labelPosition="left" labelAlign="left" :model="formData" ref="form1">
 					<u-form-item label="选择拼图类型" prop="imageType" borderBottom ref="imageType" border="none"
-						placeholder="请选择">
+						placeholder="请选择" @click="showImageType = true">
 						<u-input v-model="formData.imageTypeText" disabled disabledColor="#ffffff" placeholder="请选择"
-							border="none" @click="showImageType = true"></u-input>
+							border="none" ></u-input>
 						<template #right>
-							<u-icon name="arrow-right" @click="showImageType = true"></u-icon>
+							<u-icon name="arrow-right"></u-icon>
 						</template>
 					</u-form-item>
 					<u-form-item v-if="formData.imageType == 2" label="中间图片大小" prop="opacity" borderBottom ref="text">

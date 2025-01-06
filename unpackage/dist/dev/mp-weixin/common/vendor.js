@@ -12146,7 +12146,6 @@ var dayjs_min = { exports: {} };
 })(dayjs_min);
 exports.Pinia = Pinia;
 exports._export_sfc = _export_sfc;
-exports.computed = computed;
 exports.createPinia = createPinia;
 exports.createSSRApp = createSSRApp;
 exports.defineComponent = defineComponent;

@@ -302,7 +302,6 @@ const _sfc_main = {
       ctx.fillRect(0, 0, width, height);
       let ruse = JSON.parse(JSON.stringify(fileList.value));
       ruse.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1));
-      console.log("fileList.value", ruse);
       ruse.forEach((item, index) => {
         drawItem(ctx, item);
       });
@@ -368,10 +367,10 @@ const _sfc_main = {
               let drawY = 0;
               if (imageW < imageH) {
                 drawY = imageH / 2 - imageW / 2;
-                imageH = imageW;
+                imageH = imageW / proportion;
               } else {
                 drawX = imageW / 2 - imageH / 2;
-                imageW = imageH;
+                imageW = imageH / proportion;
               }
               ctx.imageSmoothingEnabled = false;
               await ctx.drawImage(res.tempFilePaths[index], drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
@@ -465,14 +464,16 @@ const _sfc_main = {
         f: common_vendor.p({
           show: showImageType.value,
           columns,
-          keyName: "label"
+          keyName: "label",
+          closeOnClickOverlay: true
         }),
         g: common_vendor.o(($event) => editeImage.value = false),
         h: common_vendor.o(editImagePicker),
         i: common_vendor.p({
           show: editeImage.value,
           columns: iamgeColumns,
-          keyName: "label"
+          keyName: "label",
+          closeOnClickOverlay: true
         }),
         j: common_vendor.f(fileList.value, (item, index, i0) => {
           return {
@@ -494,54 +495,53 @@ const _sfc_main = {
         }),
         k: previewMain.value.width + "px",
         l: previewMain.value.height + "px",
-        m: common_vendor.o(($event) => showImageType.value = true),
-        n: common_vendor.o(($event) => formData.imageTypeText = $event),
-        o: common_vendor.p({
+        m: common_vendor.o(($event) => formData.imageTypeText = $event),
+        n: common_vendor.p({
           disabled: true,
           disabledColor: "#ffffff",
           placeholder: "请选择",
           border: "none",
           modelValue: formData.imageTypeText
         }),
-        p: common_vendor.o(($event) => showImageType.value = true),
-        q: common_vendor.p({
+        o: common_vendor.p({
           name: "arrow-right"
         }),
-        r: common_vendor.sr("imageType", "e8e9eaac-6,e8e9eaac-5"),
-        s: common_vendor.p({
+        p: common_vendor.sr("imageType", "e8e9eaac-6,e8e9eaac-5"),
+        q: common_vendor.o(($event) => showImageType.value = true),
+        r: common_vendor.p({
           label: "选择拼图类型",
           prop: "imageType",
           borderBottom: true,
           border: "none",
           placeholder: "请选择"
         }),
-        t: formData.imageType == 2
+        s: formData.imageType == 2
       }, formData.imageType == 2 ? {
-        v: common_vendor.o(formDataScale),
-        w: common_vendor.o(($event) => formData.scale = $event),
-        x: common_vendor.p({
+        t: common_vendor.o(formDataScale),
+        v: common_vendor.o(($event) => formData.scale = $event),
+        w: common_vendor.p({
           min: "1",
           max: "100",
           modelValue: formData.scale
         }),
-        y: common_vendor.t(`${formData.scale} %`),
-        z: common_vendor.sr("text", "e8e9eaac-9,e8e9eaac-5"),
-        A: common_vendor.p({
+        x: common_vendor.t(`${formData.scale} %`),
+        y: common_vendor.sr("text", "e8e9eaac-9,e8e9eaac-5"),
+        z: common_vendor.p({
           label: "中间图片大小",
           prop: "opacity",
           borderBottom: true
         })
       } : {}, {
-        B: common_vendor.sr("form1", "e8e9eaac-5,e8e9eaac-0"),
-        C: common_vendor.p({
+        A: common_vendor.sr("form1", "e8e9eaac-5,e8e9eaac-0"),
+        B: common_vendor.p({
           labelWidth: "100px",
           labelPosition: "left",
           labelAlign: "left",
           model: formData
         }),
-        D: common_vendor.o(batchInput),
-        E: common_vendor.o(getCanvasSize),
-        F: common_vendor.p({
+        C: common_vendor.o(batchInput),
+        D: common_vendor.o(getCanvasSize),
+        E: common_vendor.p({
           title: "拼图",
           lButton: "批量录入",
           rButton: "生成照片"
