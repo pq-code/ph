@@ -348,20 +348,20 @@ const _sfc_main = {
         // 可以指定是原图还是压缩图，默认二者都有
         sourceType: ["album"],
         // 从相册选择
-        success: function(res) {
-          res.tempFilePaths.forEach(async (item, index) => {
+        success: async function(res) {
+          for (let index = 0; index < res.tempFilePaths.length; index++) {
             try {
               const ctx = common_vendor.index.createCanvasContext("myCanvas");
               const { width, height } = fileList.value[index];
               const proportion = width / height;
               fileListBackups.value[index] = {
                 ...fileListBackups.value[index],
-                url: item,
+                url: res.tempFilePaths[index],
                 // 原图
                 status: "success",
                 message: `${index}`
               };
-              const imageInfo = await getImageInfo(item);
+              const imageInfo = await getImageInfo(res.tempFilePaths[index]);
               let imageW = imageInfo.width;
               let imageH = imageInfo.height;
               let drawX = 0;
@@ -374,7 +374,7 @@ const _sfc_main = {
                 imageW = imageH;
               }
               ctx.imageSmoothingEnabled = false;
-              await ctx.drawImage(item, drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
+              await ctx.drawImage(res.tempFilePaths[index], drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
               await ctx.draw(true);
               const cropImage2 = (await common_vendor.index.canvasToTempFilePath({ canvasId: "myCanvas" })).tempFilePath;
               await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
@@ -394,7 +394,7 @@ const _sfc_main = {
                 message: error.message
               };
             }
-          });
+          }
         },
         fail: function(error) {
           console.error("选择图片失败: ", error);

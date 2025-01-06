@@ -381,22 +381,21 @@
         count, // 数量控制
         sizeType: ["original"], // 可以指定是原图还是压缩图，默认二者都有
         sourceType: ["album"], // 从相册选择
-        success: function(res) {
-            res.tempFilePaths.forEach(async (item, index) => {
-                try {
-					const ctx = uni.createCanvasContext("myCanvas");
+        success: async function(res) {
+					for(let index =0 ; index < res.tempFilePaths.length; index++) {
+							try {
+									const ctx = uni.createCanvasContext("myCanvas");
                     const { width, height } = fileList.value[index];
                     const proportion = width / height;
                     // 保存原始数据
                     fileListBackups.value[index] = {
                         ...fileListBackups.value[index],
-                        url: item, // 原图
+                        url: res.tempFilePaths[index], // 原图
                         status: "success",
                         message: `${index}`,
                     };
-					
-					// 获取图片宽高做裁切
-                    const imageInfo = await getImageInfo(item);
+										// 获取图片宽高做裁切
+                    const imageInfo = await getImageInfo(res.tempFilePaths[index]);
                     // 计算宽高比例最大限度不变形适配
                     let imageW = imageInfo.width;
                     let imageH = imageInfo.height;
@@ -415,13 +414,13 @@
                     ctx.imageSmoothingEnabled = false;
 
                     // 绘制图片
-                    await ctx.drawImage(item, drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
+                    await ctx.drawImage(res.tempFilePaths[index], drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
 
                     // 绘制完成后导出图片
                     await ctx.draw(true);
                     const cropImage = (await uni.canvasToTempFilePath({ canvasId: "myCanvas" })).tempFilePath;
-					await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height); // 清空整个画布
-					await ctx.draw();// 清除
+										await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height); // 清空整个画布
+										await ctx.draw();// 清除
 					
                     console.log('cropImage', cropImage);
 
@@ -440,7 +439,9 @@
                         message: error.message,
                     };
                 }
-            });
+
+					}
+   
         },
         fail: function(error) {
             console.error("选择图片失败: ", error);
