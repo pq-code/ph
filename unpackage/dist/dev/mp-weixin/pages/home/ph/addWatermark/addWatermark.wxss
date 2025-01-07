@@ -13,6 +13,17 @@
   border-radius: 6px;
   background: #ffffff;
 }
+.content .content-main .watermark-canvas.data-v-5bd6fc7f {
+  z-index: 200;
+  opacity: 1;
+}
+.content .content-main .watermark-canvas-image.data-v-5bd6fc7f {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  z-index: 100;
+  opacity: 0;
+}
 .content .content-main .watermark-container.data-v-5bd6fc7f {
   pointer-events: none;
   width: calc(100vw - 40px);

@@ -160,7 +160,7 @@
 		const ctx = uni.createCanvasContext('watermark'); // 创建canvas上下文
 		clearCanvas() // 重新绘制
 			await ctx.drawImage(imageurl.value.url, imageX, imageY, imageWidth, imageHeight);
-			console.log('imageInfo', imageurl.value.url, imageX, imageY, imageWidth, imageHeight)	
+			console.log('imageInfo', imageurl.value.url, imageX, imageY, imageWidth, imageHeight)
 			if(formData.value.text) {
 			let fontSize = formData.value.fontSize || 20;
 
@@ -174,12 +174,12 @@
 			ctx.fillStyle = `rgba(50, 50, 50, ${formData.value.opacity ||0.3})`;
 
 			// 循环绘制多个水印
-			for (let i = 0; i < 10; i++) {
+			for (let i = 0; i < 15; i++) {
 					// 保存当前画布状态
 					ctx.save();
 
 					// 计算水印的x和y坐标，这里简单地将水印分散在画布上
-					const x = (i % 5) * (imageWidth / 5); // 每行5个水印
+					const x = (i % 5) * (imageWidth / 2); // 每行5个水印
 					const y = Math.floor(i / 5) * (imageHeight / 2); // 每列2个水印，根据行数计算y坐标
 
 					// 移动到水印的起始位置
@@ -211,7 +211,6 @@
 			// console.log(imageWidth, imageHeight, textWidth, x, y)
 			// 绘制水印文本
 		}else {
-			debugger
 			ctx.drawImage(formData.value.image.url, 0,0, 10, formData.value.image.height * formData.value.image.width / 10);
 		}
 			ctx.draw(true, () => {})
@@ -237,6 +236,19 @@
 	}
 	// 生成图片
 	const generateImages = () => {
+			// const ctx = uni.createCanvasContext('watermarkImage'); // 创建canvas上下文
+			//  ctx.drawImage(imageurl.value.url);
+			//  ctx.draw(true, () => {
+			// 		// 预览生成的图片
+			// 		uni.previewImage({
+			// 			current: imageurl.value.url, // 当前显示的图片链接
+			// 			urls: [imageurl.value.url], // 需要预览的图片链接列表
+			// 			success: () => {
+			// 			},
+			// 			fail: () => {
+			// 			},
+			// 		});
+			//  })
 		uni.canvasToTempFilePath({
 				canvasId: "watermark",
 				success: (res) => {
@@ -306,6 +318,9 @@
 				<view class="watermark-canvas" @click="editeImage= true">
 					<canvas canvas-id="watermark" :style="{ width: previewMain.width +'px', height: previewMain.height +'px'}"></canvas>
 				</view>
+				<view class="watermark-canvas-image">
+					<canvas canvas-id="watermarkImage" :style="{ width: previewMain.width +'px', height: previewMain.height +'px'}"></canvas>
+				</view>
 			</view>
 
 
@@ -372,9 +387,16 @@
 			background: #ffffff;
 			
 			.watermark-canvas {
-				
+				z-index: 200;
+    		opacity: 1;
 			}
-
+			.watermark-canvas-image {
+				pointer-events: none;
+				position: absolute;
+				top:0;
+				z-index: 100;
+    		opacity: 0;
+			}
 			.watermark-container {
 				pointer-events: none;
 				width: calc(100vw - 40px);

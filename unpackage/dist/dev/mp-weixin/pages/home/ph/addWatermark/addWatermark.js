@@ -144,9 +144,9 @@ const _sfc_main = {
         ctx.textAlign = "center";
         ctx.font = `${fontSize}px Arial`;
         ctx.fillStyle = `rgba(50, 50, 50, ${formData.value.opacity || 0.3})`;
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 15; i++) {
           ctx.save();
-          const x = i % 5 * (imageWidth / 5);
+          const x = i % 5 * (imageWidth / 2);
           const y = Math.floor(i / 5) * (imageHeight / 2);
           ctx.translate(x + imageWidth / 2, y + imageHeight / 2);
           ctx.rotate(angle);
@@ -155,7 +155,6 @@ const _sfc_main = {
         }
         ctx.restore();
       } else {
-        debugger;
         ctx.drawImage(formData.value.image.url, 0, 0, 10, formData.value.image.height * formData.value.image.width / 10);
       }
       ctx.draw(true, () => {
@@ -253,81 +252,83 @@ const _sfc_main = {
         d: previewMain.value.width + "px",
         e: previewMain.value.height + "px",
         f: common_vendor.o(($event) => editeImage.value = true),
-        g: common_vendor.o(addWatermark),
-        h: common_vendor.o(($event) => formData.value.text = $event),
-        i: common_vendor.p({
+        g: previewMain.value.width + "px",
+        h: previewMain.value.height + "px",
+        i: common_vendor.o(addWatermark),
+        j: common_vendor.o(($event) => formData.value.text = $event),
+        k: common_vendor.p({
           border: "none",
           modelValue: formData.value.text
         }),
-        j: common_vendor.sr("text", "5bd6fc7f-3,5bd6fc7f-2"),
-        k: common_vendor.p({
+        l: common_vendor.sr("text", "5bd6fc7f-3,5bd6fc7f-2"),
+        m: common_vendor.p({
           label: "水印文字",
           prop: "text",
           borderBottom: true
         }),
-        l: common_vendor.o(($event) => selsectImageFn(_ctx.item)),
-        m: common_vendor.p({
+        n: common_vendor.o(($event) => selsectImageFn(_ctx.item)),
+        o: common_vendor.p({
           width: "40",
           height: "40",
           src: formData.value.image
         }),
-        n: common_vendor.sr("text", "5bd6fc7f-5,5bd6fc7f-2"),
-        o: common_vendor.p({
+        p: common_vendor.sr("text", "5bd6fc7f-5,5bd6fc7f-2"),
+        q: common_vendor.p({
           label: "水印图片",
           prop: "image",
           borderBottom: true
         }),
-        p: common_vendor.o((e) => formData.value.opacity = e),
-        q: common_vendor.o(($event) => formData.value.opacity = $event),
-        r: common_vendor.p({
+        r: common_vendor.o((e) => formData.value.opacity = e),
+        s: common_vendor.o(($event) => formData.value.opacity = $event),
+        t: common_vendor.p({
           min: "1",
           max: "100",
           modelValue: formData.value.opacity
         }),
-        s: common_vendor.t(`${formData.value.opacity} %`),
-        t: common_vendor.sr("text", "5bd6fc7f-7,5bd6fc7f-2"),
-        v: common_vendor.p({
+        v: common_vendor.t(`${formData.value.opacity} %`),
+        w: common_vendor.sr("text", "5bd6fc7f-7,5bd6fc7f-2"),
+        x: common_vendor.p({
           label: "水印透明度",
           prop: "opacity",
           borderBottom: true
         }),
-        w: common_vendor.o((e) => formData.value.angle = e),
-        x: common_vendor.o(($event) => formData.value.angle = $event),
-        y: common_vendor.p({
+        y: common_vendor.o((e) => formData.value.angle = e),
+        z: common_vendor.o(($event) => formData.value.angle = $event),
+        A: common_vendor.p({
           min: "1",
           max: "100",
           modelValue: formData.value.angle
         }),
-        z: common_vendor.t(`${formData.value.angle} C`),
-        A: common_vendor.sr("text", "5bd6fc7f-9,5bd6fc7f-2"),
-        B: common_vendor.p({
+        B: common_vendor.t(`${formData.value.angle} C`),
+        C: common_vendor.sr("text", "5bd6fc7f-9,5bd6fc7f-2"),
+        D: common_vendor.p({
           label: "水印旋转",
           prop: "angle",
           borderBottom: true
         }),
-        C: common_vendor.o((e) => formData.value.density = e),
-        D: common_vendor.o(($event) => formData.value.density = $event),
-        E: common_vendor.p({
+        E: common_vendor.o((e) => formData.value.density = e),
+        F: common_vendor.o(($event) => formData.value.density = $event),
+        G: common_vendor.p({
           min: "1",
           max: "100",
           modelValue: formData.value.density
         }),
-        F: common_vendor.t(`${formData.value.density} %`),
-        G: common_vendor.sr("text", "5bd6fc7f-11,5bd6fc7f-2"),
-        H: common_vendor.p({
+        H: common_vendor.t(`${formData.value.density} %`),
+        I: common_vendor.sr("text", "5bd6fc7f-11,5bd6fc7f-2"),
+        J: common_vendor.p({
           label: "水印密度",
           prop: "density",
           borderBottom: true
         }),
-        I: common_vendor.sr("form1", "5bd6fc7f-2,5bd6fc7f-1"),
-        J: common_vendor.p({
+        K: common_vendor.sr("form1", "5bd6fc7f-2,5bd6fc7f-1"),
+        L: common_vendor.p({
           labelWidth: "100px",
           labelPosition: "left",
           labelAlign: "left",
           model: formData.value
         }),
-        K: common_vendor.o(generateImages),
-        L: common_vendor.p({
+        M: common_vendor.o(generateImages),
+        N: common_vendor.p({
           title: "添加水印",
           rButton: "生成图片"
         })
