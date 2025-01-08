@@ -2,6 +2,13 @@
 export default {
   onLaunch: function () {
     console.log("App Launch");
+	const systemInfo = uni.getSystemInfoSync();
+	if(systemInfo.platform == 'tt' || systemInfo.platform == 'devtools') {
+		wx.cloud.init({
+		  "env": "prod-8gqm1nbtf8eae76e", // 云环境id
+		  traceUser: true,
+		});
+	} 
   },
   onShow: function () {
     console.log("App Show");

@@ -10,9 +10,9 @@ let token = uni.getStorageSync('token')
 export const wxService = (urls, config, method) => {
 
     // if (urls.indexOf('wx/users') !== -1) {
-    //     baseURL = 'http://localhost:4005/'
+    //     baseURL = 'https://pqartstation.cn:4005/'
     // } else {
-    //     baseURL = 'http://localhost:3005/'
+    //     baseURL = 'https://pqartstation.cn:3005/'
     // }
 
     let url = baseURL + urls

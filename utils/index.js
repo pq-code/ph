@@ -34,7 +34,7 @@ export const getSetting = (scope) => {
     })
 }
 
-
+// 登录
 export const getLoginFn = () => {
     const login = () => {
         return new Promise((resolve, reject) => {
@@ -80,9 +80,11 @@ export const getLoginFn = () => {
                             userInfo: res[1]
                         }
                     })
+					debugger
                     //登录成功
                     showToast('登录成功');
                     const { is_admins, token, user_id, user_nickname, user_profile_photo, user_info } = data.result
+					console.log('data.result',data.result)
                     uni.setStorageSync('token', token);
                     uni.setStorageSync('userInfo', { is_admins, user_id, user_nickname, user_profile_photo, user_info });
                 } catch (err) {

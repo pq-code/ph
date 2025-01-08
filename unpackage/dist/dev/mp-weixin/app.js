@@ -10,6 +10,14 @@ if (!Math) {
 const _sfc_main = {
   onLaunch: function() {
     console.log("App Launch");
+    const systemInfo = common_vendor.index.getSystemInfoSync();
+    if (systemInfo.platform == "tt" || systemInfo.platform == "devtools") {
+      common_vendor.wx$1.cloud.init({
+        "env": "prod-8gqm1nbtf8eae76e",
+        // 云环境id
+        traceUser: true
+      });
+    }
   },
   onShow: function() {
     console.log("App Show");

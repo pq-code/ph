@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const utils_index = require("../../utils/index.js");
 require("../../api/service/wxService.js");
 const _sfc_main = {
   __name: "home",
@@ -8,7 +9,7 @@ const _sfc_main = {
     common_vendor.ref("");
     common_vendor.ref([]);
     common_vendor.ref([]);
-    common_vendor.ref();
+    const userAvatar = common_vendor.ref();
     common_vendor.ref();
     common_vendor.ref("loadmore");
     common_vendor.ref("flower");
@@ -17,7 +18,16 @@ const _sfc_main = {
     common_vendor.onPullDownRefresh(() => {
       console.log("下拉刷新");
     });
-    common_vendor.onShow(() => {
+    common_vendor.onLoad(() => {
+      if (!common_vendor.index.getStorageSync("token")) {
+        console.log("当前登录已经失效重新登录");
+        utils_index.getSetting("scope.record").then((res) => {
+          utils_index.getLoginFn().then((res2) => {
+          });
+        });
+        const { user_profile_photo } = common_vendor.index.getStorageSync("userInfo");
+        userAvatar.value = user_profile_photo;
+      }
     });
     const pageJump = (url) => {
       common_vendor.index.navigateTo({
@@ -27,7 +37,8 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(($event) => pageJump("ph/jigsawPuzzle/jigsawPuzzle")),
-        b: common_vendor.o(($event) => pageJump("ph/addWatermark/addWatermark"))
+        b: common_vendor.o(($event) => pageJump("ph/addWatermark/addWatermark")),
+        c: common_vendor.o(($event) => pageJump(""))
       };
     };
   }
