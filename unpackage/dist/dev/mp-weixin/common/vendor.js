@@ -12167,6 +12167,7 @@ exports.resolveComponent = resolveComponent;
 exports.s = s;
 exports.sr = sr;
 exports.t = t;
+exports.unref = unref;
 exports.uviewPlus = uviewPlus;
 exports.watch = watch;
 exports.wx$1 = wx$1;

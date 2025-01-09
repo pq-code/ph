@@ -18,10 +18,13 @@
 
 	const value1 = ref(0);
 	const keyword = ref("");
-	const datalist1 = ref([]);
-	const datalist2 = ref([]);
+	const weather = ref({
+		title:'',
+		icon:''
+	}); // 天气信息
 
-	const userAvatar = ref(); // 用户头像
+	const uerInfo = ref(); // 用户信息
+	const userProfilePhoto = ref('https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEa'); // 用户头像
 	const navbarHeight = ref();
 
 	const status = ref("loadmore");
@@ -36,29 +39,58 @@
 		// {name: '国考（小二寸）',tips:'35*45mm | 413*531px', router: ''},
 		// {name: '国家公务员（小二寸）',tips:'35*45mm | 413*531px', router: ''},
 		// {name: '全国计算机等级考试',tips:'33*48mm | 390*567px', router: ''}
+		{name: '测试1123',tips:'35*49mm | 413*579px', router: ''},
+		{name: '测试1123',tips:'22*32mm | 260*378px', router: ''},
+		{name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
+		{name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
+		{name: '测试1123',tips:'33*48mm | 390*567px', router: ''},
+		{name: '测试1123',tips:'35*49mm | 413*579px', router: ''},
+		{name: '测试1123',tips:'22*32mm | 260*378px', router: ''},
+		{name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
+		{name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
+		{name: '测试1123',tips:'33*48mm | 390*567px', router: ''},
 	];
 
 	// 获取天气
-	// const getWeather = () => {
-	//   uni.request({
-	//     url: "https://devapi.qweather.com/v7/weather/now?location=101010100&key=bf108d402c7e471b90e9f0323364ee3a",
-	//     method: "GET",
-	//     success: (res) => {
-	//       const { now } = res.data;
-	//       weather.value = {
-	//         title: `${now.text} ${now.windDir}`,
-	//         icon: now.icon,
-	//       };
-	//       uni.setStorageSync("weather", weather.value);
-	//     },
-	//     fail: () => {
-	//       this.openmsg("警告", "天气接口获取失败");
-	//     },
-	//     complete: () => {},
-	//   });
-	// };
+	const getWeather = () => {
+		let weatherS = {
+			'晴': 'icon-tianqi-qingtian',
+			'多云': 'icon-tianqi-duoyun',
+			'下雨': 'icon-tianqi-xiayu',
+		}
+		 if (!uni.getStorageSync("weather")) {
+			uni.request({
+				url: "https://devapi.qweather.com/v7/weather/now?location=101010100&key=bf108d402c7e471b90e9f0323364ee3a",
+				method: "GET",
+				success: (res) => {
+				  const { now } = res.data;
+				  weather.value = {
+					title: `${now.text} ${now.windDir}`,
+					icon: weatherS[now.tex],
+				  };
+				  uni.setStorageSync("weather",res);
+						console.log("天气信息", weather.value);
+				},
+				fail: () => {
+				  // this.openmsg("警告", "天气接口获取失败");
+				},
+				complete: () => {},
+			  });
+		} else {
+		    let res = uni.getStorageSync("weather");
+			const { now } = res.data
+			weather.value = {
+				title: `${now.text} ${now.windDir}`,
+				icon: weatherS[now.tex],
+			};
+		}
+	};
 
-	const init = () => {};
+	const init = () => {
+		uerInfo.value = uni.getStorageSync("userInfo");
+		userProfilePhoto.value = uerInfo.value?.userProfilePhoto;
+		getWeather(); // 获取天气
+	};
 
 	// const onpen = (item) => {
 	//   uni.navigateTo({
@@ -71,19 +103,25 @@
 	});
 
 	onLoad(() => {
+		init()
+	});
+
+	const getUserInfo = () => {
 		if (!uni.getStorageSync("token")) {
 		  console.log("当前登录已经失效重新登录");
 		  // #ifdef MP-WEIXIN
 		  getSetting("scope.record").then((res) => {
 		    getLoginFn().then((res) => {
+				console.log("登录成功", res);
 		    });
 		  });
 		  // #endif
-		  const { user_profile_photo } = uni.getStorageSync("userInfo");
-		  userAvatar.value = user_profile_photo;
-		} else {
 		}
-	});
+		uerInfo.value = uni.getStorageSync("userInfo");
+		userProfilePhoto.value = uerInfo.value?.userProfilePhoto;
+		console.log(userProfilePhoto.value )
+		getWeather(); // 获取天气
+	}
 
 	const onPageScroll = (e) => {};
 	const tabsClick = (item) => {
@@ -106,7 +144,14 @@
 <template>
 	<view class="content">
 		<view class="content-heard">
+			<view class="content-heard-profile" @click="getUserInfo">
+				<u-image width="40px" height="40px" :src="userProfilePhoto" mode="aspectFill" shape="circle"></u-image>
+			</view>
 			<view>工具箱</view>
+			<view style="font-size: 15px;margin-left: 10px;">
+				<view>{{ weather.title || '' }}</view>
+				<view :class="['icon', 'iconfont', weather.icon]"/>
+			</view>
 		</view>
 
 		<view class="content-main">
@@ -126,18 +171,18 @@
 				</view>
 			</view>
 
-			<view class="content-main-center">
-			</view>
-
-			<!-- <view
-        v-for="item of sizeType"
-        :key="item.name"
-        class="content-sizeType"
-        @click="pageJump(item.router)"
-      >
-        <view> {{ item.name }}</view>
-        <view class="content-sizeType-tips"> {{ item.tips }}</view>
-      </view> -->
+		<!-- 	<view class="content-main-center">
+			</view> -->
+		<view class="content-main-title"> 未来的一些功能还没想好 </view>
+			<view
+				v-for="item of sizeType"
+				:key="item.name"
+				class="content-sizeType"
+				@click="pageJump(item.router)"
+			  >
+				<view> {{ item.name }}</view>
+				<view class="content-sizeType-tips"> {{ item.tips }}</view>
+			  </view>
 		</view>
 		<!-- <tabbar></tabbar> -->
 	</view>
@@ -158,11 +203,22 @@
 			height: 60px;
 			// background: linear-gradient(to bottom, #93c3ff, #98bcea);
 			padding-top: 40px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
+
 			font-size: 20px;
 			font-weight: 600;
+
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			flex-direction: row;
+			.content-heard-profile {
+				 width: 40px;
+				 height: 40px;
+				 margin:0 10px;
+				 border-radius: 50%;
+				 background: #aaffc5;
+				 background-image: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132';
+			}
 		}
 
 		.content-main {
@@ -172,12 +228,14 @@
 			// border-radius: 6px;
 			display: flex;
 			flex-direction: column;
+			overflow: auto;
 
 			// background: linear-gradient(to bottom, #98bcea, #efefef);
 			// background: #faf6c8;
 			.content-main-heard {
 				display: flex;
 				flex-direction: column;
+				margin-bottom: 10px;
 
 				.content-main-heard-title {
 					font-size: 18px;
@@ -234,12 +292,19 @@
 				background: #ffffff;
 				margin-top: 10px;
 			}
-
+			.content-main-title {
+				font-size: 18px;
+				padding: 10px;
+				margin-bottom: 10px;
+				text-align: 10px;
+				line-height: 10px;
+				border-left: 4px solid #56a2e4;
+			}
 			.content-sizeType {
 				border-radius: 10px;
-				width: calc(100% - 60px);
+				width: calc(100% - 40px);
 				height: 60px;
-				margin: 10px auto;
+				margin-to p: 10px ;
 				background: #ffffff;
 				padding: 10px 20px;
 				display: flex;

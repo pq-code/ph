@@ -15,9 +15,9 @@ const getSetting = (scope) => {
       success(data) {
         resolve(data);
       },
-      fail(err) {
-        console.log(err);
-        reject(err);
+      fail(err2) {
+        console.log(err2);
+        reject(err2);
       }
     });
   });
@@ -32,8 +32,8 @@ const getLoginFn = () => {
         success(res) {
           resolve(res);
         },
-        fail: (err) => {
-          reject(err);
+        fail: (err2) => {
+          reject(err2);
         }
       });
     });
@@ -42,14 +42,15 @@ const getLoginFn = () => {
     return new Promise((resolve, reject) => {
       common_vendor.index.getUserInfo({
         provider: "weixin",
-        desc: "获取你的昵称、头像、地区及性别",
+        desc: "获取你的昵称、头像,用于个性化展示",
         lang: "zh_CN",
         timeout: 3e3,
         success(res) {
+          debugger;
           resolve(res);
         },
-        fail: (err) => {
-          reject(err);
+        fail: (err2) => {
+          reject(err2);
         }
       });
     });
@@ -57,20 +58,25 @@ const getLoginFn = () => {
   return Promise.all([login(), getUserInfo()]).then(async (res) => {
     if (res[0].code) {
       try {
-        const data = await api_apis_user.armorTransformation({
-          authInfo: {
+        let data = {};
+        if (true) {
+          data = await api_apis_user.armorTransformation({
             code: res[0].code,
             userInfo: res[1]
-          }
-        });
-        debugger;
-        showToast("登录成功");
-        const { is_admins, token, user_id, user_nickname, user_profile_photo, user_info } = data.result;
-        console.log("data.result", data.result);
-        common_vendor.index.setStorageSync("token", token);
-        common_vendor.index.setStorageSync("userInfo", { is_admins, user_id, user_nickname, user_profile_photo, user_info });
-      } catch (err) {
-        console.log(err);
+          });
+        }
+        if (data.code == 0) {
+          showToast("登录成功");
+          const { token, userId, userName, userPassword, userSource, userSourceID, userNickname, userInfo, userProfilePhoto, sessionKey } = data.result;
+          console.log("data.result", data.result);
+          common_vendor.index.setStorageSync("token", token);
+          common_vendor.index.setStorageSync("userInfo", { userId, userName, userPassword, userSource, userSourceID, userNickname, userInfo, userProfilePhoto, sessionKey });
+          return data.result;
+        } else {
+          console.error("登录失败:", err);
+        }
+      } catch (err2) {
+        console.error("登录失败:", err2);
       }
     }
   });

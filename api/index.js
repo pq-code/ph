@@ -18,7 +18,7 @@ const wxRequset = async(url, config, method) => {
 	} else {
 		SERVICE ="koa-0jh8"
 	}
-	
+
 	return new Promise(async(resolve, reject) => {
 		let data =  await wx.cloud.callContainer({
 		  "config": {
@@ -45,7 +45,6 @@ const wxRequset = async(url, config, method) => {
 		    showToast(errTips[res.code] || res.message || '未知错误');
 		}
 	})
-	
 }
 export default async function requset(url, config = {}, method) {
   const systemInfo = uni.getSystemInfoSync();
