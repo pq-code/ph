@@ -55,20 +55,33 @@
 				"enablePullDownRefresh": false,
 				"disableScroll": true
         	}
-        }
+        },
+		{
+		    "path": "pages/user/home",
+		    "name": "user.home",
+		    "style": {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false,
+		        "navigationStyle": "custom"
+		    }
+		}
     ],
-  //   "tabBar": {
-		// "color": "#1e1e1e",
-	 //    "selectedColor": "#0aa671",
-		// "borderStyle": "white",
-  //       "custom": true,
-  //       "list": [
-  //           {
-  //               "pagePath": "pages/home/home",
-		// 		"text": "首页"
-  //           }
-  //       ]
-  //   },
+    "tabBar": {
+		"color": "#1e1e1e",
+	    "selectedColor": "#0aa671",
+		"borderStyle": "white",
+        "custom": true,
+        "list": [
+            {
+                "pagePath": "pages/home/home",
+				"text": "首页"
+            },
+			{
+			    "pagePath": "pages/user/home",
+				"text": "我的"
+			}
+        ]
+    },
     "globalStyle": {
         "navigationBarTextStyle": "black",
         "navigationBarTitleText": "uni-app",

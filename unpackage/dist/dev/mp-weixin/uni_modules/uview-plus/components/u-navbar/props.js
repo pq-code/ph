@@ -85,3 +85,4 @@ const props = {
   }
 };
 exports.props = props;
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/components/u-navbar/props.js.map

@@ -340,7 +340,7 @@ const _sfc_main = {
           this.oldHeight = +this.scaleHeight.toFixed(2);
         },
         fail: (err) => {
-          console.error(err);
+          common_vendor.index.__f__("error", "at uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.vue:437", err);
         }
       });
     },
@@ -438,7 +438,7 @@ const _sfc_main = {
           callback && setTimeout(callback, this.delay);
         };
         image.onerror = (err) => {
-          console.error(err);
+          common_vendor.index.__f__("error", "at uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.vue:540", err);
           common_vendor.index.hideLoading();
         };
         image.src = src;
@@ -579,3 +579,4 @@ if (typeof block0 === "function")
   block0(_sfc_main);
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-7129956f"]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.js.map

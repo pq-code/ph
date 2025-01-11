@@ -38,10 +38,8 @@ const wxService = (urls, config, method) => {
           resolve(res);
         } else if (res.error == "10101") {
           utils_index.showToast("token已过期重新登录");
-          utils_index.getSetting("scope.record").then((res2) => {
-            utils_index.getLoginFn().then((res3) => {
-              console.log("res", res3);
-            });
+          utils_index.getLoginFn().then((res2) => {
+            common_vendor.index.__f__("log", "at api/service/wxService.js:55", "res", res2);
           });
         } else {
           utils_index.showToast(api_error_errTips.errTips[res.code] || res.message || "未知错误");
@@ -52,10 +50,8 @@ const wxService = (urls, config, method) => {
         switch (err) {
           case 401:
             message = "token 失效，请重新登录";
-            utils_index.getSetting("scope.record").then((res) => {
-              utils_index.getLoginFn().then((res2) => {
-                console.log("res", res2);
-              });
+            utils_index.getLoginFn().then((res) => {
+              common_vendor.index.__f__("log", "at api/service/wxService.js:70", "res", res);
             });
             break;
           case 403:
@@ -80,3 +76,4 @@ const wxService = (urls, config, method) => {
   });
 };
 exports.wxService = wxService;
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/api/service/wxService.js.map

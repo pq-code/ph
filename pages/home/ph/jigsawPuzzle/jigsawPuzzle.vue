@@ -37,7 +37,14 @@
 
 	const fileListBackups = ref([]); // 备份
 	const fileList = ref([]); // 裁切后
-
+	onLoad(()=>{
+		editeImage.value = true
+		showImageType.value = true
+		nextTick(()=>{
+			showImageType.value = false
+			editeImage.value = false
+		})
+	})
 	onMounted(() => {
 		// 创建查询对象
 		const query = uni.createSelectorQuery().in(instance.proxy);
@@ -153,6 +160,7 @@
 		});
 		fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
 	}
+	
 	const tbSymmetry = () => {
 		const width = previewMain.value.width;
 		const height = (previewMain.value.height - spacing.value) / 2;
@@ -170,9 +178,9 @@
 		});
 		fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
 	}
-	const showImageType = ref(false);
+	const showImageType = ref();
 	const columns = reactive([
-		[{
+		[	{
 				label: "九宫格",
 				value: 1,
 			},
@@ -251,12 +259,12 @@
 				},
 			});
 		}
-		
+
 		if (item.value[0].value == 2) {
 			cropImage.value = fileListBackups.value[seletIndex.value]
 			isOpenCropper.value = true;
 		}
-		
+
 		if (item.value[0].value == 3) {
 			uni.previewImage({
 				urls: fileList.value.map((val) => val.url),
@@ -376,78 +384,84 @@
 
 	// 批量录入
 	const batchInput = () => {
-    const count = fileListBackups.value.length;
-    uni.chooseImage({
-        count, // 数量控制
-        sizeType: ["original"], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ["album"], // 从相册选择
-        success: async function(res) {
-					for(let index = 0 ; index < res.tempFilePaths.length; index++) {
+		const count = fileListBackups.value.length;
+		uni.chooseImage({
+			count, // 数量控制
+			sizeType: ["original"], // 可以指定是原图还是压缩图，默认二者都有
+			sourceType: ["album"], // 从相册选择
+			success: async function(res) {
+				for (let index = 0; index < res.tempFilePaths.length; index++) {
 					try {
-					const ctx = uni.createCanvasContext("myCanvas");
-                    const { width, height } = fileList.value[index];
-                    const proportion = width / height;
-                    // 保存原始数据
-                    fileListBackups.value[index] = {
-                        ...fileListBackups.value[index],
-                        url: res.tempFilePaths[index], // 原图
-                        status: "success",
-                        message: `${index}`,
-                    };
-										// 获取图片宽高做裁切
-                    const imageInfo = await getImageInfo(res.tempFilePaths[index]);
-                    // 计算宽高比例最大限度不变形适配
-                    let imageW = imageInfo.width;
-                    let imageH = imageInfo.height;
-                    let drawX = 0;
-                    let drawY = 0;
+						const ctx = uni.createCanvasContext("myCanvas");
+						const { width, height } = fileList.value[index]; // 容器大小
+						const proportion = width / height; // 容器宽高比
 
-                    if (imageW < imageH) {
-                        drawY = imageH / 2 - (imageW / 2);
-                        imageH = imageW / proportion;
-                    } else {
-                        drawX = imageW / 2 - (imageH / 2);
-                        imageW = imageH / proportion;
-                    }
+						// 保存原始数据
+						fileListBackups.value[index] = {
+							...fileListBackups.value[index],
+							url: res.tempFilePaths[index], // 原图
+							status: "success",
+							message: `${index}`,
+						};
 
-                    // 禁用图像平滑处理以保持清晰度
-                    ctx.imageSmoothingEnabled = false;
+						// 获取图片宽高做裁切
+						const imageInfo = await getImageInfo(res.tempFilePaths[index]);
 
-                    // 绘制图片
-                    await ctx.drawImage(res.tempFilePaths[index], drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
+						// 计算宽高比例最大限度不变形适配
+						let imageW = imageInfo.width;
+						let imageH = imageInfo.height;
+						let drawX = 0;
+						let drawY = 0;
 
-                    // 绘制完成后导出图片
-                    await ctx.draw(true);
-                    const cropImage = (await uni.canvasToTempFilePath({ canvasId: "myCanvas" })).tempFilePath;
-										await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height); // 清空整个画布
-										await ctx.draw();// 清除
+						// 计算绘制位置
+						if (imageW / imageH > proportion) {
+								imageW = imageH * proportion;
+								drawX = (imageInfo.width - imageW) / 2;
+						} else {
+								imageH = imageW / proportion;
+								drawY = (imageInfo.height - imageH) / 2;
+						}
 
-                    console.log('cropImage', cropImage);
+						// 禁用图像平滑处理以保持清晰度
+						ctx.imageSmoothingEnabled = false;
 
-                    // 预览生成的图片
-                    fileList.value[index] = {
-                        ...fileList.value[index],
-                        url: cropImage,
-                        status: "success",
-                        message: `${index}`,
-                    };
-                } catch (error) {
-                    console.error("处理图片失败: ", error);
-                    fileListBackups.value[index] = {
-                        ...fileListBackups.value[index],
-                        status: "error",
-                        message: error.message,
-                    };
-                }
+						// 绘制图片
+						await ctx.drawImage(res.tempFilePaths[index], drawX, drawY, imageW, imageH, 0, 0,
+							previewMain.value.width, previewMain.value.height);
 
+						// 绘制完成后导出图片
+						await ctx.draw(true);
+						const cropImage = (await uni.canvasToTempFilePath({
+							canvasId: "myCanvas"
+						})).tempFilePath;
+						await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value
+						.height); // 清空整个画布
+						await ctx.draw(); // 清除
+
+						console.log('cropImage', cropImage);
+
+						// 预览生成的图片
+						fileList.value[index] = {
+							...fileList.value[index],
+							url: cropImage,
+							status: "success",
+							message: `${index}`,
+						};
+					} catch (error) {
+						console.error("处理图片失败: ", error);
+						fileListBackups.value[index] = {
+							...fileListBackups.value[index],
+							status: "error",
+							message: error.message,
+						};
 					}
-   
-        },
-        fail: function(error) {
-            console.error("选择图片失败: ", error);
-        }
-    });
-};
+				}
+			},
+			fail: function(error) {
+				console.error("选择图片失败: ", error);
+			}
+		});
+	};
 
 	const getImageInfo = (src) => {
 		return new Promise((resolve, reject) => {
@@ -516,6 +530,23 @@
 			zIndex: 700
 		};
 	}
+	const spacingSize = (e) => {
+		console.log(e)
+		spacing.value = e
+		
+		const typeFunctions = {
+			1: nineSquareGrid,
+			3: lrSymmetry,
+			4: tbSymmetry,
+			5: l3r2,
+			6: l2r3,
+		};
+		
+		const selectedFunction = typeFunctions[formData.imageType];
+		if (selectedFunction) {
+			selectedFunction();
+		}
+	}
 </script>
 
 <template>
@@ -535,10 +566,10 @@
 					  left: `${item.x}px`,
 						'z-index': `${item.zIndex || 666}`
 					}" @click.stop="editPicture(item, index)">
-							<u-image :height="`${item.height}px`" :width="`${item.width}px`" mode="aspectFill"
-								:src="item.url">
-							</u-image>
-						</view>
+						<u-image :height="`${item.height}px`" :width="`${item.width}px`" mode="aspectFill"
+							:src="item.url">
+						</u-image>
+					</view>
 				</view>
 
 				<view class="preview-main-bottom">
@@ -552,10 +583,19 @@
 					<u-form-item label="选择拼图类型" prop="imageType" borderBottom ref="imageType" border="none"
 						placeholder="请选择" @click="showImageType = true">
 						<u-input v-model="formData.imageTypeText" disabled disabledColor="#ffffff" placeholder="请选择"
-							border="none" ></u-input>
+							border="none"></u-input>
 						<template #right>
 							<u-icon name="arrow-right"></u-icon>
 						</template>
+					</u-form-item>
+					<u-form-item label="间距" prop="opacity" borderBottom ref="text">
+						<view style="display: flex; align-items: center">
+							<view style="width: 83%">
+								<u-slider v-model="spacing" @changing="spacingSize" min="0"
+									max="10"></u-slider>
+							</view>
+							{{ `${spacing} %` }}
+						</view>
 					</u-form-item>
 					<u-form-item v-if="formData.imageType == 2" label="中间图片大小" prop="opacity" borderBottom ref="text">
 						<view style="display: flex; align-items: center">

@@ -121,7 +121,7 @@ const _sfc_main = {
     },
     // 设置整体各列的columns的值
     setColumns(columns) {
-      console.log(columns);
+      common_vendor.index.__f__("log", "at uni_modules/uview-plus/components/u-picker/u-picker.vue:217", columns);
       this.innerColumns = common_vendor.index.$u.deepClone(columns);
       if (this.innerIndex.length === 0) {
         this.innerIndex = new Array(columns.length).fill(0);
@@ -202,3 +202,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-91b05052"]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/components/u-picker/u-picker.js.map

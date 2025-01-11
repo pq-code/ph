@@ -8,3 +8,4 @@ const Collapse = {
   }
 };
 exports.Collapse = Collapse;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/collapse.js.map

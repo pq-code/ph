@@ -37,18 +37,27 @@ const _sfc_main = {
       density: ""
       // 密度
     });
-    const previewMain = common_vendor.ref({ width: "", height: "" });
+    const previewMain = common_vendor.ref({
+      width: "",
+      height: ""
+    });
     const clearCanvas = () => {
       const ctx = common_vendor.index.createCanvasContext("watermark");
       ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
       ctx.draw();
     };
+    common_vendor.onLoad(() => {
+      editeImage.value = true;
+      common_vendor.nextTick$1(() => {
+        editeImage.value = false;
+      });
+    });
     common_vendor.onMounted(() => {
       const query = common_vendor.index.createSelectorQuery().in(instance.proxy);
       query.select("#contentMain").boundingClientRect((data) => {
         if (data) {
-          console.log("元素的宽：" + data.width);
-          console.log("元素的高：" + data.height);
+          common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:64", "元素的宽：" + data.width);
+          common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:65", "元素的高：" + data.height);
           previewMain.value = {
             width: data.width,
             height: data.height
@@ -65,7 +74,7 @@ const _sfc_main = {
           success: function(data) {
           },
           fail: function(err) {
-            console.log(err.errMsg);
+            common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:83", err.errMsg);
             common_vendor.index.showToast({
               title: "预览失败",
               icon: "none"
@@ -121,7 +130,7 @@ const _sfc_main = {
           editeImage.value = false;
         },
         fail: function(err) {
-          console.log(err.errMsg);
+          common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:158", err.errMsg);
           common_vendor.index.showToast({
             title: "选择图片失败",
             icon: "none"
@@ -137,7 +146,7 @@ const _sfc_main = {
       const ctx = common_vendor.index.createCanvasContext("watermark");
       clearCanvas();
       await ctx.drawImage(imageurl.value.url, imageX, imageY, imageWidth, imageHeight);
-      console.log("imageInfo", imageurl.value.url, imageX, imageY, imageWidth, imageHeight);
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:175", "imageInfo", imageurl.value.url, imageX, imageY, imageWidth, imageHeight);
       if (formData.value.text) {
         let fontSize = formData.value.fontSize || 20;
         const angle = formData.value.angle * Math.PI / 180;
@@ -161,16 +170,18 @@ const _sfc_main = {
       });
     };
     const editeImage = common_vendor.ref(false);
-    const iamgeColumns = common_vendor.reactive([[
-      {
-        label: "添加图片/编辑图片",
-        value: 1
-      },
-      {
-        label: "预览图片",
-        value: 2
-      }
-    ]]);
+    const iamgeColumns = common_vendor.reactive([
+      [
+        {
+          label: "添加图片/编辑图片",
+          value: 1
+        },
+        {
+          label: "预览图片",
+          value: 2
+        }
+      ]
+    ]);
     const editImagePicker = (item) => {
       if (item.value[0].value == 1) {
         chooseImage();
@@ -195,7 +206,7 @@ const _sfc_main = {
           });
         },
         fail: (err) => {
-          console.error("合并图片失败:", err);
+          common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/addWatermark.vue:278", "合并图片失败:", err);
           common_vendor.index.showToast({
             title: "合并图片失败",
             icon: "none"
@@ -213,7 +224,7 @@ const _sfc_main = {
             success: function(data) {
             },
             fail: function(err) {
-              console.log(err.errMsg);
+              common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:297", err.errMsg);
             }
           }
         });
@@ -227,7 +238,6 @@ const _sfc_main = {
           //从相册选择
           success: async function(res) {
             const hw = await getImageInfo(res.tempFilePaths[0]);
-            debugger;
             formData.value.image = {
               url: res.tempFilePaths[0],
               width: hw.width,
@@ -338,3 +348,4 @@ const _sfc_main = {
 };
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-5bd6fc7f"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/pages/home/ph/addWatermark/addWatermark.js.map

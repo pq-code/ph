@@ -20,3 +20,4 @@ const CheckboxGroup = {
   }
 };
 exports.CheckboxGroup = CheckboxGroup;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/checkboxGroup.js.map

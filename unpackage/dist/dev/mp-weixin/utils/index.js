@@ -8,21 +8,19 @@ const showToast = (e) => {
     title: e
   });
 };
-const getSetting = (scope) => {
-  return new Promise((resolve, reject) => {
-    common_vendor.index.authorize({
-      scope,
-      success(data) {
-        resolve(data);
-      },
-      fail(err2) {
-        console.log(err2);
-        reject(err2);
-      }
-    });
-  });
+const getLoginFn = async () => {
+  try {
+    let user = await api_apis_user.getUerInfo();
+    if (user.code == 0) {
+      return new Promise((resolve, reject) => {
+        resolve(user);
+      });
+    }
+  } catch (err2) {
+    return wxUserlLogin();
+  }
 };
-const getLoginFn = () => {
+const wxUserlLogin = async () => {
   const login = () => {
     return new Promise((resolve, reject) => {
       common_vendor.index.login({
@@ -38,49 +36,57 @@ const getLoginFn = () => {
       });
     });
   };
-  const getUserInfo = () => {
-    return new Promise((resolve, reject) => {
-      common_vendor.index.getUserInfo({
-        provider: "weixin",
-        desc: "获取你的昵称、头像,用于个性化展示",
-        lang: "zh_CN",
-        timeout: 3e3,
-        success(res) {
-          debugger;
-          resolve(res);
-        },
-        fail: (err2) => {
-          reject(err2);
-        }
-      });
-    });
-  };
-  return Promise.all([login(), getUserInfo()]).then(async (res) => {
+  return new Promise(async (resolve, reject) => {
+    let res = await Promise.all([login()]);
+    common_vendor.index.__f__("log", "at utils/index.js:94", res);
+    let data = {};
     if (res[0].code) {
       try {
-        let data = {};
-        if (true) {
-          data = await api_apis_user.armorTransformation({
-            code: res[0].code,
-            userInfo: res[1]
-          });
-        }
+        data = await api_apis_user.armorTransformation({
+          code: res[0].code,
+          userInfo: res[1] || {}
+        });
         if (data.code == 0) {
-          showToast("登录成功");
-          const { token, userId, userName, userPassword, userSource, userSourceID, userNickname, userInfo, userProfilePhoto, sessionKey } = data.result;
-          console.log("data.result", data.result);
+          const {
+            token,
+            userId,
+            userName,
+            userPassword,
+            userSource,
+            userSourceID,
+            userNickname,
+            userInfo,
+            userProfilePhoto,
+            sessionKey
+          } = data.result;
           common_vendor.index.setStorageSync("token", token);
-          common_vendor.index.setStorageSync("userInfo", { userId, userName, userPassword, userSource, userSourceID, userNickname, userInfo, userProfilePhoto, sessionKey });
-          return data.result;
+          common_vendor.index.setStorageSync("userInfo", {
+            userId,
+            userName,
+            userPassword,
+            userSource,
+            userSourceID,
+            userNickname,
+            userInfo,
+            userProfilePhoto,
+            sessionKey
+          });
+          common_vendor.index.hideLoading();
+          resolve(data);
         } else {
-          console.error("登录失败:", err);
+          common_vendor.index.__f__("error", "at utils/index.js:133", "登录失败:", err);
+          common_vendor.index.hideLoading();
+          reject(data);
         }
       } catch (err2) {
-        console.error("登录失败:", err2);
+        common_vendor.index.__f__("error", "at utils/index.js:138", "登录失败:", err2);
+        common_vendor.index.hideLoading();
+        reject(data);
       }
     }
   });
 };
 exports.getLoginFn = getLoginFn;
-exports.getSetting = getSetting;
 exports.showToast = showToast;
+exports.wxUserlLogin = wxUserlLogin;
+//# sourceMappingURL=../../.sourcemap/mp-weixin/utils/index.js.map

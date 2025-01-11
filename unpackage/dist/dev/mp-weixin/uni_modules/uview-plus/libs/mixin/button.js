@@ -13,3 +13,4 @@ const button = {
   }
 };
 exports.button = button;
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/mixin/button.js.map

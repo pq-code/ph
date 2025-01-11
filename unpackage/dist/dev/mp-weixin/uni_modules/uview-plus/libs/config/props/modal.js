@@ -21,3 +21,4 @@ const Modal = {
   }
 };
 exports.Modal = Modal;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/modal.js.map

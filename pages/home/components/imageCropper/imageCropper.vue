@@ -18,7 +18,6 @@ const handleCrop =(e)=> {
 
 watch(props.cropImage,(n,o)=>{
 	console.log(n)
-	debugger
 })
 
 </script>

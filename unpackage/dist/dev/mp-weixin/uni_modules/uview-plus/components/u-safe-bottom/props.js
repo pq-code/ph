@@ -8,3 +8,4 @@ const props = {
   props: {}
 };
 exports.props = props;
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/components/u-safe-bottom/props.js.map

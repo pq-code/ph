@@ -15,7 +15,8 @@
 		getUsedCarList
 	} from "@/api/apis/usedCar.js";
 	import dayjs from "dayjs";
-
+	
+	const nowKey = 'bf108d402c7e471b90e9f0323364ee3a'
 	const value1 = ref(0);
 	const keyword = ref("");
 	const weather = ref({
@@ -23,8 +24,10 @@
 		icon:''
 	}); // 天气信息
 
-	const uerInfo = ref(); // 用户信息
-	const userProfilePhoto = ref('https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEa'); // 用户头像
+	const uerInfo = ref({
+		userNickname: ''
+	}); // 用户信息
+	const userProfilePhoto = ref(''); // 用户头像
 	const navbarHeight = ref();
 
 	const status = ref("loadmore");
@@ -38,38 +41,34 @@
 		// {name: '小一寸',tips:'22*32mm | 260*378px', router: ''},
 		// {name: '国考（小二寸）',tips:'35*45mm | 413*531px', router: ''},
 		// {name: '国家公务员（小二寸）',tips:'35*45mm | 413*531px', router: ''},
-		// {name: '全国计算机等级考试',tips:'33*48mm | 390*567px', router: ''}
+		// {name: '全国计算机等级考试',tips:'33*48mm | 390*567px', router: ''},
 		{name: '测试1123',tips:'35*49mm | 413*579px', router: ''},
 		{name: '测试1123',tips:'22*32mm | 260*378px', router: ''},
 		{name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
-		{name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
-		{name: '测试1123',tips:'33*48mm | 390*567px', router: ''},
-		{name: '测试1123',tips:'35*49mm | 413*579px', router: ''},
-		{name: '测试1123',tips:'22*32mm | 260*378px', router: ''},
-		{name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
-		{name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
-		{name: '测试1123',tips:'33*48mm | 390*567px', router: ''},
 	];
 
 	// 获取天气
 	const getWeather = () => {
 		let weatherS = {
-			'晴': 'icon-tianqi-qingtian',
+			'晴': 'https://a.hecdn.net/img/common/icon/202106d/100.png',
 			'多云': 'icon-tianqi-duoyun',
 			'下雨': 'icon-tianqi-xiayu',
 		}
 		 if (!uni.getStorageSync("weather")) {
 			uni.request({
-				url: "https://devapi.qweather.com/v7/weather/now?location=101010100&key=bf108d402c7e471b90e9f0323364ee3a",
+				url: `https://devapi.qweather.com/v7/weather/now?location=101210101&key=${nowKey}`,
 				method: "GET",
 				success: (res) => {
-				  const { now } = res.data;
-				  weather.value = {
-					title: `${now.text} ${now.windDir}`,
-					icon: weatherS[now.tex],
-				  };
-				  uni.setStorageSync("weather",res);
+					if(res.data.code == 200) {
+						const { now } = res.data;
+						weather.value = {
+						title: `${now.text} ${now.temp} ${now.windDir}`,
+						icon: weatherS[now.tex],
+						};
+						uni.setStorageSync("weather",res);
 						console.log("天气信息", weather.value);
+					}
+				  
 				},
 				fail: () => {
 				  // this.openmsg("警告", "天气接口获取失败");
@@ -80,15 +79,23 @@
 		    let res = uni.getStorageSync("weather");
 			const { now } = res.data
 			weather.value = {
-				title: `${now.text} ${now.windDir}`,
+				title: `${now.text} ${now.temp} ${now.windDir}`,
 				icon: weatherS[now.tex],
 			};
 		}
 	};
 
 	const init = () => {
+		uni.getProvider({
+		  service: 'oauth',
+		  success: function (res) {
+		    console.log('provider',res.provider)// ['qq', 'univerify']
+		  }
+		});
 		uerInfo.value = uni.getStorageSync("userInfo");
 		userProfilePhoto.value = uerInfo.value?.userProfilePhoto;
+
+		getUserInfo() // 登录
 		getWeather(); // 获取天气
 	};
 
@@ -103,24 +110,15 @@
 	});
 
 	onLoad(() => {
-		init()
+		// init()
 	});
 
 	const getUserInfo = () => {
-		if (!uni.getStorageSync("token")) {
-		  console.log("当前登录已经失效重新登录");
-		  // #ifdef MP-WEIXIN
-		  getSetting("scope.record").then((res) => {
-		    getLoginFn().then((res) => {
-				console.log("登录成功", res);
-		    });
-		  });
-		  // #endif
-		}
-		uerInfo.value = uni.getStorageSync("userInfo");
-		userProfilePhoto.value = uerInfo.value?.userProfilePhoto;
-		console.log(userProfilePhoto.value )
-		getWeather(); // 获取天气
+		getLoginFn().then((res) => {
+			uerInfo.value = uni.getStorageSync("userInfo");
+			userProfilePhoto.value = uerInfo.value?.userProfilePhoto;
+			console.log(userProfilePhoto.value )
+		});
 	}
 
 	const onPageScroll = (e) => {};
@@ -139,18 +137,31 @@
 			url: url,
 		});
 	};
+	const handleTabbarItemClick = () => {
+		uni.switchTab({
+		  url: '/pages/user/home',
+		});
+	}
 </script>
 
 <template>
 	<view class="content">
 		<view class="content-heard">
-			<view class="content-heard-profile" @click="getUserInfo">
+			<view class="content-heard-profile" @click="handleTabbarItemClick">
 				<u-image width="40px" height="40px" :src="userProfilePhoto" mode="aspectFill" shape="circle"></u-image>
 			</view>
-			<view>工具箱</view>
-			<view style="font-size: 15px;margin-left: 10px;">
-				<view>{{ weather.title || '' }}</view>
-				<view :class="['icon', 'iconfont', weather.icon]"/>
+			<view>{{uerInfo.userNickname}}</view>
+			<view style="font-size: 15px;margin:0 10px;display: flex;">
+				<view style="margin-right: 10px;">{{ weather.title || '' }}</view>
+				<!-- <u-image
+				shape="circle"
+				width="20px" height="20px"
+				src="https://a.hecdn.net/img/common/icon/202106d/100.png"
+				style="
+				width: 20px;
+				height: 20px;
+				margin-left: 10px;
+				"/> -->
 			</view>
 		</view>
 
@@ -173,7 +184,7 @@
 
 		<!-- 	<view class="content-main-center">
 			</view> -->
-		<view class="content-main-title"> 未来的一些功能还没想好 </view>
+		<view class="content-main-title"> 一些其他的功能 </view>
 			<view
 				v-for="item of sizeType"
 				:key="item.name"
@@ -184,7 +195,8 @@
 				<view class="content-sizeType-tips"> {{ item.tips }}</view>
 			  </view>
 		</view>
-		<!-- <tabbar></tabbar> -->
+		
+		<tabbar></tabbar>
 	</view>
 </template>
 
@@ -217,7 +229,6 @@
 				 margin:0 10px;
 				 border-radius: 50%;
 				 background: #aaffc5;
-				 background-image: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132';
 			}
 		}
 
@@ -243,7 +254,7 @@
 					margin-bottom: 10px;
 					text-align: 10px;
 					line-height: 10px;
-					border-left: 4px solid #56a2e4;
+					border-left: 4px solid #487AFA
 				}
 
 				.content-main-heard-top {
@@ -295,10 +306,10 @@
 			.content-main-title {
 				font-size: 18px;
 				padding: 10px;
-				margin-bottom: 10px;
+				// margin-bottom: 10px;
 				text-align: 10px;
 				line-height: 10px;
-				border-left: 4px solid #56a2e4;
+				border-left: 4px solid #487AFA;
 			}
 			.content-sizeType {
 				border-radius: 10px;

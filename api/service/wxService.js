@@ -51,11 +51,9 @@ export const wxService = (urls, config, method) => {
                     resolve(res)
                 } else if (res.error == '10101') {
                     showToast('token已过期重新登录');
-                    getSetting("scope.record").then((res) => {
-                        getLoginFn().then((res) => {
-                            console.log("res", res);
-                        });
-                    });
+					   getLoginFn().then((res) => {
+						   console.log("res", res);
+					   });
                 } else {
                     showToast(errTips[res.code] || res.message || '未知错误');
                 }
@@ -68,11 +66,9 @@ export const wxService = (urls, config, method) => {
                     case 401:
                         message = 'token 失效，请重新登录';
                         // 这里可以触发退出的 action
-                        getSetting("scope.record").then((res) => {
-                            getLoginFn().then((res) => {
-                                console.log("res", res);
-                            });
-                        });
+                       getLoginFn().then((res) => {
+                           console.log("res", res);
+                       });
                         break;
                     case 403:
                         message = '拒绝访问';

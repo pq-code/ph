@@ -17,3 +17,4 @@ const Rate = {
   }
 };
 exports.Rate = Rate;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/rate.js.map

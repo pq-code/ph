@@ -15,7 +15,9 @@
 	import dayjs from "dayjs";
 	import imageCropper from "@/pages/home/components/imageCropper/imageCropper.vue";
 	import page from "@/components/pages/page.vue";
-	import { getCurrentInstance } from "vue";
+	import {
+		getCurrentInstance
+	} from "vue";
 	const instance = getCurrentInstance();
 
 	const imageurl = ref({
@@ -30,8 +32,11 @@
 		angle: -45, // 角度
 		density: '' // 密度
 	})
-	const previewMain = ref({width:'',height:''})
-	
+	const previewMain = ref({
+		width: '',
+		height: ''
+	})
+
 	// 清空画布
 	const clearCanvas = () => {
 		const ctx = uni.createCanvasContext("watermark");
@@ -39,10 +44,17 @@
 		ctx.draw();
 	};
 
+	onLoad(() => {
+		editeImage.value = true
+		nextTick(() => {
+			editeImage.value = false
+		})
+	})
+
 	onMounted(() => {
 		// 创建查询对象
 		const query = uni.createSelectorQuery().in(instance.proxy);
-	
+
 		// 选择元素
 		query
 			.select("#contentMain")
@@ -111,7 +123,7 @@
 					// 图片宽度大于高度，按高度缩放
 					scale = imageW / width;
 				} else {
-						// 图片高度大于宽度，按宽度缩放
+					// 图片高度大于宽度，按宽度缩放
 					scale = imageH / height;
 				}
 
@@ -152,22 +164,21 @@
 		});
 	}
 
-	 const addWatermark = async () => {
+	const addWatermark = async () => {
 		const imageWidth = imageurl.value.width || 100;
 		const imageHeight = imageurl.value.height || 100;
 		const imageX = imageurl.value.x || 0;
 		const imageY = imageurl.value.y || 0;
 		const ctx = uni.createCanvasContext('watermark'); // 创建canvas上下文
 		clearCanvas() // 重新绘制
-			await ctx.drawImage(imageurl.value.url, imageX, imageY, imageWidth, imageHeight);
-			console.log('imageInfo', imageurl.value.url, imageX, imageY, imageWidth, imageHeight)
-			if(formData.value.text) {
+		await ctx.drawImage(imageurl.value.url, imageX, imageY, imageWidth, imageHeight);
+		console.log('imageInfo', imageurl.value.url, imageX, imageY, imageWidth, imageHeight)
+		if (formData.value.text) {
 			let fontSize = formData.value.fontSize || 20;
 
 			// 创建上下文
-	 // 计算旋转角度（弧度）
-    const angle = formData.value.angle * Math.PI / 180;
-
+			// 计算旋转角度（弧度）
+			const angle = formData.value.angle * Math.PI / 180;
 			// 设置填充文本样式
 			ctx.textAlign = 'center';
 			ctx.font = `${fontSize}px Arial`;
@@ -175,27 +186,27 @@
 
 			// 循环绘制多个水印
 			for (let i = 0; i < 15; i++) {
-					// 保存当前画布状态
-					ctx.save();
+				// 保存当前画布状态
+				ctx.save();
 
-					// 计算水印的x和y坐标，这里简单地将水印分散在画布上
-					const x = (i % 5) * (imageWidth / 2); // 每行5个水印
-					const y = Math.floor(i / 5) * (imageHeight / 2); // 每列2个水印，根据行数计算y坐标
+				// 计算水印的x和y坐标，这里简单地将水印分散在画布上
+				const x = (i % 5) * (imageWidth / 2); // 每行5个水印
+				const y = Math.floor(i / 5) * (imageHeight / 2); // 每列2个水印，根据行数计算y坐标
 
-					// 移动到水印的起始位置
-					ctx.translate(x + imageWidth / 2, y + imageHeight / 2);
+				// 移动到水印的起始位置
+				ctx.translate(x + imageWidth / 2, y + imageHeight / 2);
 
-					// 旋转画布
-					ctx.rotate(angle);
+				// 旋转画布
+				ctx.rotate(angle);
 
-					// 绘制水印文本
-					ctx.fillText(formData.value.text, 0, 0);
-					
-						// 恢复画布状态以重置变换
-					ctx.restore();
+				// 绘制水印文本
+				ctx.fillText(formData.value.text, 0, 0);
 
-					// 恢复平移和旋转状态，准备绘制下一个水印
-					// ctx.resetTransform(); // 重置当前变换矩阵为单位矩阵，并重置当前变换原点
+				// 恢复画布状态以重置变换
+				ctx.restore();
+
+				// 恢复平移和旋转状态，准备绘制下一个水印
+				// ctx.resetTransform(); // 重置当前变换矩阵为单位矩阵，并重置当前变换原点
 			}
 
 			// 恢复画布状态
@@ -210,23 +221,25 @@
 			// const y = imageHeight - fontSize - 10; // 距离底部10px
 			// console.log(imageWidth, imageHeight, textWidth, x, y)
 			// 绘制水印文本
-		}else {
-			ctx.drawImage(formData.value.image.url, 0,0, 10, formData.value.image.height * formData.value.image.width / 10);
+		} else {
+			ctx.drawImage(formData.value.image.url, 0, 0, 10, formData.value.image.height * formData.value.image
+				.width / 10);
 		}
-			ctx.draw(true, () => {})
+		ctx.draw(true, () => {})
 	}
 
 	const editeImage = ref(false)
-	const iamgeColumns = reactive([[
-		{
-			label: "添加图片/编辑图片",
-			value: 1,
-		},
-		{
-			label: "预览图片",
-			value: 2,
-		},
-	]])
+	const iamgeColumns = reactive([
+		[{
+				label: "添加图片/编辑图片",
+				value: 1,
+			},
+			{
+				label: "预览图片",
+				value: 2,
+			},
+		]
+	])
 	const editImagePicker = (item) => {
 		if (item.value[0].value == 1) {
 			chooseImage();
@@ -236,52 +249,50 @@
 	}
 	// 生成图片
 	const generateImages = () => {
-			// const ctx = uni.createCanvasContext('watermarkImage'); // 创建canvas上下文
-			//  ctx.drawImage(imageurl.value.url);
-			//  ctx.draw(true, () => {
-			// 		// 预览生成的图片
-			// 		uni.previewImage({
-			// 			current: imageurl.value.url, // 当前显示的图片链接
-			// 			urls: [imageurl.value.url], // 需要预览的图片链接列表
-			// 			success: () => {
-			// 			},
-			// 			fail: () => {
-			// 			},
-			// 		});
-			//  })
+		// const ctx = uni.createCanvasContext('watermarkImage'); // 创建canvas上下文
+		//  ctx.drawImage(imageurl.value.url);
+		//  ctx.draw(true, () => {
+		// 		// 预览生成的图片
+		// 		uni.previewImage({
+		// 			current: imageurl.value.url, // 当前显示的图片链接
+		// 			urls: [imageurl.value.url], // 需要预览的图片链接列表
+		// 			success: () => {
+		// 			},
+		// 			fail: () => {
+		// 			},
+		// 		});
+		//  })
 		uni.canvasToTempFilePath({
-				canvasId: "watermark",
-				success: (res) => {
-					const tempFilePath = res.tempFilePath;
-					// 预览生成的图片
-					uni.previewImage({
-						current: tempFilePath, // 当前显示的图片链接
-						urls: [tempFilePath], // 需要预览的图片链接列表
-						success: () => {
-						},
-						fail: () => {
-						},
-					});
-				},
-				fail: (err) => {
-					console.error("合并图片失败:", err);
-					// 提示用户合并图片失败
-					uni.showToast({
-						title: "合并图片失败",
-						icon: "none",
-					});
-				},
-			});
+			canvasId: "watermark",
+			success: (res) => {
+				const tempFilePath = res.tempFilePath;
+				// 预览生成的图片
+				uni.previewImage({
+					current: tempFilePath, // 当前显示的图片链接
+					urls: [tempFilePath], // 需要预览的图片链接列表
+					success: () => {},
+					fail: () => {},
+				});
+			},
+			fail: (err) => {
+				console.error("合并图片失败:", err);
+				// 提示用户合并图片失败
+				uni.showToast({
+					title: "合并图片失败",
+					icon: "none",
+				});
+			},
+		});
 	}
+
 	const selsectImageFn = () => {
-		if(formData.value.image) {
+		if (formData.value.image) {
 			uni.previewImage({
 				urls: [formData.value.image],
 				current: 0,
 				longPressActions: {
 					itemList: ["发送给朋友", "保存图片", "收藏"],
-					success: function(data) {
-					},
+					success: function(data) {},
 					fail: function(err) {
 						console.log(err.errMsg);
 					},
@@ -294,19 +305,21 @@
 				sourceType: ["album"], //从相册选择
 				success: async function(res) {
 					const hw = await getImageInfo(res.tempFilePaths[0])
-					debugger
 					formData.value.image = {
-						url : res.tempFilePaths[0],
-						width : hw.width,
-						height : hw.height,
+						url: res.tempFilePaths[0],
+						width: hw.width,
+						height: hw.height,
 						status: "success",
 					}
-					 addWatermark() // 添加水印
+					addWatermark() // 添加水印
 				}
 			});
 		}
 	}
+	// 生成水印
+	const generateWatermark = (item, image) => {
 
+	}
 </script>
 
 <template>
@@ -316,10 +329,12 @@
 		<view class="content">
 			<view class="content-main" id='contentMain'>
 				<view class="watermark-canvas" @click="editeImage= true">
-					<canvas canvas-id="watermark" :style="{ width: previewMain.width +'px', height: previewMain.height +'px'}"></canvas>
+					<canvas canvas-id="watermark"
+						:style="{ width: previewMain.width +'px', height: previewMain.height +'px'}"></canvas>
 				</view>
 				<view class="watermark-canvas-image">
-					<canvas canvas-id="watermarkImage" :style="{ width: previewMain.width +'px', height: previewMain.height +'px'}"></canvas>
+					<canvas canvas-id="watermarkImage"
+						:style="{ width: previewMain.width +'px', height: previewMain.height +'px'}"></canvas>
 				</view>
 			</view>
 
@@ -363,7 +378,7 @@
 							{{`${formData.density} %`}}
 						</view>
 					</u-form-item>
-				 </u-form>
+				</u-form>
 			</view>
 		</view>
 	</page>
@@ -385,18 +400,20 @@
 			height: calc(100vw - 20px);
 			border-radius: 6px;
 			background: #ffffff;
-			
+
 			.watermark-canvas {
 				z-index: 200;
-    		opacity: 1;
+				opacity: 1;
 			}
+
 			.watermark-canvas-image {
 				pointer-events: none;
 				position: absolute;
-				top:0;
+				top: 0;
 				z-index: 100;
-    		opacity: 0;
+				opacity: 0;
 			}
+
 			.watermark-container {
 				pointer-events: none;
 				width: calc(100vw - 40px);

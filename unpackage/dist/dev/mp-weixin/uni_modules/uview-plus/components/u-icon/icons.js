@@ -214,3 +214,4 @@ const icons = {
   "uicon-en": ""
 };
 exports.icons = icons;
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/components/u-icon/icons.js.map

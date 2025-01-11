@@ -23,7 +23,6 @@
   margin: 0 10px;
   border-radius: 50%;
   background: #aaffc5;
-  background-image: 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132';
 }
 .content .content-main.data-v-07e72d3c {
   width: calc(100% - 20px);
@@ -44,7 +43,7 @@
   margin-bottom: 10px;
   text-align: 10px;
   line-height: 10px;
-  border-left: 4px solid #56a2e4;
+  border-left: 4px solid #487AFA;
 }
 .content .content-main .content-main-heard .content-main-heard-top.data-v-07e72d3c {
   height: 100px;
@@ -90,10 +89,9 @@
 .content .content-main .content-main-title.data-v-07e72d3c {
   font-size: 18px;
   padding: 10px;
-  margin-bottom: 10px;
   text-align: 10px;
   line-height: 10px;
-  border-left: 4px solid #56a2e4;
+  border-left: 4px solid #487AFA;
 }
 .content .content-main .content-sizeType.data-v-07e72d3c {
   border-radius: 10px;

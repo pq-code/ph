@@ -20,3 +20,4 @@ const Tag = {
   }
 };
 exports.Tag = Tag;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/tag.js.map

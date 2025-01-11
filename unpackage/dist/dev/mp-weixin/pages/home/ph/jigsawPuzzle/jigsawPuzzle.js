@@ -43,12 +43,20 @@ const _sfc_main = {
     const editeImage = common_vendor.ref(false);
     const fileListBackups = common_vendor.ref([]);
     const fileList = common_vendor.ref([]);
+    common_vendor.onLoad(() => {
+      editeImage.value = true;
+      showImageType.value = true;
+      common_vendor.nextTick$1(() => {
+        showImageType.value = false;
+        editeImage.value = false;
+      });
+    });
     common_vendor.onMounted(() => {
       const query = common_vendor.index.createSelectorQuery().in(instance.proxy);
       query.select("#contentMain").boundingClientRect((data) => {
         if (data) {
-          console.log("元素的宽：" + data.width);
-          console.log("元素的高：" + data.height);
+          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:58", "元素的宽：" + data.width);
+          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:59", "元素的高：" + data.height);
           previewMain.value = {
             width: data.width,
             height: data.height
@@ -161,7 +169,7 @@ const _sfc_main = {
       });
       fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
     };
-    const showImageType = common_vendor.ref(false);
+    const showImageType = common_vendor.ref();
     const columns = common_vendor.reactive([
       [
         {
@@ -211,7 +219,7 @@ const _sfc_main = {
       ]
     ]);
     common_vendor.onPullDownRefresh(() => {
-      console.log("下拉刷新");
+      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:231", "下拉刷新");
     });
     common_vendor.onShow(() => {
     });
@@ -252,12 +260,14 @@ const _sfc_main = {
           longPressActions: {
             itemList: ["发送给朋友", "保存图片", "收藏"],
             success: function(data) {
-              console.log(
+              common_vendor.index.__f__(
+                "log",
+                "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:275",
                 "选中了第" + (data.tapIndex + 1) + "个按钮,第" + (data.index + 1) + "张图片"
               );
             },
             fail: function(err) {
-              console.log(err.errMsg);
+              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:284", err.errMsg);
             }
           }
         });
@@ -324,7 +334,7 @@ const _sfc_main = {
             });
           },
           fail: (err) => {
-            console.error("合并图片失败:", err);
+            common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:367", "合并图片失败:", err);
             common_vendor.index.showToast({
               title: "合并图片失败",
               icon: "none"
@@ -365,20 +375,32 @@ const _sfc_main = {
               let imageH = imageInfo.height;
               let drawX = 0;
               let drawY = 0;
-              if (imageW < imageH) {
-                drawY = imageH / 2 - imageW / 2;
-                imageH = imageW / proportion;
+              if (imageW / imageH > proportion) {
+                imageW = imageH * proportion;
+                drawX = (imageInfo.width - imageW) / 2;
               } else {
-                drawX = imageW / 2 - imageH / 2;
-                imageW = imageH / proportion;
+                imageH = imageW / proportion;
+                drawY = (imageInfo.height - imageH) / 2;
               }
               ctx.imageSmoothingEnabled = false;
-              await ctx.drawImage(res.tempFilePaths[index], drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
+              await ctx.drawImage(
+                res.tempFilePaths[index],
+                drawX,
+                drawY,
+                imageW,
+                imageH,
+                0,
+                0,
+                previewMain.value.width,
+                previewMain.value.height
+              );
               await ctx.draw(true);
-              const cropImage2 = (await common_vendor.index.canvasToTempFilePath({ canvasId: "myCanvas" })).tempFilePath;
+              const cropImage2 = (await common_vendor.index.canvasToTempFilePath({
+                canvasId: "myCanvas"
+              })).tempFilePath;
               await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
               await ctx.draw();
-              console.log("cropImage", cropImage2);
+              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:441", "cropImage", cropImage2);
               fileList.value[index] = {
                 ...fileList.value[index],
                 url: cropImage2,
@@ -386,7 +408,7 @@ const _sfc_main = {
                 message: `${index}`
               };
             } catch (error) {
-              console.error("处理图片失败: ", error);
+              common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:451", "处理图片失败: ", error);
               fileListBackups.value[index] = {
                 ...fileListBackups.value[index],
                 status: "error",
@@ -396,7 +418,7 @@ const _sfc_main = {
           }
         },
         fail: function(error) {
-          console.error("选择图片失败: ", error);
+          common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:461", "选择图片失败: ", error);
         }
       });
     };
@@ -451,6 +473,21 @@ const _sfc_main = {
         height: result.height,
         zIndex: 700
       };
+    };
+    const spacingSize = (e) => {
+      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:534", e);
+      spacing.value = e;
+      const typeFunctions = {
+        1: nineSquareGrid,
+        3: lrSymmetry,
+        4: tbSymmetry,
+        5: l3r2,
+        6: l2r3
+      };
+      const selectedFunction = typeFunctions[formData.imageType];
+      if (selectedFunction) {
+        selectedFunction();
+      }
     };
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -515,33 +552,47 @@ const _sfc_main = {
           border: "none",
           placeholder: "请选择"
         }),
-        s: formData.imageType == 2
+        s: common_vendor.o(spacingSize),
+        t: common_vendor.o(($event) => spacing.value = $event),
+        v: common_vendor.p({
+          min: "0",
+          max: "10",
+          modelValue: spacing.value
+        }),
+        w: common_vendor.t(`${spacing.value} %`),
+        x: common_vendor.sr("text", "e8e9eaac-9,e8e9eaac-5"),
+        y: common_vendor.p({
+          label: "间距",
+          prop: "opacity",
+          borderBottom: true
+        }),
+        z: formData.imageType == 2
       }, formData.imageType == 2 ? {
-        t: common_vendor.o(formDataScale),
-        v: common_vendor.o(($event) => formData.scale = $event),
-        w: common_vendor.p({
+        A: common_vendor.o(formDataScale),
+        B: common_vendor.o(($event) => formData.scale = $event),
+        C: common_vendor.p({
           min: "1",
           max: "100",
           modelValue: formData.scale
         }),
-        x: common_vendor.t(`${formData.scale} %`),
-        y: common_vendor.sr("text", "e8e9eaac-9,e8e9eaac-5"),
-        z: common_vendor.p({
+        D: common_vendor.t(`${formData.scale} %`),
+        E: common_vendor.sr("text", "e8e9eaac-11,e8e9eaac-5"),
+        F: common_vendor.p({
           label: "中间图片大小",
           prop: "opacity",
           borderBottom: true
         })
       } : {}, {
-        A: common_vendor.sr("form1", "e8e9eaac-5,e8e9eaac-0"),
-        B: common_vendor.p({
+        G: common_vendor.sr("form1", "e8e9eaac-5,e8e9eaac-0"),
+        H: common_vendor.p({
           labelWidth: "100px",
           labelPosition: "left",
           labelAlign: "left",
           model: formData
         }),
-        C: common_vendor.o(batchInput),
-        D: common_vendor.o(getCanvasSize),
-        E: common_vendor.p({
+        I: common_vendor.o(batchInput),
+        J: common_vendor.o(getCanvasSize),
+        K: common_vendor.p({
           title: "拼图",
           lButton: "批量录入",
           rButton: "生成照片"
@@ -552,3 +603,4 @@ const _sfc_main = {
 };
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-e8e9eaac"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/pages/home/ph/jigsawPuzzle/jigsawPuzzle.js.map

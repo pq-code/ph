@@ -19,3 +19,4 @@ const Avatar = {
   }
 };
 exports.Avatar = Avatar;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/avatar.js.map

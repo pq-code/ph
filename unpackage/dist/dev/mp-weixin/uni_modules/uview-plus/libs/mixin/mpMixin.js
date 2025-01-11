@@ -6,3 +6,4 @@ const mpMixin = {
   }
 };
 exports.mpMixin = mpMixin;
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/mixin/mpMixin.js.map

@@ -25,3 +25,4 @@ const props = {
   }
 };
 exports.props = props;
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/components/u-transition/props.js.map

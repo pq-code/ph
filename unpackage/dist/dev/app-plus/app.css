@@ -289,9 +289,9 @@
 }
 @font-face {
   font-family: "iconfont"; /* Project id 3910586 */
-  src: url('assets/iconfont.1e4aa967.woff2?t=1732183075101') format('woff2'),
-       url('assets/iconfont.623e95cb.woff?t=1732183075101') format('woff'),
-       url('assets/iconfont.c33e14b5.ttf?t=1732183075101') format('truetype');
+  src: url('assets/iconfont.e3bca599.woff2?t=1736418059279') format('woff2'),
+       url('assets/iconfont.7c87bd5f.woff?t=1736418059279') format('woff'),
+       url('assets/iconfont.08b9726a.ttf?t=1736418059279') format('truetype');
 }
 
 .iconfont {
@@ -300,6 +300,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-tianqi-xiayu:before {
+  content: "\e6f5";
+}
+
+.icon-tianqi-duoyun:before {
+  content: "\e8ef";
+}
+
+.icon-tianqi-qingtian:before {
+  content: "\e621";
 }
 
 .icon-erjiyetou:before {

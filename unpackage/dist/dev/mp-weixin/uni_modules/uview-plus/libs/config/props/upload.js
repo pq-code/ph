@@ -27,3 +27,4 @@ const Upload = {
   }
 };
 exports.Upload = Upload;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/upload.js.map

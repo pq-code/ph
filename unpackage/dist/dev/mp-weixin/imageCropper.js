@@ -21,12 +21,11 @@ const _sfc_main = {
     const emits = __emit;
     const props = __props;
     const handleCrop = (e) => {
-      console.log(e.tempFilePath);
+      common_vendor.index.__f__("log", "at pages/home/components/imageCropper/imageCropper.vue:15", e.tempFilePath);
       emits("handleCrop", e.tempFilePath);
     };
     common_vendor.watch(props.cropImage, (n, o) => {
-      console.log(n);
-      debugger;
+      common_vendor.index.__f__("log", "at pages/home/components/imageCropper/imageCropper.vue:20", n);
     });
     return (_ctx, _cache) => {
       return {
@@ -45,3 +44,4 @@ const _sfc_main = {
 };
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-60af6d12"]]);
 exports.MiniProgramPage = MiniProgramPage;
+//# sourceMappingURL=../.sourcemap/mp-weixin/imageCropper.js.map

@@ -12,3 +12,4 @@ const SwipeActionItem = {
   }
 };
 exports.SwipeActionItem = SwipeActionItem;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/swipeActionItem.js.map

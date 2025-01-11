@@ -9,11 +9,14 @@ const http = {
   },
   post: (url, config) => {
     return requset(url, config, "post");
+  },
+  patch: (url, config) => {
+    return requset(url, config, "patch");
   }
 };
 const wxRequset = async (url, config, method) => {
   let SERVICE = "login";
-  if (url.startsWith("wx/users")) {
+  if (url.startsWith("users")) {
     SERVICE = "login";
   } else {
     SERVICE = "koa-0jh8";
@@ -25,7 +28,8 @@ const wxRequset = async (url, config, method) => {
       },
       "path": url,
       "header": {
-        "X-WX-SERVICE": SERVICE
+        "X-WX-SERVICE": SERVICE,
+        "authorization": common_vendor.index.getStorageSync("token")
       },
       "method": method,
       "data": config
@@ -35,18 +39,20 @@ const wxRequset = async (url, config, method) => {
       resolve(res);
     } else if (res.error == "10101") {
       utils_index.showToast("token已过期重新登录");
-      utils_index.getSetting("scope.record").then((res2) => {
-        utils_index.getLoginFn().then((res3) => {
-          console.log("res", res3);
-        });
+      utils_index.wxUserlLogin().then((res2) => {
+        common_vendor.index.__f__("log", "at api/index.js:44", "res", res2);
+        resolve(res2);
+      }, (rej) => {
+        reject(rej);
       });
     } else {
-      utils_index.showToast(api_error_errTips.errTips[res.code] || res.message || "未知错误");
+      utils_index.showToast(api_error_errTips.errTips[res.error] || res.message || "未知错误");
+      reject(res);
     }
   });
 };
 async function requset(url, config = {}, method) {
-  const systemInfo = common_vendor.index.getSystemInfoSync();
+  common_vendor.index.getSystemInfoSync();
   if (config && !config.hideLoading) {
     common_vendor.index.showLoading({
       title: "加载中..."
@@ -54,13 +60,11 @@ async function requset(url, config = {}, method) {
   }
   try {
     let res;
-    if (systemInfo.platform === "tt" || systemInfo.platform === "devtools") {
+    if (true) {
       return wxRequset(url, config, method);
-    } else {
-      return api_service_wxService.wxService(url, config, method);
     }
   } catch (err) {
-    console.error(err);
+    common_vendor.index.__f__("error", "at api/index.js:73", err);
     return Promise.reject(err);
   } finally {
     if (config && !config.hideLoading) {
@@ -69,3 +73,4 @@ async function requset(url, config = {}, method) {
   }
 }
 exports.http = http;
+//# sourceMappingURL=../../.sourcemap/mp-weixin/api/index.js.map

@@ -13,3 +13,13 @@ export const loginTg = (params) => {
 export const uploadFilePromise = (params) => {
     return http.post('wx/users/xcx/upload', params);
 };
+
+export const editUserInfo = (params) => {
+    return http.patch('users/editUserInfo', params);
+};
+
+export const getUerInfo = (params) => {
+    return http.post('users/getUerInfo', params);
+};
+
+

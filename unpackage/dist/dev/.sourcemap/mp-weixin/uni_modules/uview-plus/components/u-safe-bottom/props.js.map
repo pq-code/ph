@@ -1,0 +1,1 @@
+{"version":3,"file":"props.js","sources":["uni_modules/uview-plus/components/u-safe-bottom/props.js"],"sourcesContent":["import defprops from '../../libs/config/props';\nexport default {\n    props: {\n\n    }\n}\n"],"names":[],"mappings":";;;;;;AACA,MAAe,QAAA;AAAA,EACX,OAAO,CAEN;AACL;;"}

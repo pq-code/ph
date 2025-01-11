@@ -50,594 +50,220 @@ if (uni.restoreGlobal) {
   const onShow = /* @__PURE__ */ createHook(ON_SHOW);
   const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
   const onPullDownRefresh = /* @__PURE__ */ createHook(ON_PULL_DOWN_REFRESH);
-  const errTips = {
-    9301: "账号已存在报错",
-    9302: "成员已存在报错",
-    9303: "成员未做采样报错",
-    9311: "添加组织 api报错",
-    9312: "获取组织列表 api报错",
-    9313: "更新组织 api报错",
-    9314: "更新组织状态 api报错",
-    9315: "获取组织详情 api报错",
-    9316: "添加成员 api报错",
-    9317: "删除成员 api报错",
-    9318: "获取成员列表 api报错",
-    9319: "获取成员采样记录 api报错",
-    9320: "获取成员采样状态 api报错",
-    9321: "修改成员信息 api报错",
-    9322: "获取登录用户信息 api报错",
-    9323: "uid获取失败",
-    9324: "登录用户不存在"
+  const icons = {
+    "uicon-level": "",
+    "uicon-column-line": "",
+    "uicon-checkbox-mark": "",
+    "uicon-folder": "",
+    "uicon-movie": "",
+    "uicon-star-fill": "",
+    "uicon-star": "",
+    "uicon-phone-fill": "",
+    "uicon-phone": "",
+    "uicon-apple-fill": "",
+    "uicon-chrome-circle-fill": "",
+    "uicon-backspace": "",
+    "uicon-attach": "",
+    "uicon-cut": "",
+    "uicon-empty-car": "",
+    "uicon-empty-coupon": "",
+    "uicon-empty-address": "",
+    "uicon-empty-favor": "",
+    "uicon-empty-permission": "",
+    "uicon-empty-news": "",
+    "uicon-empty-search": "",
+    "uicon-github-circle-fill": "",
+    "uicon-rmb": "",
+    "uicon-person-delete-fill": "",
+    "uicon-reload": "",
+    "uicon-order": "",
+    "uicon-server-man": "",
+    "uicon-search": "",
+    "uicon-fingerprint": "",
+    "uicon-more-dot-fill": "",
+    "uicon-scan": "",
+    "uicon-share-square": "",
+    "uicon-map": "",
+    "uicon-map-fill": "",
+    "uicon-tags": "",
+    "uicon-tags-fill": "",
+    "uicon-bookmark-fill": "",
+    "uicon-bookmark": "",
+    "uicon-eye": "",
+    "uicon-eye-fill": "",
+    "uicon-mic": "",
+    "uicon-mic-off": "",
+    "uicon-calendar": "",
+    "uicon-calendar-fill": "",
+    "uicon-trash": "",
+    "uicon-trash-fill": "",
+    "uicon-play-left": "",
+    "uicon-play-right": "",
+    "uicon-minus": "",
+    "uicon-plus": "",
+    "uicon-info": "",
+    "uicon-info-circle": "",
+    "uicon-info-circle-fill": "",
+    "uicon-question": "",
+    "uicon-error": "",
+    "uicon-close": "",
+    "uicon-checkmark": "",
+    "uicon-android-circle-fill": "",
+    "uicon-android-fill": "",
+    "uicon-ie": "",
+    "uicon-IE-circle-fill": "",
+    "uicon-google": "",
+    "uicon-google-circle-fill": "",
+    "uicon-setting-fill": "",
+    "uicon-setting": "",
+    "uicon-minus-square-fill": "",
+    "uicon-plus-square-fill": "",
+    "uicon-heart": "",
+    "uicon-heart-fill": "",
+    "uicon-camera": "",
+    "uicon-camera-fill": "",
+    "uicon-more-circle": "",
+    "uicon-more-circle-fill": "",
+    "uicon-chat": "",
+    "uicon-chat-fill": "",
+    "uicon-bag-fill": "",
+    "uicon-bag": "",
+    "uicon-error-circle-fill": "",
+    "uicon-error-circle": "",
+    "uicon-close-circle": "",
+    "uicon-close-circle-fill": "",
+    "uicon-checkmark-circle": "",
+    "uicon-checkmark-circle-fill": "",
+    "uicon-question-circle-fill": "",
+    "uicon-question-circle": "",
+    "uicon-share": "",
+    "uicon-share-fill": "",
+    "uicon-shopping-cart": "",
+    "uicon-shopping-cart-fill": "",
+    "uicon-bell": "",
+    "uicon-bell-fill": "",
+    "uicon-list": "",
+    "uicon-list-dot": "",
+    "uicon-zhihu": "",
+    "uicon-zhihu-circle-fill": "",
+    "uicon-zhifubao": "",
+    "uicon-zhifubao-circle-fill": "",
+    "uicon-weixin-circle-fill": "",
+    "uicon-weixin-fill": "",
+    "uicon-twitter-circle-fill": "",
+    "uicon-twitter": "",
+    "uicon-taobao-circle-fill": "",
+    "uicon-taobao": "",
+    "uicon-weibo-circle-fill": "",
+    "uicon-weibo": "",
+    "uicon-qq-fill": "",
+    "uicon-qq-circle-fill": "",
+    "uicon-moments-circel-fill": "",
+    "uicon-moments": "",
+    "uicon-qzone": "",
+    "uicon-qzone-circle-fill": "",
+    "uicon-baidu-circle-fill": "",
+    "uicon-baidu": "",
+    "uicon-facebook-circle-fill": "",
+    "uicon-facebook": "",
+    "uicon-car": "",
+    "uicon-car-fill": "",
+    "uicon-warning-fill": "",
+    "uicon-warning": "",
+    "uicon-clock-fill": "",
+    "uicon-clock": "",
+    "uicon-edit-pen": "",
+    "uicon-edit-pen-fill": "",
+    "uicon-email": "",
+    "uicon-email-fill": "",
+    "uicon-minus-circle": "",
+    "uicon-minus-circle-fill": "",
+    "uicon-plus-circle": "",
+    "uicon-plus-circle-fill": "",
+    "uicon-file-text": "",
+    "uicon-file-text-fill": "",
+    "uicon-pushpin": "",
+    "uicon-pushpin-fill": "",
+    "uicon-grid": "",
+    "uicon-grid-fill": "",
+    "uicon-play-circle": "",
+    "uicon-play-circle-fill": "",
+    "uicon-pause-circle-fill": "",
+    "uicon-pause": "",
+    "uicon-pause-circle": "",
+    "uicon-eye-off": "",
+    "uicon-eye-off-outline": "",
+    "uicon-gift-fill": "",
+    "uicon-gift": "",
+    "uicon-rmb-circle-fill": "",
+    "uicon-rmb-circle": "",
+    "uicon-kefu-ermai": "",
+    "uicon-server-fill": "",
+    "uicon-coupon-fill": "",
+    "uicon-coupon": "",
+    "uicon-integral": "",
+    "uicon-integral-fill": "",
+    "uicon-home-fill": "",
+    "uicon-home": "",
+    "uicon-hourglass-half-fill": "",
+    "uicon-hourglass": "",
+    "uicon-account": "",
+    "uicon-plus-people-fill": "",
+    "uicon-minus-people-fill": "",
+    "uicon-account-fill": "",
+    "uicon-thumb-down-fill": "",
+    "uicon-thumb-down": "",
+    "uicon-thumb-up": "",
+    "uicon-thumb-up-fill": "",
+    "uicon-lock-fill": "",
+    "uicon-lock-open": "",
+    "uicon-lock-opened-fill": "",
+    "uicon-lock": "",
+    "uicon-red-packet-fill": "",
+    "uicon-photo-fill": "",
+    "uicon-photo": "",
+    "uicon-volume-off-fill": "",
+    "uicon-volume-off": "",
+    "uicon-volume-fill": "",
+    "uicon-volume": "",
+    "uicon-red-packet": "",
+    "uicon-download": "",
+    "uicon-arrow-up-fill": "",
+    "uicon-arrow-down-fill": "",
+    "uicon-play-left-fill": "",
+    "uicon-play-right-fill": "",
+    "uicon-rewind-left-fill": "",
+    "uicon-rewind-right-fill": "",
+    "uicon-arrow-downward": "",
+    "uicon-arrow-leftward": "",
+    "uicon-arrow-rightward": "",
+    "uicon-arrow-upward": "",
+    "uicon-arrow-down": "",
+    "uicon-arrow-right": "",
+    "uicon-arrow-left": "",
+    "uicon-arrow-up": "",
+    "uicon-skip-back-left": "",
+    "uicon-skip-forward-right": "",
+    "uicon-rewind-right": "",
+    "uicon-rewind-left": "",
+    "uicon-arrow-right-double": "",
+    "uicon-arrow-left-double": "",
+    "uicon-wifi-off": "",
+    "uicon-wifi": "",
+    "uicon-empty-data": "",
+    "uicon-empty-history": "",
+    "uicon-empty-list": "",
+    "uicon-empty-page": "",
+    "uicon-empty-order": "",
+    "uicon-man": "",
+    "uicon-woman": "",
+    "uicon-man-add": "",
+    "uicon-man-add-fill": "",
+    "uicon-man-delete": "",
+    "uicon-man-delete-fill": "",
+    "uicon-zh": "",
+    "uicon-en": ""
   };
-  let baseURL = "https://pqartstation.cn/";
-  let token = uni.getStorageSync("token");
-  const wxService = (urls, config2, method) => {
-    let url2 = baseURL + urls;
-    let data = {
-      provider: "weixin",
-      // 微信登录标识
-      ...config2
-    };
-    let header;
-    if (method == "POST") {
-      header = {
-        "content-type": "application/x-www-form-urlencoded"
-      };
-    } else {
-      header = {
-        "content-type": "application/json"
-      };
-    }
-    if (token) {
-      header.Authorization = token;
-    }
-    return new Promise((resolve, reject) => {
-      uni.request({
-        url: url2,
-        method,
-        header: Object.assign({}, header),
-        data,
-        dataType: "json",
-        timeout: 1e3 * 60 * 1,
-        success: (data2) => {
-          const res = data2.data;
-          if (res.code == 0) {
-            resolve(res);
-          } else if (res.error == "10101") {
-            showToast("token已过期重新登录");
-            getSetting("scope.record").then((res2) => {
-              getLoginFn().then((res3) => {
-                formatAppLog("log", "at api/service/wxService.js:56", "res", res3);
-              });
-            });
-          } else {
-            showToast(errTips[res.code] || res.message || "未知错误");
-          }
-        },
-        fail: (err) => {
-          let message = "";
-          switch (err) {
-            case 401:
-              message = "token 失效，请重新登录";
-              getSetting("scope.record").then((res) => {
-                getLoginFn().then((res2) => {
-                  formatAppLog("log", "at api/service/wxService.js:73", "res", res2);
-                });
-              });
-              break;
-            case 403:
-              message = "拒绝访问";
-              break;
-            case 404:
-              message = "请求地址错误";
-              break;
-            case 500:
-              message = "服务器故障";
-              break;
-            default:
-              message = "网络连接故障";
-          }
-          showToast(message);
-          reject(err);
-        },
-        complete: () => {
-          uni.hideLoading();
-        }
-      });
-    });
-  };
-  const http = {
-    get: (url2, config2) => {
-      return requset(url2, config2, "get");
-    },
-    post: (url2, config2) => {
-      return requset(url2, config2, "post");
-    }
-  };
-  function requset(url2, config2 = {}, method) {
-    if (config2 && !config2.hideLoading) {
-      uni.showLoading({
-        title: "加载中..."
-      });
-    }
-    {
-      return wxService(url2, config2, method);
-    }
-  }
-  const armorTransformation = (params) => {
-    return http.post("wx/users/xcx/login", params);
-  };
-  const showToast = (e) => {
-    uni.showToast({
-      icon: "none",
-      position: "center",
-      title: e
-    });
-  };
-  const getSetting = (scope) => {
-    return new Promise((resolve, reject) => {
-      uni.authorize({
-        scope,
-        success(data) {
-          resolve(data);
-        },
-        fail(err) {
-          formatAppLog("log", "at utils/index.js:30", err);
-          reject(err);
-        }
-      });
-    });
-  };
-  const getLoginFn = () => {
-    const login = () => {
-      return new Promise((resolve, reject) => {
-        uni.login({
-          provider: "weixin",
-          searchFn: true,
-          onlyAuthorize: true,
-          success(res) {
-            resolve(res);
-          },
-          fail: (err) => {
-            reject(err);
-          }
-        });
-      });
-    };
-    const getUserInfo = () => {
-      return new Promise((resolve, reject) => {
-        uni.getUserInfo({
-          provider: "weixin",
-          desc: "获取你的昵称、头像、地区及性别",
-          lang: "zh_CN",
-          timeout: 3e3,
-          success(res) {
-            resolve(res);
-          },
-          fail: (err) => {
-            reject(err);
-          }
-        });
-      });
-    };
-    return Promise.all([login(), getUserInfo()]).then(async (res) => {
-      if (res[0].code) {
-        try {
-          const data = await armorTransformation({
-            authInfo: {
-              code: res[0].code,
-              userInfo: res[1]
-            }
-          });
-          showToast("登录成功");
-          const { is_admins, token: token2, user_id, user_nickname, user_profile_photo, user_info } = data.result;
-          uni.setStorageSync("token", token2);
-          uni.setStorageSync("userInfo", { is_admins, user_id, user_nickname, user_profile_photo, user_info });
-        } catch (err) {
-          formatAppLog("log", "at utils/index.js:89", err);
-        }
-      }
-    });
-  };
-  const getUsedCarList = (params) => {
-    return http.post("wx/project/getUsedCar", params);
-  };
-  var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-  function getDefaultExportFromCjs(x) {
-    return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
-  }
-  var dayjs_min = { exports: {} };
-  (function(module, exports) {
-    !function(t, e) {
-      module.exports = e();
-    }(commonjsGlobal, function() {
-      var t = 1e3, e = 6e4, n = 36e5, r = "millisecond", i = "second", s = "minute", u = "hour", a = "day", o = "week", c = "month", f = "quarter", h = "year", d = "date", l = "Invalid Date", $ = /^(\d{4})[-/]?(\d{1,2})?[-/]?(\d{0,2})[Tt\s]*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?[.:]?(\d+)?$/, y = /\[([^\]]+)]|Y{1,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g, M = { name: "en", weekdays: "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"), months: "January_February_March_April_May_June_July_August_September_October_November_December".split("_"), ordinal: function(t2) {
-        var e2 = ["th", "st", "nd", "rd"], n2 = t2 % 100;
-        return "[" + t2 + (e2[(n2 - 20) % 10] || e2[n2] || e2[0]) + "]";
-      } }, m = function(t2, e2, n2) {
-        var r2 = String(t2);
-        return !r2 || r2.length >= e2 ? t2 : "" + Array(e2 + 1 - r2.length).join(n2) + t2;
-      }, v = { s: m, z: function(t2) {
-        var e2 = -t2.utcOffset(), n2 = Math.abs(e2), r2 = Math.floor(n2 / 60), i2 = n2 % 60;
-        return (e2 <= 0 ? "+" : "-") + m(r2, 2, "0") + ":" + m(i2, 2, "0");
-      }, m: function t2(e2, n2) {
-        if (e2.date() < n2.date())
-          return -t2(n2, e2);
-        var r2 = 12 * (n2.year() - e2.year()) + (n2.month() - e2.month()), i2 = e2.clone().add(r2, c), s2 = n2 - i2 < 0, u2 = e2.clone().add(r2 + (s2 ? -1 : 1), c);
-        return +(-(r2 + (n2 - i2) / (s2 ? i2 - u2 : u2 - i2)) || 0);
-      }, a: function(t2) {
-        return t2 < 0 ? Math.ceil(t2) || 0 : Math.floor(t2);
-      }, p: function(t2) {
-        return { M: c, y: h, w: o, d: a, D: d, h: u, m: s, s: i, ms: r, Q: f }[t2] || String(t2 || "").toLowerCase().replace(/s$/, "");
-      }, u: function(t2) {
-        return void 0 === t2;
-      } }, g = "en", D = {};
-      D[g] = M;
-      var p = "$isDayjsObject", S = function(t2) {
-        return t2 instanceof _ || !(!t2 || !t2[p]);
-      }, w = function t2(e2, n2, r2) {
-        var i2;
-        if (!e2)
-          return g;
-        if ("string" == typeof e2) {
-          var s2 = e2.toLowerCase();
-          D[s2] && (i2 = s2), n2 && (D[s2] = n2, i2 = s2);
-          var u2 = e2.split("-");
-          if (!i2 && u2.length > 1)
-            return t2(u2[0]);
-        } else {
-          var a2 = e2.name;
-          D[a2] = e2, i2 = a2;
-        }
-        return !r2 && i2 && (g = i2), i2 || !r2 && g;
-      }, O = function(t2, e2) {
-        if (S(t2))
-          return t2.clone();
-        var n2 = "object" == typeof e2 ? e2 : {};
-        return n2.date = t2, n2.args = arguments, new _(n2);
-      }, b = v;
-      b.l = w, b.i = S, b.w = function(t2, e2) {
-        return O(t2, { locale: e2.$L, utc: e2.$u, x: e2.$x, $offset: e2.$offset });
-      };
-      var _ = function() {
-        function M2(t2) {
-          this.$L = w(t2.locale, null, true), this.parse(t2), this.$x = this.$x || t2.x || {}, this[p] = true;
-        }
-        var m2 = M2.prototype;
-        return m2.parse = function(t2) {
-          this.$d = function(t3) {
-            var e2 = t3.date, n2 = t3.utc;
-            if (null === e2)
-              return /* @__PURE__ */ new Date(NaN);
-            if (b.u(e2))
-              return /* @__PURE__ */ new Date();
-            if (e2 instanceof Date)
-              return new Date(e2);
-            if ("string" == typeof e2 && !/Z$/i.test(e2)) {
-              var r2 = e2.match($);
-              if (r2) {
-                var i2 = r2[2] - 1 || 0, s2 = (r2[7] || "0").substring(0, 3);
-                return n2 ? new Date(Date.UTC(r2[1], i2, r2[3] || 1, r2[4] || 0, r2[5] || 0, r2[6] || 0, s2)) : new Date(r2[1], i2, r2[3] || 1, r2[4] || 0, r2[5] || 0, r2[6] || 0, s2);
-              }
-            }
-            return new Date(e2);
-          }(t2), this.init();
-        }, m2.init = function() {
-          var t2 = this.$d;
-          this.$y = t2.getFullYear(), this.$M = t2.getMonth(), this.$D = t2.getDate(), this.$W = t2.getDay(), this.$H = t2.getHours(), this.$m = t2.getMinutes(), this.$s = t2.getSeconds(), this.$ms = t2.getMilliseconds();
-        }, m2.$utils = function() {
-          return b;
-        }, m2.isValid = function() {
-          return !(this.$d.toString() === l);
-        }, m2.isSame = function(t2, e2) {
-          var n2 = O(t2);
-          return this.startOf(e2) <= n2 && n2 <= this.endOf(e2);
-        }, m2.isAfter = function(t2, e2) {
-          return O(t2) < this.startOf(e2);
-        }, m2.isBefore = function(t2, e2) {
-          return this.endOf(e2) < O(t2);
-        }, m2.$g = function(t2, e2, n2) {
-          return b.u(t2) ? this[e2] : this.set(n2, t2);
-        }, m2.unix = function() {
-          return Math.floor(this.valueOf() / 1e3);
-        }, m2.valueOf = function() {
-          return this.$d.getTime();
-        }, m2.startOf = function(t2, e2) {
-          var n2 = this, r2 = !!b.u(e2) || e2, f2 = b.p(t2), l2 = function(t3, e3) {
-            var i2 = b.w(n2.$u ? Date.UTC(n2.$y, e3, t3) : new Date(n2.$y, e3, t3), n2);
-            return r2 ? i2 : i2.endOf(a);
-          }, $2 = function(t3, e3) {
-            return b.w(n2.toDate()[t3].apply(n2.toDate("s"), (r2 ? [0, 0, 0, 0] : [23, 59, 59, 999]).slice(e3)), n2);
-          }, y2 = this.$W, M3 = this.$M, m3 = this.$D, v2 = "set" + (this.$u ? "UTC" : "");
-          switch (f2) {
-            case h:
-              return r2 ? l2(1, 0) : l2(31, 11);
-            case c:
-              return r2 ? l2(1, M3) : l2(0, M3 + 1);
-            case o:
-              var g2 = this.$locale().weekStart || 0, D2 = (y2 < g2 ? y2 + 7 : y2) - g2;
-              return l2(r2 ? m3 - D2 : m3 + (6 - D2), M3);
-            case a:
-            case d:
-              return $2(v2 + "Hours", 0);
-            case u:
-              return $2(v2 + "Minutes", 1);
-            case s:
-              return $2(v2 + "Seconds", 2);
-            case i:
-              return $2(v2 + "Milliseconds", 3);
-            default:
-              return this.clone();
-          }
-        }, m2.endOf = function(t2) {
-          return this.startOf(t2, false);
-        }, m2.$set = function(t2, e2) {
-          var n2, o2 = b.p(t2), f2 = "set" + (this.$u ? "UTC" : ""), l2 = (n2 = {}, n2[a] = f2 + "Date", n2[d] = f2 + "Date", n2[c] = f2 + "Month", n2[h] = f2 + "FullYear", n2[u] = f2 + "Hours", n2[s] = f2 + "Minutes", n2[i] = f2 + "Seconds", n2[r] = f2 + "Milliseconds", n2)[o2], $2 = o2 === a ? this.$D + (e2 - this.$W) : e2;
-          if (o2 === c || o2 === h) {
-            var y2 = this.clone().set(d, 1);
-            y2.$d[l2]($2), y2.init(), this.$d = y2.set(d, Math.min(this.$D, y2.daysInMonth())).$d;
-          } else
-            l2 && this.$d[l2]($2);
-          return this.init(), this;
-        }, m2.set = function(t2, e2) {
-          return this.clone().$set(t2, e2);
-        }, m2.get = function(t2) {
-          return this[b.p(t2)]();
-        }, m2.add = function(r2, f2) {
-          var d2, l2 = this;
-          r2 = Number(r2);
-          var $2 = b.p(f2), y2 = function(t2) {
-            var e2 = O(l2);
-            return b.w(e2.date(e2.date() + Math.round(t2 * r2)), l2);
-          };
-          if ($2 === c)
-            return this.set(c, this.$M + r2);
-          if ($2 === h)
-            return this.set(h, this.$y + r2);
-          if ($2 === a)
-            return y2(1);
-          if ($2 === o)
-            return y2(7);
-          var M3 = (d2 = {}, d2[s] = e, d2[u] = n, d2[i] = t, d2)[$2] || 1, m3 = this.$d.getTime() + r2 * M3;
-          return b.w(m3, this);
-        }, m2.subtract = function(t2, e2) {
-          return this.add(-1 * t2, e2);
-        }, m2.format = function(t2) {
-          var e2 = this, n2 = this.$locale();
-          if (!this.isValid())
-            return n2.invalidDate || l;
-          var r2 = t2 || "YYYY-MM-DDTHH:mm:ssZ", i2 = b.z(this), s2 = this.$H, u2 = this.$m, a2 = this.$M, o2 = n2.weekdays, c2 = n2.months, f2 = n2.meridiem, h2 = function(t3, n3, i3, s3) {
-            return t3 && (t3[n3] || t3(e2, r2)) || i3[n3].slice(0, s3);
-          }, d2 = function(t3) {
-            return b.s(s2 % 12 || 12, t3, "0");
-          }, $2 = f2 || function(t3, e3, n3) {
-            var r3 = t3 < 12 ? "AM" : "PM";
-            return n3 ? r3.toLowerCase() : r3;
-          };
-          return r2.replace(y, function(t3, r3) {
-            return r3 || function(t4) {
-              switch (t4) {
-                case "YY":
-                  return String(e2.$y).slice(-2);
-                case "YYYY":
-                  return b.s(e2.$y, 4, "0");
-                case "M":
-                  return a2 + 1;
-                case "MM":
-                  return b.s(a2 + 1, 2, "0");
-                case "MMM":
-                  return h2(n2.monthsShort, a2, c2, 3);
-                case "MMMM":
-                  return h2(c2, a2);
-                case "D":
-                  return e2.$D;
-                case "DD":
-                  return b.s(e2.$D, 2, "0");
-                case "d":
-                  return String(e2.$W);
-                case "dd":
-                  return h2(n2.weekdaysMin, e2.$W, o2, 2);
-                case "ddd":
-                  return h2(n2.weekdaysShort, e2.$W, o2, 3);
-                case "dddd":
-                  return o2[e2.$W];
-                case "H":
-                  return String(s2);
-                case "HH":
-                  return b.s(s2, 2, "0");
-                case "h":
-                  return d2(1);
-                case "hh":
-                  return d2(2);
-                case "a":
-                  return $2(s2, u2, true);
-                case "A":
-                  return $2(s2, u2, false);
-                case "m":
-                  return String(u2);
-                case "mm":
-                  return b.s(u2, 2, "0");
-                case "s":
-                  return String(e2.$s);
-                case "ss":
-                  return b.s(e2.$s, 2, "0");
-                case "SSS":
-                  return b.s(e2.$ms, 3, "0");
-                case "Z":
-                  return i2;
-              }
-              return null;
-            }(t3) || i2.replace(":", "");
-          });
-        }, m2.utcOffset = function() {
-          return 15 * -Math.round(this.$d.getTimezoneOffset() / 15);
-        }, m2.diff = function(r2, d2, l2) {
-          var $2, y2 = this, M3 = b.p(d2), m3 = O(r2), v2 = (m3.utcOffset() - this.utcOffset()) * e, g2 = this - m3, D2 = function() {
-            return b.m(y2, m3);
-          };
-          switch (M3) {
-            case h:
-              $2 = D2() / 12;
-              break;
-            case c:
-              $2 = D2();
-              break;
-            case f:
-              $2 = D2() / 3;
-              break;
-            case o:
-              $2 = (g2 - v2) / 6048e5;
-              break;
-            case a:
-              $2 = (g2 - v2) / 864e5;
-              break;
-            case u:
-              $2 = g2 / n;
-              break;
-            case s:
-              $2 = g2 / e;
-              break;
-            case i:
-              $2 = g2 / t;
-              break;
-            default:
-              $2 = g2;
-          }
-          return l2 ? $2 : b.a($2);
-        }, m2.daysInMonth = function() {
-          return this.endOf(c).$D;
-        }, m2.$locale = function() {
-          return D[this.$L];
-        }, m2.locale = function(t2, e2) {
-          if (!t2)
-            return this.$L;
-          var n2 = this.clone(), r2 = w(t2, e2, true);
-          return r2 && (n2.$L = r2), n2;
-        }, m2.clone = function() {
-          return b.w(this.$d, this);
-        }, m2.toDate = function() {
-          return new Date(this.valueOf());
-        }, m2.toJSON = function() {
-          return this.isValid() ? this.toISOString() : null;
-        }, m2.toISOString = function() {
-          return this.$d.toISOString();
-        }, m2.toString = function() {
-          return this.$d.toUTCString();
-        }, M2;
-      }(), k = _.prototype;
-      return O.prototype = k, [["$ms", r], ["$s", i], ["$m", s], ["$H", u], ["$W", a], ["$M", c], ["$y", h], ["$D", d]].forEach(function(t2) {
-        k[t2[1]] = function(e2) {
-          return this.$g(e2, t2[0], t2[1]);
-        };
-      }), O.extend = function(t2, e2) {
-        return t2.$i || (t2(e2, _, O), t2.$i = true), O;
-      }, O.locale = w, O.isDayjs = S, O.unix = function(t2) {
-        return O(1e3 * t2);
-      }, O.en = D[g], O.Ls = D, O.p = {}, O;
-    });
-  })(dayjs_min);
-  var dayjs_minExports = dayjs_min.exports;
-  const dayjs = /* @__PURE__ */ getDefaultExportFromCjs(dayjs_minExports);
-  const _export_sfc = (sfc, props2) => {
-    const target = sfc.__vccOpts || sfc;
-    for (const [key, val] of props2) {
-      target[key] = val;
-    }
-    return target;
-  };
-  const _sfc_main$n = {
-    __name: "home",
-    setup(__props, { expose: __expose }) {
-      __expose();
-      const value1 = vue.ref(0);
-      const keyword = vue.ref("");
-      const datalist1 = vue.ref([]);
-      const datalist2 = vue.ref([]);
-      const userAvatar = vue.ref();
-      const navbarHeight = vue.ref();
-      const status = vue.ref("loadmore");
-      const iconType = vue.ref("flower");
-      const loadText = vue.ref("暂无数据点击加载更多");
-      const imageList = vue.ref([]);
-      let sizeType = [
-        // {name: '二寸',tips:'35*49mm | 413*579px', router: ''},
-        // {name: '小一寸',tips:'22*32mm | 260*378px', router: ''},
-        // {name: '国考（小二寸）',tips:'35*45mm | 413*531px', router: ''},
-        // {name: '国家公务员（小二寸）',tips:'35*45mm | 413*531px', router: ''},
-        // {name: '全国计算机等级考试',tips:'33*48mm | 390*567px', router: ''}
-      ];
-      const init = () => {
-      };
-      onPullDownRefresh(() => {
-        formatAppLog("log", "at pages/home/home.vue:59", "下拉刷新");
-      });
-      onShow(() => {
-      });
-      const onPageScroll = (e) => {
-      };
-      const tabsClick = (item) => {
-        formatAppLog("log", "at pages/home/home.vue:87", "item", item);
-      };
-      const onReachBottom = () => {
-        status.value = "loading";
-      };
-      const pageJump = (url2) => {
-        uni.navigateTo({
-          url: url2
-        });
-      };
-      const __returned__ = { value1, keyword, datalist1, datalist2, userAvatar, navbarHeight, status, iconType, loadText, imageList, get sizeType() {
-        return sizeType;
-      }, set sizeType(v) {
-        sizeType = v;
-      }, init, onPageScroll, tabsClick, onReachBottom, pageJump, ref: vue.ref, get onLoad() {
-        return onLoad;
-      }, get onPullDownRefresh() {
-        return onPullDownRefresh;
-      }, get onShow() {
-        return onShow;
-      }, get getSetting() {
-        return getSetting;
-      }, get getLoginFn() {
-        return getLoginFn;
-      }, get getUsedCarList() {
-        return getUsedCarList;
-      }, get dayjs() {
-        return dayjs;
-      } };
-      Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
-      return __returned__;
-    }
-  };
-  function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
-    return vue.openBlock(), vue.createElementBlock("view", { class: "content" }, [
-      vue.createElementVNode("view", { class: "content-heard" }, [
-        vue.createElementVNode("view", null, "工具箱")
-      ]),
-      vue.createElementVNode("view", { class: "content-main" }, [
-        vue.createElementVNode("view", { class: "content-main-heard" }, [
-          vue.createElementVNode("view", { class: "content-main-heard-title" }, " 图片编辑 "),
-          vue.createElementVNode("view", { class: "content-main-heard-top" }, [
-            vue.createElementVNode("view", {
-              class: "content-main-heard-left",
-              onClick: _cache[0] || (_cache[0] = ($event) => $setup.pageJump("ph/jigsawPuzzle/jigsawPuzzle"))
-            }, " 拼图 "),
-            vue.createElementVNode("view", {
-              class: "content-main-heard-right",
-              onClick: _cache[1] || (_cache[1] = ($event) => $setup.pageJump("ph/addWatermark/addWatermark"))
-            }, " 添加水印 ")
-          ]),
-          vue.createCommentVNode(` <view class="content-main-customize" @click="pageJump('')">
-          自定义修改
-        </view> `)
-        ]),
-        vue.createElementVNode("view", { class: "content-main-center" }),
-        vue.createCommentVNode(' <view\n        v-for="item of sizeType"\n        :key="item.name"\n        class="content-sizeType"\n        @click="pageJump(item.router)"\n      >\n        <view> {{ item.name }}</view>\n        <view class="content-sizeType-tips"> {{ item.tips }}</view>\n      </view> ')
-      ]),
-      vue.createCommentVNode(" <tabbar></tabbar> ")
-    ]);
-  }
-  const PagesHomeHome = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$m], ["__scopeId", "data-v-07e72d3c"], ["__file", "/Users/pq/code/ph/pages/home/home.vue"]]);
   const version$1 = "3";
   {
     formatAppLog("log", "at uni_modules/uview-plus/libs/config/config.js:5", `
@@ -2181,35 +1807,90 @@ if (uni.restoreGlobal) {
   };
   const props$h = {
     props: {
-      // 是否展示工具条
-      show: {
+      // 图标类名
+      name: {
+        type: String,
+        default: defprops.icon.name
+      },
+      // 图标颜色，可接受主题色
+      color: {
+        type: String,
+        default: defprops.icon.color
+      },
+      // 字体大小，单位px
+      size: {
+        type: [String, Number],
+        default: defprops.icon.size
+      },
+      // 是否显示粗体
+      bold: {
         type: Boolean,
-        default: defprops.toolbar.show
+        default: defprops.icon.bold
       },
-      // 取消按钮的文字
-      cancelText: {
-        type: String,
-        default: defprops.toolbar.cancelText
+      // 点击图标的时候传递事件出去的index（用于区分点击了哪一个）
+      index: {
+        type: [String, Number],
+        default: defprops.icon.index
       },
-      // 确认按钮的文字
-      confirmText: {
+      // 触摸图标时的类名
+      hoverClass: {
         type: String,
-        default: defprops.toolbar.confirmText
+        default: defprops.icon.hoverClass
       },
-      // 取消按钮的颜色
-      cancelColor: {
+      // 自定义扩展前缀，方便用户扩展自己的图标库
+      customPrefix: {
         type: String,
-        default: defprops.toolbar.cancelColor
+        default: defprops.icon.customPrefix
       },
-      // 确认按钮的颜色
-      confirmColor: {
-        type: String,
-        default: defprops.toolbar.confirmColor
+      // 图标右边或者下面的文字
+      label: {
+        type: [String, Number],
+        default: defprops.icon.label
       },
-      // 标题文字
-      title: {
+      // label的位置，只能右边或者下边
+      labelPos: {
         type: String,
-        default: defprops.toolbar.title
+        default: defprops.icon.labelPos
+      },
+      // label的大小
+      labelSize: {
+        type: [String, Number],
+        default: defprops.icon.labelSize
+      },
+      // label的颜色
+      labelColor: {
+        type: String,
+        default: defprops.icon.labelColor
+      },
+      // label与图标的距离
+      space: {
+        type: [String, Number],
+        default: defprops.icon.space
+      },
+      // 图片的mode
+      imgMode: {
+        type: String,
+        default: defprops.icon.imgMode
+      },
+      // 用于显示图片小图标时，图片的宽度
+      width: {
+        type: [String, Number],
+        default: defprops.icon.width
+      },
+      // 用于显示图片小图标时，图片的高度
+      height: {
+        type: [String, Number],
+        default: defprops.icon.height
+      },
+      // 用于解决某些情况下，让图标垂直居中的用途
+      top: {
+        type: [String, Number],
+        default: defprops.icon.top
+      },
+      // 是否阻止事件传播
+      stop: {
+        type: Boolean,
+        default: defprops.icon.stop
       }
     }
   };
@@ -2343,265 +2024,109 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  const _sfc_main$m = {
-    name: "u-toolbar",
-    mixins: [mpMixin$1, mixin$1, props$h],
-    methods: {
-      // 点击取消按钮
-      cancel() {
-        this.$emit("cancel");
-      },
-      // 点击确定按钮
-      confirm() {
-        this.$emit("confirm");
-      }
+  const _export_sfc = (sfc, props2) => {
+    const target = sfc.__vccOpts || sfc;
+    for (const [key, val] of props2) {
+      target[key] = val;
     }
+    return target;
   };
-  function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
-    return _ctx.show ? (vue.openBlock(), vue.createElementBlock(
-      "view",
-      {
-        key: 0,
-        class: "u-toolbar",
-        onTouchmove: _cache[2] || (_cache[2] = vue.withModifiers((...args) => _ctx.noop && _ctx.noop(...args), ["stop", "prevent"]))
-      },
-      [
-        vue.createElementVNode("view", {
-          class: "u-toolbar__cancel__wrapper",
-          "hover-class": "u-hover-class"
-        }, [
-          vue.createElementVNode(
-            "text",
-            {
-              class: "u-toolbar__wrapper__cancel",
-              onClick: _cache[0] || (_cache[0] = (...args) => $options.cancel && $options.cancel(...args)),
-              style: vue.normalizeStyle({
-                color: _ctx.cancelColor
-              })
-            },
-            vue.toDisplayString(_ctx.cancelText),
-            5
-            /* TEXT, STYLE */
-          )
-        ]),
-        _ctx.title ? (vue.openBlock(), vue.createElementBlock(
-          "text",
-          {
-            key: 0,
-            class: "u-toolbar__title u-line-1"
-          },
-          vue.toDisplayString(_ctx.title),
-          1
-          /* TEXT */
-        )) : vue.createCommentVNode("v-if", true),
-        vue.createElementVNode("view", {
-          class: "u-toolbar__confirm__wrapper",
-          "hover-class": "u-hover-class"
-        }, [
-          vue.createElementVNode(
-            "text",
-            {
-              class: "u-toolbar__wrapper__confirm",
-              onClick: _cache[1] || (_cache[1] = (...args) => $options.confirm && $options.confirm(...args)),
-              style: vue.normalizeStyle({
-                color: _ctx.confirmColor
-              })
-            },
-            vue.toDisplayString(_ctx.confirmText),
-            5
-            /* TEXT, STYLE */
-          )
-        ])
-      ],
-      32
-      /* NEED_HYDRATION */
-    )) : vue.createCommentVNode("v-if", true);
-  }
-  const __easycom_0$7 = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$l], ["__scopeId", "data-v-eadae74e"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-toolbar/u-toolbar.vue"]]);
-  const props$g = {
-    props: {
-      // 是否显示组件
-      show: {
-        type: Boolean,
-        default: defprops.loadingIcon.show
-      },
-      // 颜色
-      color: {
-        type: String,
-        default: defprops.loadingIcon.color
-      },
-      // 提示文字颜色
-      textColor: {
-        type: String,
-        default: defprops.loadingIcon.textColor
-      },
-      // 文字和图标是否垂直排列
-      vertical: {
-        type: Boolean,
-        default: defprops.loadingIcon.vertical
-      },
-      // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
-      mode: {
-        type: String,
-        default: defprops.loadingIcon.mode
-      },
-      // 图标大小，单位默认px
-      size: {
-        type: [String, Number],
-        default: defprops.loadingIcon.size
-      },
-      // 文字大小
-      textSize: {
-        type: [String, Number],
-        default: defprops.loadingIcon.textSize
-      },
-      // 文字内容
-      text: {
-        type: [String, Number],
-        default: defprops.loadingIcon.text
-      },
-      // 动画模式
-      timingFunction: {
-        type: String,
-        default: defprops.loadingIcon.timingFunction
-      },
-      // 动画执行周期时间
-      duration: {
-        type: [String, Number],
-        default: defprops.loadingIcon.duration
-      },
-      // mode=circle时的暗边颜色
-      inactiveColor: {
-        type: String,
-        default: defprops.loadingIcon.inactiveColor
-      }
-    }
-  };
-  const _sfc_main$l = {
-    name: "u-loading-icon",
-    mixins: [mpMixin$1, mixin$1, props$g],
+  const _sfc_main$n = {
+    name: "u-icon",
     data() {
-      return {
-        // Array.form可以通过一个伪数组对象创建指定长度的数组
-        // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/from
-        array12: Array.from({
-          length: 12
-        }),
-        // 这里需要设置默认值为360，否则在安卓nvue上，会延迟一个duration周期后才执行
-        // 在iOS nvue上，则会一开始默认执行两个周期的动画
-        aniAngel: 360,
-        // 动画旋转角度
-        webviewHide: false,
-        // 监听webview的状态，如果隐藏了页面，则停止动画，以免性能消耗
-        loading: false
-        // 是否运行中，针对nvue使用
-      };
+      return {};
     },
+    emits: ["click"],
+    mixins: [mpMixin$1, mixin$1, props$h],
     computed: {
-      // 当为circle类型时，给其另外三边设置一个更轻一些的颜色
-      // 之所以需要这么做的原因是，比如父组件传了color为红色，那么需要另外的三个边为浅红色
-      // 而不能是固定的某一个其他颜色(因为这个固定的颜色可能浅蓝，导致效果没有那么细腻良好)
-      otherBorderColor() {
-        const lightColor = uni.$u.colorGradient(this.color, "#ffffff", 100)[80];
-        if (this.mode === "circle") {
-          return this.inactiveColor ? this.inactiveColor : lightColor;
-        } else {
-          return "transparent";
-        }
+      uClasses() {
+        let classes = [];
+        classes.push(this.customPrefix + "-" + this.name);
+        if (this.color && uni.$u.config.type.includes(this.color))
+          classes.push("u-icon__icon--" + this.color);
+        return classes;
+      },
+      iconStyle() {
+        let style = {};
+        style = {
+          fontSize: uni.$u.addUnit(this.size),
+          lineHeight: uni.$u.addUnit(this.size),
+          fontWeight: this.bold ? "bold" : "normal",
+          // 某些特殊情况需要设置一个到顶部的距离，才能更好的垂直居中
+          top: uni.$u.addUnit(this.top)
+        };
+        if (this.color && !uni.$u.config.type.includes(this.color))
+          style.color = this.color;
+        return style;
+      },
+      // 判断传入的name属性，是否图片路径，只要带有"/"均认为是图片形式
+      isImg() {
+        return this.name.indexOf("/") !== -1;
+      },
+      imgStyle() {
+        let style = {};
+        style.width = this.width ? uni.$u.addUnit(this.width) : uni.$u.addUnit(this.size);
+        style.height = this.height ? uni.$u.addUnit(this.height) : uni.$u.addUnit(this.size);
+        return style;
+      },
+      // 通过图标名，查找对应的图标
+      icon() {
+        return icons["uicon-" + this.name] || this.name;
       }
-    },
-    watch: {
-      show(n) {
-      }
-    },
-    mounted() {
-      this.init();
     },
     methods: {
-      init() {
-        setTimeout(() => {
-          this.show && this.addEventListenerToWebview();
-        }, 20);
-      },
-      // 监听webview的显示与隐藏
-      addEventListenerToWebview() {
-        const pages2 = getCurrentPages();
-        const page2 = pages2[pages2.length - 1];
-        const currentWebview = page2.$getAppWebview();
-        currentWebview.addEventListener("hide", () => {
-          this.webviewHide = true;
-        });
-        currentWebview.addEventListener("show", () => {
-          this.webviewHide = false;
-        });
+      clickHandler(e) {
+        this.$emit("click", this.index);
+        this.stop && this.preventEvent(e);
       }
     }
   };
-  function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
-    return _ctx.show ? (vue.openBlock(), vue.createElementBlock(
+  function _sfc_render$m(_ctx, _cache, $props, $setup, $data, $options) {
+    return vue.openBlock(), vue.createElementBlock(
       "view",
       {
-        key: 0,
-        class: vue.normalizeClass(["u-loading-icon", [_ctx.vertical && "u-loading-icon--vertical"]]),
-        style: vue.normalizeStyle([_ctx.$u.addStyle(_ctx.customStyle)])
+        class: vue.normalizeClass(["u-icon", ["u-icon--" + _ctx.labelPos]]),
+        onClick: _cache[0] || (_cache[0] = (...args) => $options.clickHandler && $options.clickHandler(...args))
       },
       [
-        !$data.webviewHide ? (vue.openBlock(), vue.createElementBlock(
-          "view",
-          {
-            key: 0,
-            class: vue.normalizeClass(["u-loading-icon__spinner", [`u-loading-icon__spinner--${_ctx.mode}`]]),
-            ref: "ani",
-            style: vue.normalizeStyle({
-              color: _ctx.color,
-              width: _ctx.$u.addUnit(_ctx.size),
-              height: _ctx.$u.addUnit(_ctx.size),
-              borderTopColor: _ctx.color,
-              borderBottomColor: $options.otherBorderColor,
-              borderLeftColor: $options.otherBorderColor,
-              borderRightColor: $options.otherBorderColor,
-              "animation-duration": `${_ctx.duration}ms`,
-              "animation-timing-function": _ctx.mode === "semicircle" || _ctx.mode === "circle" ? _ctx.timingFunction : ""
-            })
-          },
-          [
-            _ctx.mode === "spinner" ? (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              { key: 0 },
-              vue.renderList($data.array12, (item, index2) => {
-                return vue.openBlock(), vue.createElementBlock("view", {
-                  key: index2,
-                  class: "u-loading-icon__dot"
-                });
-              }),
-              128
-              /* KEYED_FRAGMENT */
-            )) : vue.createCommentVNode("v-if", true)
-          ],
-          6
-          /* CLASS, STYLE */
-        )) : vue.createCommentVNode("v-if", true),
-        _ctx.text ? (vue.openBlock(), vue.createElementBlock(
+        $options.isImg ? (vue.openBlock(), vue.createElementBlock("image", {
+          key: 0,
+          class: "u-icon__img",
+          src: _ctx.name,
+          mode: _ctx.imgMode,
+          style: vue.normalizeStyle([$options.imgStyle, _ctx.$u.addStyle(_ctx.customStyle)])
+        }, null, 12, ["src", "mode"])) : (vue.openBlock(), vue.createElementBlock("text", {
+          key: 1,
+          class: vue.normalizeClass(["u-icon__icon", $options.uClasses]),
+          style: vue.normalizeStyle([$options.iconStyle, _ctx.$u.addStyle(_ctx.customStyle)]),
+          "hover-class": _ctx.hoverClass
+        }, vue.toDisplayString($options.icon), 15, ["hover-class"])),
+        vue.createCommentVNode(' 这里进行空字符串判断，如果仅仅是v-if="label"，可能会出现传递0的时候，结果也无法显示 '),
+        _ctx.label !== "" ? (vue.openBlock(), vue.createElementBlock(
           "text",
           {
-            key: 1,
-            class: "u-loading-icon__text",
+            key: 2,
+            class: "u-icon__label",
             style: vue.normalizeStyle({
-              fontSize: _ctx.$u.addUnit(_ctx.textSize),
-              color: _ctx.textColor
+              color: _ctx.labelColor,
+              fontSize: _ctx.$u.addUnit(_ctx.labelSize),
+              marginLeft: _ctx.labelPos == "right" ? _ctx.$u.addUnit(_ctx.space) : 0,
+              marginTop: _ctx.labelPos == "bottom" ? _ctx.$u.addUnit(_ctx.space) : 0,
+              marginRight: _ctx.labelPos == "left" ? _ctx.$u.addUnit(_ctx.space) : 0,
+              marginBottom: _ctx.labelPos == "top" ? _ctx.$u.addUnit(_ctx.space) : 0
             })
           },
-          vue.toDisplayString(_ctx.text),
+          vue.toDisplayString(_ctx.label),
           5
           /* TEXT, STYLE */
         )) : vue.createCommentVNode("v-if", true)
       ],
-      6
-      /* CLASS, STYLE */
-    )) : vue.createCommentVNode("v-if", true);
+      2
+      /* CLASS */
+    );
   }
-  const __easycom_0$6 = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$k], ["__scopeId", "data-v-2af81691"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-loading-icon/u-loading-icon.vue"]]);
-  const props$f = {
+  const __easycom_3$2 = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$m], ["__scopeId", "data-v-ac70166d"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-icon/u-icon.vue"]]);
+  const props$g = {
     props: {
       // 是否展示组件
       show: {
@@ -2680,7 +2205,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  const _sfc_main$k = {
+  const _sfc_main$m = {
     name: "u-transition",
     data() {
       return {
@@ -2712,7 +2237,7 @@ if (uni.restoreGlobal) {
       }
     },
     // 将mixin挂在到组件中，uni.$u.mixin实际上为一个vue格式对象
-    mixins: [mpMixin$1, mixin$1, transition, props$f],
+    mixins: [mpMixin$1, mixin$1, transition, props$g],
     watch: {
       show: {
         handler(newVal) {
@@ -2723,7 +2248,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$l(_ctx, _cache, $props, $setup, $data, $options) {
     return $data.inited ? (vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -2741,8 +2266,1286 @@ if (uni.restoreGlobal) {
       /* CLASS, STYLE, NEED_HYDRATION */
     )) : vue.createCommentVNode("v-if", true);
   }
-  const __easycom_1$3 = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$j], ["__scopeId", "data-v-5cec8177"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-transition/u-transition.vue"]]);
+  const __easycom_4$1 = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$l], ["__scopeId", "data-v-5cec8177"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-transition/u-transition.vue"]]);
+  const props$f = {
+    props: {
+      // 图片地址
+      src: {
+        type: String,
+        default: defprops.image.src
+      },
+      // 裁剪模式
+      mode: {
+        type: String,
+        default: defprops.image.mode
+      },
+      // 宽度，单位任意
+      width: {
+        type: [String, Number],
+        default: defprops.image.width
+      },
+      // 高度，单位任意
+      height: {
+        type: [String, Number],
+        default: defprops.image.height
+      },
+      // 图片形状，circle-圆形，square-方形
+      shape: {
+        type: String,
+        default: defprops.image.shape
+      },
+      // 圆角，单位任意
+      radius: {
+        type: [String, Number],
+        default: defprops.image.radius
+      },
+      // 是否懒加载，微信小程序、App、百度小程序、字节跳动小程序
+      lazyLoad: {
+        type: Boolean,
+        default: defprops.image.lazyLoad
+      },
+      // 开启长按图片显示识别微信小程序码菜单
+      showMenuByLongpress: {
+        type: Boolean,
+        default: defprops.image.showMenuByLongpress
+      },
+      // 加载中的图标，或者小图片
+      loadingIcon: {
+        type: String,
+        default: defprops.image.loadingIcon
+      },
+      // 加载失败的图标，或者小图片
+      errorIcon: {
+        type: String,
+        default: defprops.image.errorIcon
+      },
+      // 是否显示加载中的图标或者自定义的slot
+      showLoading: {
+        type: Boolean,
+        default: defprops.image.showLoading
+      },
+      // 是否显示加载错误的图标或者自定义的slot
+      showError: {
+        type: Boolean,
+        default: defprops.image.showError
+      },
+      // 是否需要淡入效果
+      fade: {
+        type: Boolean,
+        default: defprops.image.fade
+      },
+      // 只支持网络资源，只对微信小程序有效
+      webp: {
+        type: Boolean,
+        default: defprops.image.webp
+      },
+      // 过渡时间，单位ms
+      duration: {
+        type: [String, Number],
+        default: defprops.image.duration
+      },
+      // 背景颜色，用于深色页面加载图片时，为了和背景色融合
+      bgColor: {
+        type: String,
+        default: defprops.image.bgColor
+      }
+    }
+  };
+  const _sfc_main$l = {
+    name: "u-image",
+    mixins: [mpMixin$1, mixin$1, props$f],
+    data() {
+      return {
+        // 图片是否加载错误，如果是，则显示错误占位图
+        isError: false,
+        // 初始化组件时，默认为加载中状态
+        loading: true,
+        // 不透明度，为了实现淡入淡出的效果
+        opacity: 1,
+        // 过渡时间，因为props的值无法修改，故需要一个中间值
+        durationTime: this.duration,
+        // 图片加载完成时，去掉背景颜色，因为如果是png图片，就会显示灰色的背景
+        backgroundStyle: {},
+        // 用于fade模式的控制组件显示与否
+        show: false
+      };
+    },
+    watch: {
+      src: {
+        immediate: true,
+        handler(n) {
+          if (!n) {
+            this.isError = true;
+          } else {
+            this.isError = false;
+            this.loading = true;
+          }
+        }
+      }
+    },
+    computed: {
+      wrapStyle() {
+        let style = {};
+        style.width = this.$u.addUnit(this.width);
+        style.height = this.$u.addUnit(this.height);
+        style.borderRadius = this.shape == "circle" ? "10000px" : uni.$u.addUnit(this.radius);
+        style.overflow = this.radius > 0 ? "hidden" : "visible";
+        return uni.$u.deepMerge(style, uni.$u.addStyle(this.customStyle));
+      }
+    },
+    mounted() {
+      this.show = true;
+    },
+    emits: ["click", "error", "load"],
+    methods: {
+      // 点击图片
+      onClick() {
+        this.$emit("click");
+      },
+      // 图片加载失败
+      onErrorHandler(err2) {
+        this.loading = false;
+        this.isError = true;
+        this.$emit("error", err2);
+      },
+      // 图片加载完成，标记loading结束
+      onLoadHandler(event) {
+        this.loading = false;
+        this.isError = false;
+        this.$emit("load", event);
+        this.removeBgColor();
+      },
+      // 移除图片的背景色
+      removeBgColor() {
+        this.backgroundStyle = {
+          backgroundColor: "transparent"
+        };
+      }
+    }
+  };
+  function _sfc_render$k(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_u_icon = resolveEasycom(vue.resolveDynamicComponent("u-icon"), __easycom_3$2);
+    const _component_u_transition = resolveEasycom(vue.resolveDynamicComponent("u-transition"), __easycom_4$1);
+    return vue.openBlock(), vue.createBlock(_component_u_transition, {
+      mode: "fade",
+      show: $data.show,
+      duration: _ctx.fade ? 1e3 : 0
+    }, {
+      default: vue.withCtx(() => [
+        vue.createElementVNode(
+          "view",
+          {
+            class: "u-image",
+            onClick: _cache[2] || (_cache[2] = (...args) => $options.onClick && $options.onClick(...args)),
+            style: vue.normalizeStyle([$options.wrapStyle, $data.backgroundStyle])
+          },
+          [
+            !$data.isError ? (vue.openBlock(), vue.createElementBlock("image", {
+              key: 0,
+              src: _ctx.src,
+              mode: _ctx.mode,
+              onError: _cache[0] || (_cache[0] = (...args) => $options.onErrorHandler && $options.onErrorHandler(...args)),
+              onLoad: _cache[1] || (_cache[1] = (...args) => $options.onLoadHandler && $options.onLoadHandler(...args)),
+              "show-menu-by-longpress": _ctx.showMenuByLongpress,
+              "lazy-load": _ctx.lazyLoad,
+              class: "u-image__image",
+              style: vue.normalizeStyle({
+                borderRadius: _ctx.shape == "circle" ? "10000px" : _ctx.$u.addUnit(_ctx.radius),
+                width: _ctx.$u.addUnit(_ctx.width),
+                height: _ctx.$u.addUnit(_ctx.height)
+              })
+            }, null, 44, ["src", "mode", "show-menu-by-longpress", "lazy-load"])) : vue.createCommentVNode("v-if", true),
+            _ctx.showLoading && $data.loading ? (vue.openBlock(), vue.createElementBlock(
+              "view",
+              {
+                key: 1,
+                class: "u-image__loading",
+                style: vue.normalizeStyle({
+                  borderRadius: _ctx.shape == "circle" ? "50%" : _ctx.$u.addUnit(_ctx.radius),
+                  backgroundColor: this.bgColor,
+                  width: _ctx.$u.addUnit(_ctx.width),
+                  height: _ctx.$u.addUnit(_ctx.height)
+                })
+              },
+              [
+                vue.renderSlot(_ctx.$slots, "loading", {}, () => [
+                  vue.createVNode(_component_u_icon, {
+                    name: _ctx.loadingIcon,
+                    width: _ctx.width,
+                    height: _ctx.height
+                  }, null, 8, ["name", "width", "height"])
+                ], true)
+              ],
+              4
+              /* STYLE */
+            )) : vue.createCommentVNode("v-if", true),
+            _ctx.showError && $data.isError && !$data.loading ? (vue.openBlock(), vue.createElementBlock(
+              "view",
+              {
+                key: 2,
+                class: "u-image__error",
+                style: vue.normalizeStyle({
+                  borderRadius: _ctx.shape == "circle" ? "50%" : _ctx.$u.addUnit(_ctx.radius),
+                  width: _ctx.$u.addUnit(_ctx.width),
+                  height: _ctx.$u.addUnit(_ctx.height)
+                })
+              },
+              [
+                vue.renderSlot(_ctx.$slots, "error", {}, () => [
+                  vue.createVNode(_component_u_icon, {
+                    name: _ctx.errorIcon,
+                    width: _ctx.width,
+                    height: _ctx.height
+                  }, null, 8, ["name", "width", "height"])
+                ], true)
+              ],
+              4
+              /* STYLE */
+            )) : vue.createCommentVNode("v-if", true)
+          ],
+          4
+          /* STYLE */
+        )
+      ]),
+      _: 3
+      /* FORWARDED */
+    }, 8, ["show", "duration"]);
+  }
+  const __easycom_3$1 = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$k], ["__scopeId", "data-v-abebd402"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-image/u-image.vue"]]);
+  const errTips = {
+    9301: "账号已存在报错",
+    9302: "成员已存在报错",
+    9303: "成员未做采样报错",
+    9311: "添加组织 api报错",
+    9312: "获取组织列表 api报错",
+    9313: "更新组织 api报错",
+    9314: "更新组织状态 api报错",
+    9315: "获取组织详情 api报错",
+    9316: "添加成员 api报错",
+    9317: "删除成员 api报错",
+    9318: "获取成员列表 api报错",
+    9319: "获取成员采样记录 api报错",
+    9320: "获取成员采样状态 api报错",
+    9321: "修改成员信息 api报错",
+    9322: "获取登录用户信息 api报错",
+    9323: "uid获取失败",
+    9324: "登录用户不存在"
+  };
+  let baseURL = "https://pqartstation.cn/";
+  let token = uni.getStorageSync("token");
+  const wxService = (urls, config2, method) => {
+    let url2 = baseURL + urls;
+    let data = {
+      provider: "weixin",
+      // 微信登录标识
+      ...config2
+    };
+    let header;
+    if (method == "POST") {
+      header = {
+        "content-type": "application/x-www-form-urlencoded"
+      };
+    } else {
+      header = {
+        "content-type": "application/json"
+      };
+    }
+    if (token) {
+      header.Authorization = token;
+    }
+    return new Promise((resolve, reject) => {
+      uni.request({
+        url: url2,
+        method,
+        header: Object.assign({}, header),
+        data,
+        dataType: "json",
+        timeout: 1e3 * 60 * 1,
+        success: (data2) => {
+          const res = data2.data;
+          if (res.code == 0) {
+            resolve(res);
+          } else if (res.error == "10101") {
+            showToast("token已过期重新登录");
+            getSetting("scope.record").then((res2) => {
+              getLoginFn().then((res3) => {
+                formatAppLog("log", "at api/service/wxService.js:56", "res", res3);
+              });
+            });
+          } else {
+            showToast(errTips[res.code] || res.message || "未知错误");
+          }
+        },
+        fail: (err2) => {
+          let message = "";
+          switch (err2) {
+            case 401:
+              message = "token 失效，请重新登录";
+              getSetting("scope.record").then((res) => {
+                getLoginFn().then((res2) => {
+                  formatAppLog("log", "at api/service/wxService.js:73", "res", res2);
+                });
+              });
+              break;
+            case 403:
+              message = "拒绝访问";
+              break;
+            case 404:
+              message = "请求地址错误";
+              break;
+            case 500:
+              message = "服务器故障";
+              break;
+            default:
+              message = "网络连接故障";
+          }
+          showToast(message);
+          reject(err2);
+        },
+        complete: () => {
+          uni.hideLoading();
+        }
+      });
+    });
+  };
+  const http = {
+    get: (url2, config2) => {
+      return requset(url2, config2, "get");
+    },
+    post: (url2, config2) => {
+      return requset(url2, config2, "post");
+    }
+  };
+  const wxRequset = async (url2, config2, method) => {
+    let SERVICE = "login";
+    if (url2.startsWith("wx/users")) {
+      SERVICE = "login";
+    } else {
+      SERVICE = "koa-0jh8";
+    }
+    return new Promise(async (resolve, reject) => {
+      let data = await wx.cloud.callContainer({
+        "config": {
+          "env": "prod-8gqm1nbtf8eae76e"
+        },
+        "path": url2,
+        "header": {
+          "X-WX-SERVICE": SERVICE
+        },
+        "method": method,
+        "data": config2
+      });
+      const res = data.data;
+      if (res.code == 0) {
+        resolve(res);
+      } else if (res.error == "10101") {
+        showToast("token已过期重新登录");
+        getSetting("scope.record").then((res2) => {
+          getLoginFn().then((res3) => {
+            formatAppLog("log", "at api/index.js:41", "res", res3);
+          });
+        });
+      } else {
+        showToast(errTips[res.code] || res.message || "未知错误");
+      }
+    });
+  };
+  async function requset(url2, config2 = {}, method) {
+    const systemInfo = uni.getSystemInfoSync();
+    if (config2 && !config2.hideLoading) {
+      uni.showLoading({
+        title: "加载中..."
+      });
+    }
+    try {
+      let res;
+      if (systemInfo.platform === "tt" || systemInfo.platform === "devtools") {
+        return wxRequset(url2, config2, method);
+      } else {
+        return wxService(url2, config2, method);
+      }
+    } catch (err2) {
+      formatAppLog("error", "at api/index.js:67", err2);
+      return Promise.reject(err2);
+    } finally {
+      if (config2 && !config2.hideLoading) {
+        uni.hideLoading();
+      }
+    }
+  }
+  const armorTransformation = (params) => {
+    return http.post("wx/users/xcx/login", params);
+  };
+  const showToast = (e) => {
+    uni.showToast({
+      icon: "none",
+      position: "center",
+      title: e
+    });
+  };
+  const getSetting = (scope) => {
+    return new Promise((resolve, reject) => {
+      uni.authorize({
+        scope,
+        success(data) {
+          resolve(data);
+        },
+        fail(err2) {
+          formatAppLog("log", "at utils/index.js:30", err2);
+          reject(err2);
+        }
+      });
+    });
+  };
+  const getLoginFn = () => {
+    uni.showLoading({
+      title: "登录中"
+    });
+    const login = () => {
+      return new Promise((resolve, reject) => {
+        uni.login({
+          provider: "weixin",
+          searchFn: true,
+          onlyAuthorize: true,
+          success(res) {
+            resolve(res);
+          },
+          fail: (err2) => {
+            reject(err2);
+          }
+        });
+      });
+    };
+    return Promise.all([login()]).then(async (res) => {
+      if (res[0].code) {
+        try {
+          let data = {};
+          if (true) {
+            data = await armorTransformation({
+              code: res[0].code,
+              userInfo: res[1]
+            });
+          }
+          if (data.code == 0) {
+            showToast("登录成功");
+            const { token: token2, userId, userName, userPassword, userSource, userSourceID, userNickname, userInfo, userProfilePhoto, sessionKey } = data.result;
+            formatAppLog("log", "at utils/index.js:92", "data.result", data.result);
+            uni.setStorageSync("token", token2);
+            uni.setStorageSync("userInfo", { userId, userName, userPassword, userSource, userSourceID, userNickname, userInfo, userProfilePhoto, sessionKey });
+            uni.hideLoading();
+            return data.result;
+          } else {
+            formatAppLog("error", "at utils/index.js:98", "登录失败:", err);
+            uni.hideLoading();
+          }
+        } catch (err2) {
+          formatAppLog("error", "at utils/index.js:102", "登录失败:", err2);
+          uni.hideLoading();
+        }
+      }
+    });
+  };
+  const getUsedCarList = (params) => {
+    return http.post("wx/project/getUsedCar", params);
+  };
+  var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
+  function getDefaultExportFromCjs(x) {
+    return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+  }
+  var dayjs_min = { exports: {} };
+  (function(module, exports) {
+    !function(t, e) {
+      module.exports = e();
+    }(commonjsGlobal, function() {
+      var t = 1e3, e = 6e4, n = 36e5, r = "millisecond", i = "second", s = "minute", u = "hour", a = "day", o = "week", c = "month", f = "quarter", h = "year", d = "date", l = "Invalid Date", $ = /^(\d{4})[-/]?(\d{1,2})?[-/]?(\d{0,2})[Tt\s]*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?[.:]?(\d+)?$/, y = /\[([^\]]+)]|Y{1,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g, M = { name: "en", weekdays: "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"), months: "January_February_March_April_May_June_July_August_September_October_November_December".split("_"), ordinal: function(t2) {
+        var e2 = ["th", "st", "nd", "rd"], n2 = t2 % 100;
+        return "[" + t2 + (e2[(n2 - 20) % 10] || e2[n2] || e2[0]) + "]";
+      } }, m = function(t2, e2, n2) {
+        var r2 = String(t2);
+        return !r2 || r2.length >= e2 ? t2 : "" + Array(e2 + 1 - r2.length).join(n2) + t2;
+      }, v = { s: m, z: function(t2) {
+        var e2 = -t2.utcOffset(), n2 = Math.abs(e2), r2 = Math.floor(n2 / 60), i2 = n2 % 60;
+        return (e2 <= 0 ? "+" : "-") + m(r2, 2, "0") + ":" + m(i2, 2, "0");
+      }, m: function t2(e2, n2) {
+        if (e2.date() < n2.date())
+          return -t2(n2, e2);
+        var r2 = 12 * (n2.year() - e2.year()) + (n2.month() - e2.month()), i2 = e2.clone().add(r2, c), s2 = n2 - i2 < 0, u2 = e2.clone().add(r2 + (s2 ? -1 : 1), c);
+        return +(-(r2 + (n2 - i2) / (s2 ? i2 - u2 : u2 - i2)) || 0);
+      }, a: function(t2) {
+        return t2 < 0 ? Math.ceil(t2) || 0 : Math.floor(t2);
+      }, p: function(t2) {
+        return { M: c, y: h, w: o, d: a, D: d, h: u, m: s, s: i, ms: r, Q: f }[t2] || String(t2 || "").toLowerCase().replace(/s$/, "");
+      }, u: function(t2) {
+        return void 0 === t2;
+      } }, g = "en", D = {};
+      D[g] = M;
+      var p = "$isDayjsObject", S = function(t2) {
+        return t2 instanceof _ || !(!t2 || !t2[p]);
+      }, w = function t2(e2, n2, r2) {
+        var i2;
+        if (!e2)
+          return g;
+        if ("string" == typeof e2) {
+          var s2 = e2.toLowerCase();
+          D[s2] && (i2 = s2), n2 && (D[s2] = n2, i2 = s2);
+          var u2 = e2.split("-");
+          if (!i2 && u2.length > 1)
+            return t2(u2[0]);
+        } else {
+          var a2 = e2.name;
+          D[a2] = e2, i2 = a2;
+        }
+        return !r2 && i2 && (g = i2), i2 || !r2 && g;
+      }, O = function(t2, e2) {
+        if (S(t2))
+          return t2.clone();
+        var n2 = "object" == typeof e2 ? e2 : {};
+        return n2.date = t2, n2.args = arguments, new _(n2);
+      }, b = v;
+      b.l = w, b.i = S, b.w = function(t2, e2) {
+        return O(t2, { locale: e2.$L, utc: e2.$u, x: e2.$x, $offset: e2.$offset });
+      };
+      var _ = function() {
+        function M2(t2) {
+          this.$L = w(t2.locale, null, true), this.parse(t2), this.$x = this.$x || t2.x || {}, this[p] = true;
+        }
+        var m2 = M2.prototype;
+        return m2.parse = function(t2) {
+          this.$d = function(t3) {
+            var e2 = t3.date, n2 = t3.utc;
+            if (null === e2)
+              return /* @__PURE__ */ new Date(NaN);
+            if (b.u(e2))
+              return /* @__PURE__ */ new Date();
+            if (e2 instanceof Date)
+              return new Date(e2);
+            if ("string" == typeof e2 && !/Z$/i.test(e2)) {
+              var r2 = e2.match($);
+              if (r2) {
+                var i2 = r2[2] - 1 || 0, s2 = (r2[7] || "0").substring(0, 3);
+                return n2 ? new Date(Date.UTC(r2[1], i2, r2[3] || 1, r2[4] || 0, r2[5] || 0, r2[6] || 0, s2)) : new Date(r2[1], i2, r2[3] || 1, r2[4] || 0, r2[5] || 0, r2[6] || 0, s2);
+              }
+            }
+            return new Date(e2);
+          }(t2), this.init();
+        }, m2.init = function() {
+          var t2 = this.$d;
+          this.$y = t2.getFullYear(), this.$M = t2.getMonth(), this.$D = t2.getDate(), this.$W = t2.getDay(), this.$H = t2.getHours(), this.$m = t2.getMinutes(), this.$s = t2.getSeconds(), this.$ms = t2.getMilliseconds();
+        }, m2.$utils = function() {
+          return b;
+        }, m2.isValid = function() {
+          return !(this.$d.toString() === l);
+        }, m2.isSame = function(t2, e2) {
+          var n2 = O(t2);
+          return this.startOf(e2) <= n2 && n2 <= this.endOf(e2);
+        }, m2.isAfter = function(t2, e2) {
+          return O(t2) < this.startOf(e2);
+        }, m2.isBefore = function(t2, e2) {
+          return this.endOf(e2) < O(t2);
+        }, m2.$g = function(t2, e2, n2) {
+          return b.u(t2) ? this[e2] : this.set(n2, t2);
+        }, m2.unix = function() {
+          return Math.floor(this.valueOf() / 1e3);
+        }, m2.valueOf = function() {
+          return this.$d.getTime();
+        }, m2.startOf = function(t2, e2) {
+          var n2 = this, r2 = !!b.u(e2) || e2, f2 = b.p(t2), l2 = function(t3, e3) {
+            var i2 = b.w(n2.$u ? Date.UTC(n2.$y, e3, t3) : new Date(n2.$y, e3, t3), n2);
+            return r2 ? i2 : i2.endOf(a);
+          }, $2 = function(t3, e3) {
+            return b.w(n2.toDate()[t3].apply(n2.toDate("s"), (r2 ? [0, 0, 0, 0] : [23, 59, 59, 999]).slice(e3)), n2);
+          }, y2 = this.$W, M3 = this.$M, m3 = this.$D, v2 = "set" + (this.$u ? "UTC" : "");
+          switch (f2) {
+            case h:
+              return r2 ? l2(1, 0) : l2(31, 11);
+            case c:
+              return r2 ? l2(1, M3) : l2(0, M3 + 1);
+            case o:
+              var g2 = this.$locale().weekStart || 0, D2 = (y2 < g2 ? y2 + 7 : y2) - g2;
+              return l2(r2 ? m3 - D2 : m3 + (6 - D2), M3);
+            case a:
+            case d:
+              return $2(v2 + "Hours", 0);
+            case u:
+              return $2(v2 + "Minutes", 1);
+            case s:
+              return $2(v2 + "Seconds", 2);
+            case i:
+              return $2(v2 + "Milliseconds", 3);
+            default:
+              return this.clone();
+          }
+        }, m2.endOf = function(t2) {
+          return this.startOf(t2, false);
+        }, m2.$set = function(t2, e2) {
+          var n2, o2 = b.p(t2), f2 = "set" + (this.$u ? "UTC" : ""), l2 = (n2 = {}, n2[a] = f2 + "Date", n2[d] = f2 + "Date", n2[c] = f2 + "Month", n2[h] = f2 + "FullYear", n2[u] = f2 + "Hours", n2[s] = f2 + "Minutes", n2[i] = f2 + "Seconds", n2[r] = f2 + "Milliseconds", n2)[o2], $2 = o2 === a ? this.$D + (e2 - this.$W) : e2;
+          if (o2 === c || o2 === h) {
+            var y2 = this.clone().set(d, 1);
+            y2.$d[l2]($2), y2.init(), this.$d = y2.set(d, Math.min(this.$D, y2.daysInMonth())).$d;
+          } else
+            l2 && this.$d[l2]($2);
+          return this.init(), this;
+        }, m2.set = function(t2, e2) {
+          return this.clone().$set(t2, e2);
+        }, m2.get = function(t2) {
+          return this[b.p(t2)]();
+        }, m2.add = function(r2, f2) {
+          var d2, l2 = this;
+          r2 = Number(r2);
+          var $2 = b.p(f2), y2 = function(t2) {
+            var e2 = O(l2);
+            return b.w(e2.date(e2.date() + Math.round(t2 * r2)), l2);
+          };
+          if ($2 === c)
+            return this.set(c, this.$M + r2);
+          if ($2 === h)
+            return this.set(h, this.$y + r2);
+          if ($2 === a)
+            return y2(1);
+          if ($2 === o)
+            return y2(7);
+          var M3 = (d2 = {}, d2[s] = e, d2[u] = n, d2[i] = t, d2)[$2] || 1, m3 = this.$d.getTime() + r2 * M3;
+          return b.w(m3, this);
+        }, m2.subtract = function(t2, e2) {
+          return this.add(-1 * t2, e2);
+        }, m2.format = function(t2) {
+          var e2 = this, n2 = this.$locale();
+          if (!this.isValid())
+            return n2.invalidDate || l;
+          var r2 = t2 || "YYYY-MM-DDTHH:mm:ssZ", i2 = b.z(this), s2 = this.$H, u2 = this.$m, a2 = this.$M, o2 = n2.weekdays, c2 = n2.months, f2 = n2.meridiem, h2 = function(t3, n3, i3, s3) {
+            return t3 && (t3[n3] || t3(e2, r2)) || i3[n3].slice(0, s3);
+          }, d2 = function(t3) {
+            return b.s(s2 % 12 || 12, t3, "0");
+          }, $2 = f2 || function(t3, e3, n3) {
+            var r3 = t3 < 12 ? "AM" : "PM";
+            return n3 ? r3.toLowerCase() : r3;
+          };
+          return r2.replace(y, function(t3, r3) {
+            return r3 || function(t4) {
+              switch (t4) {
+                case "YY":
+                  return String(e2.$y).slice(-2);
+                case "YYYY":
+                  return b.s(e2.$y, 4, "0");
+                case "M":
+                  return a2 + 1;
+                case "MM":
+                  return b.s(a2 + 1, 2, "0");
+                case "MMM":
+                  return h2(n2.monthsShort, a2, c2, 3);
+                case "MMMM":
+                  return h2(c2, a2);
+                case "D":
+                  return e2.$D;
+                case "DD":
+                  return b.s(e2.$D, 2, "0");
+                case "d":
+                  return String(e2.$W);
+                case "dd":
+                  return h2(n2.weekdaysMin, e2.$W, o2, 2);
+                case "ddd":
+                  return h2(n2.weekdaysShort, e2.$W, o2, 3);
+                case "dddd":
+                  return o2[e2.$W];
+                case "H":
+                  return String(s2);
+                case "HH":
+                  return b.s(s2, 2, "0");
+                case "h":
+                  return d2(1);
+                case "hh":
+                  return d2(2);
+                case "a":
+                  return $2(s2, u2, true);
+                case "A":
+                  return $2(s2, u2, false);
+                case "m":
+                  return String(u2);
+                case "mm":
+                  return b.s(u2, 2, "0");
+                case "s":
+                  return String(e2.$s);
+                case "ss":
+                  return b.s(e2.$s, 2, "0");
+                case "SSS":
+                  return b.s(e2.$ms, 3, "0");
+                case "Z":
+                  return i2;
+              }
+              return null;
+            }(t3) || i2.replace(":", "");
+          });
+        }, m2.utcOffset = function() {
+          return 15 * -Math.round(this.$d.getTimezoneOffset() / 15);
+        }, m2.diff = function(r2, d2, l2) {
+          var $2, y2 = this, M3 = b.p(d2), m3 = O(r2), v2 = (m3.utcOffset() - this.utcOffset()) * e, g2 = this - m3, D2 = function() {
+            return b.m(y2, m3);
+          };
+          switch (M3) {
+            case h:
+              $2 = D2() / 12;
+              break;
+            case c:
+              $2 = D2();
+              break;
+            case f:
+              $2 = D2() / 3;
+              break;
+            case o:
+              $2 = (g2 - v2) / 6048e5;
+              break;
+            case a:
+              $2 = (g2 - v2) / 864e5;
+              break;
+            case u:
+              $2 = g2 / n;
+              break;
+            case s:
+              $2 = g2 / e;
+              break;
+            case i:
+              $2 = g2 / t;
+              break;
+            default:
+              $2 = g2;
+          }
+          return l2 ? $2 : b.a($2);
+        }, m2.daysInMonth = function() {
+          return this.endOf(c).$D;
+        }, m2.$locale = function() {
+          return D[this.$L];
+        }, m2.locale = function(t2, e2) {
+          if (!t2)
+            return this.$L;
+          var n2 = this.clone(), r2 = w(t2, e2, true);
+          return r2 && (n2.$L = r2), n2;
+        }, m2.clone = function() {
+          return b.w(this.$d, this);
+        }, m2.toDate = function() {
+          return new Date(this.valueOf());
+        }, m2.toJSON = function() {
+          return this.isValid() ? this.toISOString() : null;
+        }, m2.toISOString = function() {
+          return this.$d.toISOString();
+        }, m2.toString = function() {
+          return this.$d.toUTCString();
+        }, M2;
+      }(), k = _.prototype;
+      return O.prototype = k, [["$ms", r], ["$s", i], ["$m", s], ["$H", u], ["$W", a], ["$M", c], ["$y", h], ["$D", d]].forEach(function(t2) {
+        k[t2[1]] = function(e2) {
+          return this.$g(e2, t2[0], t2[1]);
+        };
+      }), O.extend = function(t2, e2) {
+        return t2.$i || (t2(e2, _, O), t2.$i = true), O;
+      }, O.locale = w, O.isDayjs = S, O.unix = function(t2) {
+        return O(1e3 * t2);
+      }, O.en = D[g], O.Ls = D, O.p = {}, O;
+    });
+  })(dayjs_min);
+  var dayjs_minExports = dayjs_min.exports;
+  const dayjs = /* @__PURE__ */ getDefaultExportFromCjs(dayjs_minExports);
+  const nowKey = "bf108d402c7e471b90e9f0323364ee3a";
+  const _sfc_main$k = {
+    __name: "home",
+    setup(__props, { expose: __expose }) {
+      __expose();
+      const value1 = vue.ref(0);
+      const keyword = vue.ref("");
+      const weather = vue.ref({
+        title: "",
+        icon: ""
+      });
+      const uerInfo = vue.ref();
+      const userProfilePhoto = vue.ref("https://p26-passport.byteacctimg.com/img/user-avatar/89bf77fee40de414df762ae91089c2dc~80x80.awebp");
+      const navbarHeight = vue.ref();
+      const status = vue.ref("loadmore");
+      const iconType = vue.ref("flower");
+      const loadText = vue.ref("暂无数据点击加载更多");
+      const imageList = vue.ref([]);
+      let sizeType = [
+        // {name: '二寸',tips:'35*49mm | 413*579px', router: ''},
+        // {name: '小一寸',tips:'22*32mm | 260*378px', router: ''},
+        // {name: '国考（小二寸）',tips:'35*45mm | 413*531px', router: ''},
+        // {name: '国家公务员（小二寸）',tips:'35*45mm | 413*531px', router: ''},
+        // {name: '全国计算机等级考试',tips:'33*48mm | 390*567px', router: ''}
+        { name: "测试1123", tips: "35*49mm | 413*579px", router: "" },
+        { name: "测试1123", tips: "22*32mm | 260*378px", router: "" },
+        { name: "测试1123", tips: "35*45mm | 413*531px", router: "" },
+        { name: "测试1123", tips: "35*45mm | 413*531px", router: "" },
+        { name: "测试1123", tips: "33*48mm | 390*567px", router: "" },
+        { name: "测试1123", tips: "35*49mm | 413*579px", router: "" },
+        { name: "测试1123", tips: "22*32mm | 260*378px", router: "" },
+        { name: "测试1123", tips: "35*45mm | 413*531px", router: "" },
+        { name: "测试1123", tips: "35*45mm | 413*531px", router: "" },
+        { name: "测试1123", tips: "33*48mm | 390*567px", router: "" }
+      ];
+      const getWeather = () => {
+        let weatherS = {
+          "晴": "https://a.hecdn.net/img/common/icon/202106d/100.png",
+          "多云": "icon-tianqi-duoyun",
+          "下雨": "icon-tianqi-xiayu"
+        };
+        if (!uni.getStorageSync("weather")) {
+          uni.request({
+            url: `https://devapi.qweather.com/v7/weather/now?location=101210101&key=${nowKey}`,
+            method: "GET",
+            success: (res) => {
+              if (res.data.code == 200) {
+                const { now: now2 } = res.data;
+                weather.value = {
+                  title: `${now2.text} ${now2.temp} ${now2.windDir}`,
+                  icon: weatherS[now2.tex]
+                };
+                uni.setStorageSync("weather", res);
+                formatAppLog("log", "at pages/home/home.vue:74", "天气信息", weather.value);
+              }
+            },
+            fail: () => {
+            },
+            complete: () => {
+            }
+          });
+        } else {
+          let res = uni.getStorageSync("weather");
+          const { now: now2 } = res.data;
+          weather.value = {
+            title: `${now2.text} ${now2.temp} ${now2.windDir}`,
+            icon: weatherS[now2.tex]
+          };
+        }
+      };
+      const init = () => {
+        var _a;
+        uerInfo.value = uni.getStorageSync("userInfo");
+        userProfilePhoto.value = (_a = uerInfo.value) == null ? void 0 : _a.userProfilePhoto;
+        getWeather();
+      };
+      onPullDownRefresh(() => {
+        formatAppLog("log", "at pages/home/home.vue:106", "下拉刷新");
+      });
+      onLoad(() => {
+        init();
+      });
+      const getUserInfo = () => {
+        var _a;
+        if (!uni.getStorageSync("token")) {
+          formatAppLog("log", "at pages/home/home.vue:115", "当前登录已经失效重新登录");
+        }
+        uerInfo.value = uni.getStorageSync("userInfo");
+        userProfilePhoto.value = (_a = uerInfo.value) == null ? void 0 : _a.userProfilePhoto;
+        formatAppLog("log", "at pages/home/home.vue:126", userProfilePhoto.value);
+        getWeather();
+      };
+      const onPageScroll = (e) => {
+      };
+      const tabsClick = (item) => {
+        formatAppLog("log", "at pages/home/home.vue:132", "item", item);
+      };
+      const onReachBottom = () => {
+        status.value = "loading";
+      };
+      const pageJump = (url2) => {
+        uni.navigateTo({
+          url: url2
+        });
+      };
+      const __returned__ = { nowKey, value1, keyword, weather, uerInfo, userProfilePhoto, navbarHeight, status, iconType, loadText, imageList, get sizeType() {
+        return sizeType;
+      }, set sizeType(v) {
+        sizeType = v;
+      }, getWeather, init, getUserInfo, onPageScroll, tabsClick, onReachBottom, pageJump, ref: vue.ref, get onLoad() {
+        return onLoad;
+      }, get onPullDownRefresh() {
+        return onPullDownRefresh;
+      }, get onShow() {
+        return onShow;
+      }, get getSetting() {
+        return getSetting;
+      }, get getLoginFn() {
+        return getLoginFn;
+      }, get getUsedCarList() {
+        return getUsedCarList;
+      }, get dayjs() {
+        return dayjs;
+      } };
+      Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+      return __returned__;
+    }
+  };
+  function _sfc_render$j(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_u_image = resolveEasycom(vue.resolveDynamicComponent("u-image"), __easycom_3$1);
+    return vue.openBlock(), vue.createElementBlock("view", { class: "content" }, [
+      vue.createElementVNode("view", { class: "content-heard" }, [
+        vue.createElementVNode("view", {
+          class: "content-heard-profile",
+          onClick: $setup.getUserInfo
+        }, [
+          vue.createVNode(_component_u_image, {
+            width: "40px",
+            height: "40px",
+            src: $setup.userProfilePhoto,
+            mode: "aspectFill",
+            shape: "circle"
+          }, null, 8, ["src"])
+        ]),
+        vue.createCommentVNode(" <view>工具箱</view> "),
+        vue.createElementVNode("view", { style: { "font-size": "15px", "margin-right": "10px", "display": "flex" } }, [
+          vue.createElementVNode(
+            "view",
+            { style: { "margin-right": "10px" } },
+            vue.toDisplayString($setup.weather.title || ""),
+            1
+            /* TEXT */
+          ),
+          vue.createCommentVNode(' <u-image\r\n				shape="circle"\r\n				width="20px" height="20px"\r\n				src="https://a.hecdn.net/img/common/icon/202106d/100.png"\r\n				style="\r\n				width: 20px;\r\n				height: 20px;\r\n				margin-left: 10px;\r\n				"/> ')
+        ])
+      ]),
+      vue.createElementVNode("view", { class: "content-main" }, [
+        vue.createElementVNode("view", { class: "content-main-heard" }, [
+          vue.createElementVNode("view", { class: "content-main-heard-title" }, " 图片编辑 "),
+          vue.createElementVNode("view", { class: "content-main-heard-top" }, [
+            vue.createElementVNode("view", {
+              class: "content-main-heard-left",
+              onClick: _cache[0] || (_cache[0] = ($event) => $setup.pageJump("ph/jigsawPuzzle/jigsawPuzzle"))
+            }, " 拼图 "),
+            vue.createElementVNode("view", {
+              class: "content-main-heard-right",
+              onClick: _cache[1] || (_cache[1] = ($event) => $setup.pageJump("ph/addWatermark/addWatermark"))
+            }, " 添加水印 ")
+          ]),
+          vue.createElementVNode("view", {
+            class: "content-main-customize",
+            onClick: _cache[2] || (_cache[2] = ($event) => $setup.pageJump(""))
+          }, " 自定义修改 ")
+        ]),
+        vue.createCommentVNode(' 	<view class="content-main-center">\r\n			</view> '),
+        vue.createElementVNode("view", { class: "content-main-title" }, " 未来的一些功能还没想好 "),
+        (vue.openBlock(true), vue.createElementBlock(
+          vue.Fragment,
+          null,
+          vue.renderList($setup.sizeType, (item) => {
+            return vue.openBlock(), vue.createElementBlock("view", {
+              key: item.name,
+              class: "content-sizeType",
+              onClick: ($event) => $setup.pageJump(item.router)
+            }, [
+              vue.createElementVNode(
+                "view",
+                null,
+                vue.toDisplayString(item.name),
+                1
+                /* TEXT */
+              ),
+              vue.createElementVNode(
+                "view",
+                { class: "content-sizeType-tips" },
+                vue.toDisplayString(item.tips),
+                1
+                /* TEXT */
+              )
+            ], 8, ["onClick"]);
+          }),
+          128
+          /* KEYED_FRAGMENT */
+        ))
+      ]),
+      vue.createCommentVNode(" <tabbar></tabbar> ")
+    ]);
+  }
+  const PagesHomeHome = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$j], ["__scopeId", "data-v-07e72d3c"], ["__file", "/Users/pq/code/ph/pages/home/home.vue"]]);
   const props$e = {
+    props: {
+      // 是否展示工具条
+      show: {
+        type: Boolean,
+        default: defprops.toolbar.show
+      },
+      // 取消按钮的文字
+      cancelText: {
+        type: String,
+        default: defprops.toolbar.cancelText
+      },
+      // 确认按钮的文字
+      confirmText: {
+        type: String,
+        default: defprops.toolbar.confirmText
+      },
+      // 取消按钮的颜色
+      cancelColor: {
+        type: String,
+        default: defprops.toolbar.cancelColor
+      },
+      // 确认按钮的颜色
+      confirmColor: {
+        type: String,
+        default: defprops.toolbar.confirmColor
+      },
+      // 标题文字
+      title: {
+        type: String,
+        default: defprops.toolbar.title
+      }
+    }
+  };
+  const _sfc_main$j = {
+    name: "u-toolbar",
+    mixins: [mpMixin$1, mixin$1, props$e],
+    methods: {
+      // 点击取消按钮
+      cancel() {
+        this.$emit("cancel");
+      },
+      // 点击确定按钮
+      confirm() {
+        this.$emit("confirm");
+      }
+    }
+  };
+  function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
+    return _ctx.show ? (vue.openBlock(), vue.createElementBlock(
+      "view",
+      {
+        key: 0,
+        class: "u-toolbar",
+        onTouchmove: _cache[2] || (_cache[2] = vue.withModifiers((...args) => _ctx.noop && _ctx.noop(...args), ["stop", "prevent"]))
+      },
+      [
+        vue.createElementVNode("view", {
+          class: "u-toolbar__cancel__wrapper",
+          "hover-class": "u-hover-class"
+        }, [
+          vue.createElementVNode(
+            "text",
+            {
+              class: "u-toolbar__wrapper__cancel",
+              onClick: _cache[0] || (_cache[0] = (...args) => $options.cancel && $options.cancel(...args)),
+              style: vue.normalizeStyle({
+                color: _ctx.cancelColor
+              })
+            },
+            vue.toDisplayString(_ctx.cancelText),
+            5
+            /* TEXT, STYLE */
+          )
+        ]),
+        _ctx.title ? (vue.openBlock(), vue.createElementBlock(
+          "text",
+          {
+            key: 0,
+            class: "u-toolbar__title u-line-1"
+          },
+          vue.toDisplayString(_ctx.title),
+          1
+          /* TEXT */
+        )) : vue.createCommentVNode("v-if", true),
+        vue.createElementVNode("view", {
+          class: "u-toolbar__confirm__wrapper",
+          "hover-class": "u-hover-class"
+        }, [
+          vue.createElementVNode(
+            "text",
+            {
+              class: "u-toolbar__wrapper__confirm",
+              onClick: _cache[1] || (_cache[1] = (...args) => $options.confirm && $options.confirm(...args)),
+              style: vue.normalizeStyle({
+                color: _ctx.confirmColor
+              })
+            },
+            vue.toDisplayString(_ctx.confirmText),
+            5
+            /* TEXT, STYLE */
+          )
+        ])
+      ],
+      32
+      /* NEED_HYDRATION */
+    )) : vue.createCommentVNode("v-if", true);
+  }
+  const __easycom_0$6 = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$i], ["__scopeId", "data-v-eadae74e"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-toolbar/u-toolbar.vue"]]);
+  const props$d = {
+    props: {
+      // 是否显示组件
+      show: {
+        type: Boolean,
+        default: defprops.loadingIcon.show
+      },
+      // 颜色
+      color: {
+        type: String,
+        default: defprops.loadingIcon.color
+      },
+      // 提示文字颜色
+      textColor: {
+        type: String,
+        default: defprops.loadingIcon.textColor
+      },
+      // 文字和图标是否垂直排列
+      vertical: {
+        type: Boolean,
+        default: defprops.loadingIcon.vertical
+      },
+      // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
+      mode: {
+        type: String,
+        default: defprops.loadingIcon.mode
+      },
+      // 图标大小，单位默认px
+      size: {
+        type: [String, Number],
+        default: defprops.loadingIcon.size
+      },
+      // 文字大小
+      textSize: {
+        type: [String, Number],
+        default: defprops.loadingIcon.textSize
+      },
+      // 文字内容
+      text: {
+        type: [String, Number],
+        default: defprops.loadingIcon.text
+      },
+      // 动画模式
+      timingFunction: {
+        type: String,
+        default: defprops.loadingIcon.timingFunction
+      },
+      // 动画执行周期时间
+      duration: {
+        type: [String, Number],
+        default: defprops.loadingIcon.duration
+      },
+      // mode=circle时的暗边颜色
+      inactiveColor: {
+        type: String,
+        default: defprops.loadingIcon.inactiveColor
+      }
+    }
+  };
+  const _sfc_main$i = {
+    name: "u-loading-icon",
+    mixins: [mpMixin$1, mixin$1, props$d],
+    data() {
+      return {
+        // Array.form可以通过一个伪数组对象创建指定长度的数组
+        // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+        array12: Array.from({
+          length: 12
+        }),
+        // 这里需要设置默认值为360，否则在安卓nvue上，会延迟一个duration周期后才执行
+        // 在iOS nvue上，则会一开始默认执行两个周期的动画
+        aniAngel: 360,
+        // 动画旋转角度
+        webviewHide: false,
+        // 监听webview的状态，如果隐藏了页面，则停止动画，以免性能消耗
+        loading: false
+        // 是否运行中，针对nvue使用
+      };
+    },
+    computed: {
+      // 当为circle类型时，给其另外三边设置一个更轻一些的颜色
+      // 之所以需要这么做的原因是，比如父组件传了color为红色，那么需要另外的三个边为浅红色
+      // 而不能是固定的某一个其他颜色(因为这个固定的颜色可能浅蓝，导致效果没有那么细腻良好)
+      otherBorderColor() {
+        const lightColor = uni.$u.colorGradient(this.color, "#ffffff", 100)[80];
+        if (this.mode === "circle") {
+          return this.inactiveColor ? this.inactiveColor : lightColor;
+        } else {
+          return "transparent";
+        }
+      }
+    },
+    watch: {
+      show(n) {
+      }
+    },
+    mounted() {
+      this.init();
+    },
+    methods: {
+      init() {
+        setTimeout(() => {
+          this.show && this.addEventListenerToWebview();
+        }, 20);
+      },
+      // 监听webview的显示与隐藏
+      addEventListenerToWebview() {
+        const pages2 = getCurrentPages();
+        const page2 = pages2[pages2.length - 1];
+        const currentWebview = page2.$getAppWebview();
+        currentWebview.addEventListener("hide", () => {
+          this.webviewHide = true;
+        });
+        currentWebview.addEventListener("show", () => {
+          this.webviewHide = false;
+        });
+      }
+    }
+  };
+  function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+    return _ctx.show ? (vue.openBlock(), vue.createElementBlock(
+      "view",
+      {
+        key: 0,
+        class: vue.normalizeClass(["u-loading-icon", [_ctx.vertical && "u-loading-icon--vertical"]]),
+        style: vue.normalizeStyle([_ctx.$u.addStyle(_ctx.customStyle)])
+      },
+      [
+        !$data.webviewHide ? (vue.openBlock(), vue.createElementBlock(
+          "view",
+          {
+            key: 0,
+            class: vue.normalizeClass(["u-loading-icon__spinner", [`u-loading-icon__spinner--${_ctx.mode}`]]),
+            ref: "ani",
+            style: vue.normalizeStyle({
+              color: _ctx.color,
+              width: _ctx.$u.addUnit(_ctx.size),
+              height: _ctx.$u.addUnit(_ctx.size),
+              borderTopColor: _ctx.color,
+              borderBottomColor: $options.otherBorderColor,
+              borderLeftColor: $options.otherBorderColor,
+              borderRightColor: $options.otherBorderColor,
+              "animation-duration": `${_ctx.duration}ms`,
+              "animation-timing-function": _ctx.mode === "semicircle" || _ctx.mode === "circle" ? _ctx.timingFunction : ""
+            })
+          },
+          [
+            _ctx.mode === "spinner" ? (vue.openBlock(true), vue.createElementBlock(
+              vue.Fragment,
+              { key: 0 },
+              vue.renderList($data.array12, (item, index2) => {
+                return vue.openBlock(), vue.createElementBlock("view", {
+                  key: index2,
+                  class: "u-loading-icon__dot"
+                });
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            )) : vue.createCommentVNode("v-if", true)
+          ],
+          6
+          /* CLASS, STYLE */
+        )) : vue.createCommentVNode("v-if", true),
+        _ctx.text ? (vue.openBlock(), vue.createElementBlock(
+          "text",
+          {
+            key: 1,
+            class: "u-loading-icon__text",
+            style: vue.normalizeStyle({
+              fontSize: _ctx.$u.addUnit(_ctx.textSize),
+              color: _ctx.textColor
+            })
+          },
+          vue.toDisplayString(_ctx.text),
+          5
+          /* TEXT, STYLE */
+        )) : vue.createCommentVNode("v-if", true)
+      ],
+      6
+      /* CLASS, STYLE */
+    )) : vue.createCommentVNode("v-if", true);
+  }
+  const __easycom_0$5 = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h], ["__scopeId", "data-v-2af81691"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-loading-icon/u-loading-icon.vue"]]);
+  const props$c = {
     props: {
       // 是否显示遮罩
       show: {
@@ -2766,9 +3569,9 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  const _sfc_main$j = {
+  const _sfc_main$h = {
     name: "u-overlay",
-    mixins: [mpMixin$1, mixin$1, props$e],
+    mixins: [mpMixin$1, mixin$1, props$c],
     computed: {
       overlayStyle() {
         const style = {
@@ -2789,8 +3592,8 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$i(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_u_transition = resolveEasycom(vue.resolveDynamicComponent("u-transition"), __easycom_1$3);
+  function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_u_transition = resolveEasycom(vue.resolveDynamicComponent("u-transition"), __easycom_4$1);
     return vue.openBlock(), vue.createBlock(_component_u_transition, {
       show: _ctx.show,
       "custom-class": "u-overlay",
@@ -2805,8 +3608,8 @@ if (uni.restoreGlobal) {
       /* FORWARDED */
     }, 8, ["show", "duration", "custom-style", "onClick"]);
   }
-  const __easycom_0$5 = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$i], ["__scopeId", "data-v-9112bed9"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-overlay/u-overlay.vue"]]);
-  const props$d = {
+  const __easycom_0$4 = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$g], ["__scopeId", "data-v-9112bed9"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-overlay/u-overlay.vue"]]);
+  const props$b = {
     props: {
       bgColor: {
         type: String,
@@ -2814,9 +3617,9 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  const _sfc_main$i = {
+  const _sfc_main$g = {
     name: "u-status-bar",
-    mixins: [mpMixin$1, mixin$1, props$d],
+    mixins: [mpMixin$1, mixin$1, props$b],
     data() {
       return {};
     },
@@ -2829,7 +3632,7 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$h(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -2843,411 +3646,13 @@ if (uni.restoreGlobal) {
       /* STYLE */
     );
   }
-  const __easycom_0$4 = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$h], ["__scopeId", "data-v-eb8e0cdd"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-status-bar/u-status-bar.vue"]]);
-  const icons = {
-    "uicon-level": "",
-    "uicon-column-line": "",
-    "uicon-checkbox-mark": "",
-    "uicon-folder": "",
-    "uicon-movie": "",
-    "uicon-star-fill": "",
-    "uicon-star": "",
-    "uicon-phone-fill": "",
-    "uicon-phone": "",
-    "uicon-apple-fill": "",
-    "uicon-chrome-circle-fill": "",
-    "uicon-backspace": "",
-    "uicon-attach": "",
-    "uicon-cut": "",
-    "uicon-empty-car": "",
-    "uicon-empty-coupon": "",
-    "uicon-empty-address": "",
-    "uicon-empty-favor": "",
-    "uicon-empty-permission": "",
-    "uicon-empty-news": "",
-    "uicon-empty-search": "",
-    "uicon-github-circle-fill": "",
-    "uicon-rmb": "",
-    "uicon-person-delete-fill": "",
-    "uicon-reload": "",
-    "uicon-order": "",
-    "uicon-server-man": "",
-    "uicon-search": "",
-    "uicon-fingerprint": "",
-    "uicon-more-dot-fill": "",
-    "uicon-scan": "",
-    "uicon-share-square": "",
-    "uicon-map": "",
-    "uicon-map-fill": "",
-    "uicon-tags": "",
-    "uicon-tags-fill": "",
-    "uicon-bookmark-fill": "",
-    "uicon-bookmark": "",
-    "uicon-eye": "",
-    "uicon-eye-fill": "",
-    "uicon-mic": "",
-    "uicon-mic-off": "",
-    "uicon-calendar": "",
-    "uicon-calendar-fill": "",
-    "uicon-trash": "",
-    "uicon-trash-fill": "",
-    "uicon-play-left": "",
-    "uicon-play-right": "",
-    "uicon-minus": "",
-    "uicon-plus": "",
-    "uicon-info": "",
-    "uicon-info-circle": "",
-    "uicon-info-circle-fill": "",
-    "uicon-question": "",
-    "uicon-error": "",
-    "uicon-close": "",
-    "uicon-checkmark": "",
-    "uicon-android-circle-fill": "",
-    "uicon-android-fill": "",
-    "uicon-ie": "",
-    "uicon-IE-circle-fill": "",
-    "uicon-google": "",
-    "uicon-google-circle-fill": "",
-    "uicon-setting-fill": "",
-    "uicon-setting": "",
-    "uicon-minus-square-fill": "",
-    "uicon-plus-square-fill": "",
-    "uicon-heart": "",
-    "uicon-heart-fill": "",
-    "uicon-camera": "",
-    "uicon-camera-fill": "",
-    "uicon-more-circle": "",
-    "uicon-more-circle-fill": "",
-    "uicon-chat": "",
-    "uicon-chat-fill": "",
-    "uicon-bag-fill": "",
-    "uicon-bag": "",
-    "uicon-error-circle-fill": "",
-    "uicon-error-circle": "",
-    "uicon-close-circle": "",
-    "uicon-close-circle-fill": "",
-    "uicon-checkmark-circle": "",
-    "uicon-checkmark-circle-fill": "",
-    "uicon-question-circle-fill": "",
-    "uicon-question-circle": "",
-    "uicon-share": "",
-    "uicon-share-fill": "",
-    "uicon-shopping-cart": "",
-    "uicon-shopping-cart-fill": "",
-    "uicon-bell": "",
-    "uicon-bell-fill": "",
-    "uicon-list": "",
-    "uicon-list-dot": "",
-    "uicon-zhihu": "",
-    "uicon-zhihu-circle-fill": "",
-    "uicon-zhifubao": "",
-    "uicon-zhifubao-circle-fill": "",
-    "uicon-weixin-circle-fill": "",
-    "uicon-weixin-fill": "",
-    "uicon-twitter-circle-fill": "",
-    "uicon-twitter": "",
-    "uicon-taobao-circle-fill": "",
-    "uicon-taobao": "",
-    "uicon-weibo-circle-fill": "",
-    "uicon-weibo": "",
-    "uicon-qq-fill": "",
-    "uicon-qq-circle-fill": "",
-    "uicon-moments-circel-fill": "",
-    "uicon-moments": "",
-    "uicon-qzone": "",
-    "uicon-qzone-circle-fill": "",
-    "uicon-baidu-circle-fill": "",
-    "uicon-baidu": "",
-    "uicon-facebook-circle-fill": "",
-    "uicon-facebook": "",
-    "uicon-car": "",
-    "uicon-car-fill": "",
-    "uicon-warning-fill": "",
-    "uicon-warning": "",
-    "uicon-clock-fill": "",
-    "uicon-clock": "",
-    "uicon-edit-pen": "",
-    "uicon-edit-pen-fill": "",
-    "uicon-email": "",
-    "uicon-email-fill": "",
-    "uicon-minus-circle": "",
-    "uicon-minus-circle-fill": "",
-    "uicon-plus-circle": "",
-    "uicon-plus-circle-fill": "",
-    "uicon-file-text": "",
-    "uicon-file-text-fill": "",
-    "uicon-pushpin": "",
-    "uicon-pushpin-fill": "",
-    "uicon-grid": "",
-    "uicon-grid-fill": "",
-    "uicon-play-circle": "",
-    "uicon-play-circle-fill": "",
-    "uicon-pause-circle-fill": "",
-    "uicon-pause": "",
-    "uicon-pause-circle": "",
-    "uicon-eye-off": "",
-    "uicon-eye-off-outline": "",
-    "uicon-gift-fill": "",
-    "uicon-gift": "",
-    "uicon-rmb-circle-fill": "",
-    "uicon-rmb-circle": "",
-    "uicon-kefu-ermai": "",
-    "uicon-server-fill": "",
-    "uicon-coupon-fill": "",
-    "uicon-coupon": "",
-    "uicon-integral": "",
-    "uicon-integral-fill": "",
-    "uicon-home-fill": "",
-    "uicon-home": "",
-    "uicon-hourglass-half-fill": "",
-    "uicon-hourglass": "",
-    "uicon-account": "",
-    "uicon-plus-people-fill": "",
-    "uicon-minus-people-fill": "",
-    "uicon-account-fill": "",
-    "uicon-thumb-down-fill": "",
-    "uicon-thumb-down": "",
-    "uicon-thumb-up": "",
-    "uicon-thumb-up-fill": "",
-    "uicon-lock-fill": "",
-    "uicon-lock-open": "",
-    "uicon-lock-opened-fill": "",
-    "uicon-lock": "",
-    "uicon-red-packet-fill": "",
-    "uicon-photo-fill": "",
-    "uicon-photo": "",
-    "uicon-volume-off-fill": "",
-    "uicon-volume-off": "",
-    "uicon-volume-fill": "",
-    "uicon-volume": "",
-    "uicon-red-packet": "",
-    "uicon-download": "",
-    "uicon-arrow-up-fill": "",
-    "uicon-arrow-down-fill": "",
-    "uicon-play-left-fill": "",
-    "uicon-play-right-fill": "",
-    "uicon-rewind-left-fill": "",
-    "uicon-rewind-right-fill": "",
-    "uicon-arrow-downward": "",
-    "uicon-arrow-leftward": "",
-    "uicon-arrow-rightward": "",
-    "uicon-arrow-upward": "",
-    "uicon-arrow-down": "",
-    "uicon-arrow-right": "",
-    "uicon-arrow-left": "",
-    "uicon-arrow-up": "",
-    "uicon-skip-back-left": "",
-    "uicon-skip-forward-right": "",
-    "uicon-rewind-right": "",
-    "uicon-rewind-left": "",
-    "uicon-arrow-right-double": "",
-    "uicon-arrow-left-double": "",
-    "uicon-wifi-off": "",
-    "uicon-wifi": "",
-    "uicon-empty-data": "",
-    "uicon-empty-history": "",
-    "uicon-empty-list": "",
-    "uicon-empty-page": "",
-    "uicon-empty-order": "",
-    "uicon-man": "",
-    "uicon-woman": "",
-    "uicon-man-add": "",
-    "uicon-man-add-fill": "",
-    "uicon-man-delete": "",
-    "uicon-man-delete-fill": "",
-    "uicon-zh": "",
-    "uicon-en": ""
-  };
-  const props$c = {
-    props: {
-      // 图标类名
-      name: {
-        type: String,
-        default: defprops.icon.name
-      },
-      // 图标颜色，可接受主题色
-      color: {
-        type: String,
-        default: defprops.icon.color
-      },
-      // 字体大小，单位px
-      size: {
-        type: [String, Number],
-        default: defprops.icon.size
-      },
-      // 是否显示粗体
-      bold: {
-        type: Boolean,
-        default: defprops.icon.bold
-      },
-      // 点击图标的时候传递事件出去的index（用于区分点击了哪一个）
-      index: {
-        type: [String, Number],
-        default: defprops.icon.index
-      },
-      // 触摸图标时的类名
-      hoverClass: {
-        type: String,
-        default: defprops.icon.hoverClass
-      },
-      // 自定义扩展前缀，方便用户扩展自己的图标库
-      customPrefix: {
-        type: String,
-        default: defprops.icon.customPrefix
-      },
-      // 图标右边或者下面的文字
-      label: {
-        type: [String, Number],
-        default: defprops.icon.label
-      },
-      // label的位置，只能右边或者下边
-      labelPos: {
-        type: String,
-        default: defprops.icon.labelPos
-      },
-      // label的大小
-      labelSize: {
-        type: [String, Number],
-        default: defprops.icon.labelSize
-      },
-      // label的颜色
-      labelColor: {
-        type: String,
-        default: defprops.icon.labelColor
-      },
-      // label与图标的距离
-      space: {
-        type: [String, Number],
-        default: defprops.icon.space
-      },
-      // 图片的mode
-      imgMode: {
-        type: String,
-        default: defprops.icon.imgMode
-      },
-      // 用于显示图片小图标时，图片的宽度
-      width: {
-        type: [String, Number],
-        default: defprops.icon.width
-      },
-      // 用于显示图片小图标时，图片的高度
-      height: {
-        type: [String, Number],
-        default: defprops.icon.height
-      },
-      // 用于解决某些情况下，让图标垂直居中的用途
-      top: {
-        type: [String, Number],
-        default: defprops.icon.top
-      },
-      // 是否阻止事件传播
-      stop: {
-        type: Boolean,
-        default: defprops.icon.stop
-      }
-    }
-  };
-  const _sfc_main$h = {
-    name: "u-icon",
-    data() {
-      return {};
-    },
-    emits: ["click"],
-    mixins: [mpMixin$1, mixin$1, props$c],
-    computed: {
-      uClasses() {
-        let classes = [];
-        classes.push(this.customPrefix + "-" + this.name);
-        if (this.color && uni.$u.config.type.includes(this.color))
-          classes.push("u-icon__icon--" + this.color);
-        return classes;
-      },
-      iconStyle() {
-        let style = {};
-        style = {
-          fontSize: uni.$u.addUnit(this.size),
-          lineHeight: uni.$u.addUnit(this.size),
-          fontWeight: this.bold ? "bold" : "normal",
-          // 某些特殊情况需要设置一个到顶部的距离，才能更好的垂直居中
-          top: uni.$u.addUnit(this.top)
-        };
-        if (this.color && !uni.$u.config.type.includes(this.color))
-          style.color = this.color;
-        return style;
-      },
-      // 判断传入的name属性，是否图片路径，只要带有"/"均认为是图片形式
-      isImg() {
-        return this.name.indexOf("/") !== -1;
-      },
-      imgStyle() {
-        let style = {};
-        style.width = this.width ? uni.$u.addUnit(this.width) : uni.$u.addUnit(this.size);
-        style.height = this.height ? uni.$u.addUnit(this.height) : uni.$u.addUnit(this.size);
-        return style;
-      },
-      // 通过图标名，查找对应的图标
-      icon() {
-        return icons["uicon-" + this.name] || this.name;
-      }
-    },
-    methods: {
-      clickHandler(e) {
-        this.$emit("click", this.index);
-        this.stop && this.preventEvent(e);
-      }
-    }
-  };
-  function _sfc_render$g(_ctx, _cache, $props, $setup, $data, $options) {
-    return vue.openBlock(), vue.createElementBlock(
-      "view",
-      {
-        class: vue.normalizeClass(["u-icon", ["u-icon--" + _ctx.labelPos]]),
-        onClick: _cache[0] || (_cache[0] = (...args) => $options.clickHandler && $options.clickHandler(...args))
-      },
-      [
-        $options.isImg ? (vue.openBlock(), vue.createElementBlock("image", {
-          key: 0,
-          class: "u-icon__img",
-          src: _ctx.name,
-          mode: _ctx.imgMode,
-          style: vue.normalizeStyle([$options.imgStyle, _ctx.$u.addStyle(_ctx.customStyle)])
-        }, null, 12, ["src", "mode"])) : (vue.openBlock(), vue.createElementBlock("text", {
-          key: 1,
-          class: vue.normalizeClass(["u-icon__icon", $options.uClasses]),
-          style: vue.normalizeStyle([$options.iconStyle, _ctx.$u.addStyle(_ctx.customStyle)]),
-          "hover-class": _ctx.hoverClass
-        }, vue.toDisplayString($options.icon), 15, ["hover-class"])),
-        vue.createCommentVNode(' 这里进行空字符串判断，如果仅仅是v-if="label"，可能会出现传递0的时候，结果也无法显示 '),
-        _ctx.label !== "" ? (vue.openBlock(), vue.createElementBlock(
-          "text",
-          {
-            key: 2,
-            class: "u-icon__label",
-            style: vue.normalizeStyle({
-              color: _ctx.labelColor,
-              fontSize: _ctx.$u.addUnit(_ctx.labelSize),
-              marginLeft: _ctx.labelPos == "right" ? _ctx.$u.addUnit(_ctx.space) : 0,
-              marginTop: _ctx.labelPos == "bottom" ? _ctx.$u.addUnit(_ctx.space) : 0,
-              marginRight: _ctx.labelPos == "left" ? _ctx.$u.addUnit(_ctx.space) : 0,
-              marginBottom: _ctx.labelPos == "top" ? _ctx.$u.addUnit(_ctx.space) : 0
-            })
-          },
-          vue.toDisplayString(_ctx.label),
-          5
-          /* TEXT, STYLE */
-        )) : vue.createCommentVNode("v-if", true)
-      ],
-      2
-      /* CLASS */
-    );
-  }
-  const __easycom_3$2 = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["render", _sfc_render$g], ["__scopeId", "data-v-ac70166d"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-icon/u-icon.vue"]]);
-  const props$b = {
+  const __easycom_0$3 = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$f], ["__scopeId", "data-v-eb8e0cdd"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-status-bar/u-status-bar.vue"]]);
+  const props$a = {
     props: {}
   };
-  const _sfc_main$g = {
+  const _sfc_main$f = {
     name: "u-safe-bottom",
-    mixins: [mpMixin$1, mixin$1, props$b],
+    mixins: [mpMixin$1, mixin$1, props$a],
     data() {
       return {
         safeAreaBottomHeight: 0,
@@ -3263,7 +3668,7 @@ if (uni.restoreGlobal) {
     mounted() {
     }
   };
-  function _sfc_render$f(_ctx, _cache, $props, $setup, $data, $options) {
+  function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
     return vue.openBlock(), vue.createElementBlock(
       "view",
       {
@@ -3275,8 +3680,8 @@ if (uni.restoreGlobal) {
       /* CLASS, STYLE */
     );
   }
-  const __easycom_3$1 = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["render", _sfc_render$f], ["__scopeId", "data-v-f3d22cfe"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-safe-bottom/u-safe-bottom.vue"]]);
-  const props$a = {
+  const __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$e], ["__scopeId", "data-v-f3d22cfe"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-safe-bottom/u-safe-bottom.vue"]]);
+  const props$9 = {
     props: {
       // 是否展示弹窗
       show: {
@@ -3355,9 +3760,9 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  const _sfc_main$f = {
+  const _sfc_main$e = {
     name: "u-popup",
-    mixins: [mpMixin$1, mixin$1, props$a],
+    mixins: [mpMixin$1, mixin$1, props$9],
     data() {
       return {
         overlayDuration: this.duration + 50
@@ -3468,12 +3873,12 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$e(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_u_overlay = resolveEasycom(vue.resolveDynamicComponent("u-overlay"), __easycom_0$5);
-    const _component_u_status_bar = resolveEasycom(vue.resolveDynamicComponent("u-status-bar"), __easycom_0$4);
+  function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_u_overlay = resolveEasycom(vue.resolveDynamicComponent("u-overlay"), __easycom_0$4);
+    const _component_u_status_bar = resolveEasycom(vue.resolveDynamicComponent("u-status-bar"), __easycom_0$3);
     const _component_u_icon = resolveEasycom(vue.resolveDynamicComponent("u-icon"), __easycom_3$2);
-    const _component_u_safe_bottom = resolveEasycom(vue.resolveDynamicComponent("u-safe-bottom"), __easycom_3$1);
-    const _component_u_transition = resolveEasycom(vue.resolveDynamicComponent("u-transition"), __easycom_1$3);
+    const _component_u_safe_bottom = resolveEasycom(vue.resolveDynamicComponent("u-safe-bottom"), __easycom_3);
+    const _component_u_transition = resolveEasycom(vue.resolveDynamicComponent("u-transition"), __easycom_4$1);
     return vue.openBlock(), vue.createElementBlock("view", { class: "u-popup" }, [
       _ctx.overlay ? (vue.openBlock(), vue.createBlock(_component_u_overlay, {
         key: 0,
@@ -3533,8 +3938,8 @@ if (uni.restoreGlobal) {
       }, 8, ["show", "customStyle", "mode", "duration", "onAfterEnter", "onClick"])
     ]);
   }
-  const __easycom_2$1 = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["render", _sfc_render$e], ["__scopeId", "data-v-05c24e9b"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-popup/u-popup.vue"]]);
-  const props$9 = {
+  const __easycom_2$1 = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$d], ["__scopeId", "data-v-05c24e9b"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-popup/u-popup.vue"]]);
+  const props$8 = {
     props: {
       // 是否展示picker弹窗
       show: {
@@ -3613,9 +4018,9 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  const _sfc_main$e = {
+  const _sfc_main$d = {
     name: "u-picker",
-    mixins: [mpMixin$1, mixin$1, props$9],
+    mixins: [mpMixin$1, mixin$1, props$8],
     data() {
       return {
         // 上一次选择的列索引
@@ -3752,9 +4157,9 @@ if (uni.restoreGlobal) {
       }
     }
   };
-  function _sfc_render$d(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_u_toolbar = resolveEasycom(vue.resolveDynamicComponent("u-toolbar"), __easycom_0$7);
-    const _component_u_loading_icon = resolveEasycom(vue.resolveDynamicComponent("u-loading-icon"), __easycom_0$6);
+  function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
+    const _component_u_toolbar = resolveEasycom(vue.resolveDynamicComponent("u-toolbar"), __easycom_0$6);
+    const _component_u_loading_icon = resolveEasycom(vue.resolveDynamicComponent("u-loading-icon"), __easycom_0$5);
     const _component_u_popup = resolveEasycom(vue.resolveDynamicComponent("u-popup"), __easycom_2$1);
     return vue.openBlock(), vue.createBlock(_component_u_popup, {
       show: _ctx.show,
@@ -3831,252 +4236,7 @@ if (uni.restoreGlobal) {
       /* STABLE */
     }, 8, ["show", "onClose"]);
   }
-  const __easycom_0$3 = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$d], ["__scopeId", "data-v-91b05052"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-picker/u-picker.vue"]]);
-  const props$8 = {
-    props: {
-      // 图片地址
-      src: {
-        type: String,
-        default: defprops.image.src
-      },
-      // 裁剪模式
-      mode: {
-        type: String,
-        default: defprops.image.mode
-      },
-      // 宽度，单位任意
-      width: {
-        type: [String, Number],
-        default: defprops.image.width
-      },
-      // 高度，单位任意
-      height: {
-        type: [String, Number],
-        default: defprops.image.height
-      },
-      // 图片形状，circle-圆形，square-方形
-      shape: {
-        type: String,
-        default: defprops.image.shape
-      },
-      // 圆角，单位任意
-      radius: {
-        type: [String, Number],
-        default: defprops.image.radius
-      },
-      // 是否懒加载，微信小程序、App、百度小程序、字节跳动小程序
-      lazyLoad: {
-        type: Boolean,
-        default: defprops.image.lazyLoad
-      },
-      // 开启长按图片显示识别微信小程序码菜单
-      showMenuByLongpress: {
-        type: Boolean,
-        default: defprops.image.showMenuByLongpress
-      },
-      // 加载中的图标，或者小图片
-      loadingIcon: {
-        type: String,
-        default: defprops.image.loadingIcon
-      },
-      // 加载失败的图标，或者小图片
-      errorIcon: {
-        type: String,
-        default: defprops.image.errorIcon
-      },
-      // 是否显示加载中的图标或者自定义的slot
-      showLoading: {
-        type: Boolean,
-        default: defprops.image.showLoading
-      },
-      // 是否显示加载错误的图标或者自定义的slot
-      showError: {
-        type: Boolean,
-        default: defprops.image.showError
-      },
-      // 是否需要淡入效果
-      fade: {
-        type: Boolean,
-        default: defprops.image.fade
-      },
-      // 只支持网络资源，只对微信小程序有效
-      webp: {
-        type: Boolean,
-        default: defprops.image.webp
-      },
-      // 过渡时间，单位ms
-      duration: {
-        type: [String, Number],
-        default: defprops.image.duration
-      },
-      // 背景颜色，用于深色页面加载图片时，为了和背景色融合
-      bgColor: {
-        type: String,
-        default: defprops.image.bgColor
-      }
-    }
-  };
-  const _sfc_main$d = {
-    name: "u-image",
-    mixins: [mpMixin$1, mixin$1, props$8],
-    data() {
-      return {
-        // 图片是否加载错误，如果是，则显示错误占位图
-        isError: false,
-        // 初始化组件时，默认为加载中状态
-        loading: true,
-        // 不透明度，为了实现淡入淡出的效果
-        opacity: 1,
-        // 过渡时间，因为props的值无法修改，故需要一个中间值
-        durationTime: this.duration,
-        // 图片加载完成时，去掉背景颜色，因为如果是png图片，就会显示灰色的背景
-        backgroundStyle: {},
-        // 用于fade模式的控制组件显示与否
-        show: false
-      };
-    },
-    watch: {
-      src: {
-        immediate: true,
-        handler(n) {
-          if (!n) {
-            this.isError = true;
-          } else {
-            this.isError = false;
-            this.loading = true;
-          }
-        }
-      }
-    },
-    computed: {
-      wrapStyle() {
-        let style = {};
-        style.width = this.$u.addUnit(this.width);
-        style.height = this.$u.addUnit(this.height);
-        style.borderRadius = this.shape == "circle" ? "10000px" : uni.$u.addUnit(this.radius);
-        style.overflow = this.radius > 0 ? "hidden" : "visible";
-        return uni.$u.deepMerge(style, uni.$u.addStyle(this.customStyle));
-      }
-    },
-    mounted() {
-      this.show = true;
-    },
-    emits: ["click", "error", "load"],
-    methods: {
-      // 点击图片
-      onClick() {
-        this.$emit("click");
-      },
-      // 图片加载失败
-      onErrorHandler(err) {
-        this.loading = false;
-        this.isError = true;
-        this.$emit("error", err);
-      },
-      // 图片加载完成，标记loading结束
-      onLoadHandler(event) {
-        this.loading = false;
-        this.isError = false;
-        this.$emit("load", event);
-        this.removeBgColor();
-      },
-      // 移除图片的背景色
-      removeBgColor() {
-        this.backgroundStyle = {
-          backgroundColor: "transparent"
-        };
-      }
-    }
-  };
-  function _sfc_render$c(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_u_icon = resolveEasycom(vue.resolveDynamicComponent("u-icon"), __easycom_3$2);
-    const _component_u_transition = resolveEasycom(vue.resolveDynamicComponent("u-transition"), __easycom_1$3);
-    return vue.openBlock(), vue.createBlock(_component_u_transition, {
-      mode: "fade",
-      show: $data.show,
-      duration: _ctx.fade ? 1e3 : 0
-    }, {
-      default: vue.withCtx(() => [
-        vue.createElementVNode(
-          "view",
-          {
-            class: "u-image",
-            onClick: _cache[2] || (_cache[2] = (...args) => $options.onClick && $options.onClick(...args)),
-            style: vue.normalizeStyle([$options.wrapStyle, $data.backgroundStyle])
-          },
-          [
-            !$data.isError ? (vue.openBlock(), vue.createElementBlock("image", {
-              key: 0,
-              src: _ctx.src,
-              mode: _ctx.mode,
-              onError: _cache[0] || (_cache[0] = (...args) => $options.onErrorHandler && $options.onErrorHandler(...args)),
-              onLoad: _cache[1] || (_cache[1] = (...args) => $options.onLoadHandler && $options.onLoadHandler(...args)),
-              "show-menu-by-longpress": _ctx.showMenuByLongpress,
-              "lazy-load": _ctx.lazyLoad,
-              class: "u-image__image",
-              style: vue.normalizeStyle({
-                borderRadius: _ctx.shape == "circle" ? "10000px" : _ctx.$u.addUnit(_ctx.radius),
-                width: _ctx.$u.addUnit(_ctx.width),
-                height: _ctx.$u.addUnit(_ctx.height)
-              })
-            }, null, 44, ["src", "mode", "show-menu-by-longpress", "lazy-load"])) : vue.createCommentVNode("v-if", true),
-            _ctx.showLoading && $data.loading ? (vue.openBlock(), vue.createElementBlock(
-              "view",
-              {
-                key: 1,
-                class: "u-image__loading",
-                style: vue.normalizeStyle({
-                  borderRadius: _ctx.shape == "circle" ? "50%" : _ctx.$u.addUnit(_ctx.radius),
-                  backgroundColor: this.bgColor,
-                  width: _ctx.$u.addUnit(_ctx.width),
-                  height: _ctx.$u.addUnit(_ctx.height)
-                })
-              },
-              [
-                vue.renderSlot(_ctx.$slots, "loading", {}, () => [
-                  vue.createVNode(_component_u_icon, {
-                    name: _ctx.loadingIcon,
-                    width: _ctx.width,
-                    height: _ctx.height
-                  }, null, 8, ["name", "width", "height"])
-                ], true)
-              ],
-              4
-              /* STYLE */
-            )) : vue.createCommentVNode("v-if", true),
-            _ctx.showError && $data.isError && !$data.loading ? (vue.openBlock(), vue.createElementBlock(
-              "view",
-              {
-                key: 2,
-                class: "u-image__error",
-                style: vue.normalizeStyle({
-                  borderRadius: _ctx.shape == "circle" ? "50%" : _ctx.$u.addUnit(_ctx.radius),
-                  width: _ctx.$u.addUnit(_ctx.width),
-                  height: _ctx.$u.addUnit(_ctx.height)
-                })
-              },
-              [
-                vue.renderSlot(_ctx.$slots, "error", {}, () => [
-                  vue.createVNode(_component_u_icon, {
-                    name: _ctx.errorIcon,
-                    width: _ctx.width,
-                    height: _ctx.height
-                  }, null, 8, ["name", "width", "height"])
-                ], true)
-              ],
-              4
-              /* STYLE */
-            )) : vue.createCommentVNode("v-if", true)
-          ],
-          4
-          /* STYLE */
-        )
-      ]),
-      _: 3
-      /* FORWARDED */
-    }, 8, ["show", "duration"]);
-  }
-  const __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$c], ["__scopeId", "data-v-abebd402"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-image/u-image.vue"]]);
+  const __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$c], ["__scopeId", "data-v-91b05052"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-picker/u-picker.vue"]]);
   const props$7 = {
     props: {
       // 绑定的值
@@ -4862,7 +5022,7 @@ if (uni.restoreGlobal) {
       /* STYLE */
     );
   }
-  const __easycom_5 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$8], ["__scopeId", "data-v-7b84e269"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-slider/u-slider.vue"]]);
+  const __easycom_4 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$8], ["__scopeId", "data-v-7b84e269"], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-slider/u-slider.vue"]]);
   const props$3 = {
     props: {
       // 当前form的需要验证字段的集合
@@ -5968,7 +6128,7 @@ if (uni.restoreGlobal) {
       vue.renderSlot(_ctx.$slots, "default")
     ]);
   }
-  const __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$7], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-form/u-form.vue"]]);
+  const __easycom_5 = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$7], ["__file", "/Users/pq/code/ph/uni_modules/uview-plus/components/u-form/u-form.vue"]]);
   const block0 = (Comp) => {
     (Comp.$renderjs || (Comp.$renderjs = [])).push("cropper");
     (Comp.$renderjsModules || (Comp.$renderjsModules = {}))["cropper"] = "c0c7256a";
@@ -6291,8 +6451,8 @@ if (uni.restoreGlobal) {
             this.oldWidth = +this.scaleWidth.toFixed(2);
             this.oldHeight = +this.scaleHeight.toFixed(2);
           },
-          fail: (err) => {
-            formatAppLog("error", "at uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.vue:437", err);
+          fail: (err2) => {
+            formatAppLog("error", "at uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.vue:437", err2);
           }
         });
       },
@@ -6389,8 +6549,8 @@ if (uni.restoreGlobal) {
             this.drawImage(ctx, image2);
             callback && setTimeout(callback, this.delay);
           };
-          image2.onerror = (err) => {
-            formatAppLog("error", "at uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.vue:540", err);
+          image2.onerror = (err2) => {
+            formatAppLog("error", "at uni_modules/qf-image-cropper/components/qf-image-cropper/qf-image-cropper.vue:540", err2);
             uni.hideLoading();
           };
           image2.src = src;
@@ -6423,7 +6583,7 @@ if (uni.restoreGlobal) {
           success: (res) => {
             this.handleImage(res.tempFilePath);
           },
-          fail: (err) => {
+          fail: (err2) => {
             uni.hideLoading();
             uni.showToast({ title: "裁剪失败，生成图片异常！", icon: "none" });
           }
@@ -6808,7 +6968,7 @@ if (uni.restoreGlobal) {
     }
   };
   function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_u_status_bar = resolveEasycom(vue.resolveDynamicComponent("u-status-bar"), __easycom_0$4);
+    const _component_u_status_bar = resolveEasycom(vue.resolveDynamicComponent("u-status-bar"), __easycom_0$3);
     const _component_u_icon = resolveEasycom(vue.resolveDynamicComponent("u-icon"), __easycom_3$2);
     return vue.openBlock(), vue.createElementBlock("view", { class: "u-navbar" }, [
       _ctx.fixed && _ctx.placeholder ? (vue.openBlock(), vue.createElementBlock(
@@ -7197,7 +7357,7 @@ if (uni.restoreGlobal) {
     }
   };
   function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_u_loading_icon = resolveEasycom(vue.resolveDynamicComponent("u-loading-icon"), __easycom_0$6);
+    const _component_u_loading_icon = resolveEasycom(vue.resolveDynamicComponent("u-loading-icon"), __easycom_0$5);
     const _component_u_icon = resolveEasycom(vue.resolveDynamicComponent("u-icon"), __easycom_3$2);
     return vue.openBlock(), vue.createElementBlock("button", {
       "hover-start-time": Number(_ctx.hoverStartTime),
@@ -7617,8 +7777,8 @@ if (uni.restoreGlobal) {
                   "选中了第" + (data.tapIndex + 1) + "个按钮,第" + (data.index + 1) + "张图片"
                 );
               },
-              fail: function(err) {
-                formatAppLog("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:276", err.errMsg);
+              fail: function(err2) {
+                formatAppLog("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:276", err2.errMsg);
               }
             }
           });
@@ -7663,7 +7823,6 @@ if (uni.restoreGlobal) {
         ctx.fillRect(0, 0, width, height);
         let ruse = JSON.parse(JSON.stringify(fileList.value));
         ruse.sort((a, b) => (a.zIndex || 1) - (b.zIndex || 1));
-        formatAppLog("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:334", "fileList.value", ruse);
         ruse.forEach((item, index2) => {
           drawItem(ctx, item);
         });
@@ -7685,8 +7844,8 @@ if (uni.restoreGlobal) {
                 }
               });
             },
-            fail: (err) => {
-              formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:359", "合并图片失败:", err);
+            fail: (err2) => {
+              formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:359", "合并图片失败:", err2);
               uni.showToast({
                 title: "合并图片失败",
                 icon: "none"
@@ -7709,37 +7868,50 @@ if (uni.restoreGlobal) {
           // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ["album"],
           // 从相册选择
-          success: function(res) {
-            res.tempFilePaths.forEach(async (item, index2) => {
+          success: async function(res) {
+            for (let index2 = 0; index2 < res.tempFilePaths.length; index2++) {
               try {
                 const ctx = uni.createCanvasContext("myCanvas");
                 const { width, height } = fileList.value[index2];
                 const proportion = width / height;
                 fileListBackups.value[index2] = {
                   ...fileListBackups.value[index2],
-                  url: item,
+                  url: res.tempFilePaths[index2],
                   // 原图
                   status: "success",
                   message: `${index2}`
                 };
-                const imageInfo = await getImageInfo(item);
+                const imageInfo = await getImageInfo(res.tempFilePaths[index2]);
                 let imageW = imageInfo.width;
                 let imageH = imageInfo.height;
                 let drawX = 0;
                 let drawY = 0;
-                if (imageW < imageH) {
-                  drawY = imageH / 2 - imageW / 2;
-                  imageH = imageW;
+                if (imageW / imageH > proportion) {
+                  imageW = imageH * proportion;
+                  drawX = (imageInfo.width - imageW) / 2;
                 } else {
-                  drawX = imageW / 2 - imageH / 2;
-                  imageW = imageH;
+                  imageH = imageW / proportion;
+                  drawY = (imageInfo.height - imageH) / 2;
                 }
                 ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(item, drawX, drawY, imageW, imageH, 0, 0, previewMain.value.width, previewMain.value.height);
+                await ctx.drawImage(
+                  res.tempFilePaths[index2],
+                  drawX,
+                  drawY,
+                  imageW,
+                  imageH,
+                  0,
+                  0,
+                  previewMain.value.width,
+                  previewMain.value.height
+                );
                 await ctx.draw(true);
-                const cropImage2 = (await uni.canvasToTempFilePath({ canvasId: "myCanvas" })).tempFilePath;
-                clearCanvas();
-                formatAppLog("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:428", "cropImage", cropImage2);
+                const cropImage2 = (await uni.canvasToTempFilePath({
+                  canvasId: "myCanvas"
+                })).tempFilePath;
+                await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
+                await ctx.draw();
+                formatAppLog("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:433", "cropImage", cropImage2);
                 fileList.value[index2] = {
                   ...fileList.value[index2],
                   url: cropImage2,
@@ -7747,17 +7919,17 @@ if (uni.restoreGlobal) {
                   message: `${index2}`
                 };
               } catch (error2) {
-                formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:438", "处理图片失败: ", error2);
+                formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:443", "处理图片失败: ", error2);
                 fileListBackups.value[index2] = {
                   ...fileListBackups.value[index2],
                   status: "error",
                   message: error2.message
                 };
               }
-            });
+            }
           },
           fail: function(error2) {
-            formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:448", "选择图片失败: ", error2);
+            formatAppLog("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:453", "选择图片失败: ", error2);
           }
         });
       };
@@ -7827,13 +7999,13 @@ if (uni.restoreGlobal) {
     }
   };
   function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_u_picker = resolveEasycom(vue.resolveDynamicComponent("u-picker"), __easycom_0$3);
-    const _component_u_image = resolveEasycom(vue.resolveDynamicComponent("u-image"), __easycom_0$2);
+    const _component_u_picker = resolveEasycom(vue.resolveDynamicComponent("u-picker"), __easycom_0$2);
+    const _component_u_image = resolveEasycom(vue.resolveDynamicComponent("u-image"), __easycom_3$1);
     const _component_u_input = resolveEasycom(vue.resolveDynamicComponent("u-input"), __easycom_1$2);
     const _component_u_icon = resolveEasycom(vue.resolveDynamicComponent("u-icon"), __easycom_3$2);
     const _component_u_form_item = resolveEasycom(vue.resolveDynamicComponent("u-form-item"), __easycom_2);
-    const _component_u_slider = resolveEasycom(vue.resolveDynamicComponent("u-slider"), __easycom_5);
-    const _component_u_form = resolveEasycom(vue.resolveDynamicComponent("u-form"), __easycom_3);
+    const _component_u_slider = resolveEasycom(vue.resolveDynamicComponent("u-slider"), __easycom_4);
+    const _component_u_form = resolveEasycom(vue.resolveDynamicComponent("u-form"), __easycom_5);
     return vue.openBlock(), vue.createBlock($setup["page"], {
       title: "拼图",
       lButton: "批量录入",
@@ -7853,14 +8025,16 @@ if (uni.restoreGlobal) {
           columns: $setup.columns,
           keyName: "label",
           onCancel: _cache[0] || (_cache[0] = ($event) => $setup.showImageType = false),
-          onConfirm: $setup.typeConfirm
+          onConfirm: $setup.typeConfirm,
+          closeOnClickOverlay: true
         }, null, 8, ["show", "columns"]),
         vue.createVNode(_component_u_picker, {
           show: $setup.editeImage,
           columns: $setup.iamgeColumns,
           keyName: "label",
           onCancel: _cache[1] || (_cache[1] = ($event) => $setup.editeImage = false),
-          onConfirm: $setup.editImagePicker
+          onConfirm: $setup.editImagePicker,
+          closeOnClickOverlay: true
         }, null, 8, ["show", "columns"]),
         vue.createElementVNode("view", { class: "content" }, [
           vue.createElementVNode("view", { class: "content-main" }, [
@@ -7926,14 +8100,12 @@ if (uni.restoreGlobal) {
                     borderBottom: "",
                     ref: "imageType",
                     border: "none",
-                    placeholder: "请选择"
+                    placeholder: "请选择",
+                    onClick: _cache[3] || (_cache[3] = ($event) => $setup.showImageType = true)
                   },
                   {
                     right: vue.withCtx(() => [
-                      vue.createVNode(_component_u_icon, {
-                        name: "arrow-right",
-                        onClick: _cache[4] || (_cache[4] = ($event) => $setup.showImageType = true)
-                      })
+                      vue.createVNode(_component_u_icon, { name: "arrow-right" })
                     ]),
                     default: vue.withCtx(() => [
                       vue.createVNode(_component_u_input, {
@@ -7942,8 +8114,7 @@ if (uni.restoreGlobal) {
                         disabled: "",
                         disabledColor: "#ffffff",
                         placeholder: "请选择",
-                        border: "none",
-                        onClick: _cache[3] || (_cache[3] = ($event) => $setup.showImageType = true)
+                        border: "none"
                       }, null, 8, ["modelValue"])
                     ]),
                     _: 1
@@ -7967,7 +8138,7 @@ if (uni.restoreGlobal) {
                         vue.createElementVNode("view", { style: { "width": "83%" } }, [
                           vue.createVNode(_component_u_slider, {
                             modelValue: $setup.formData.scale,
-                            "onUpdate:modelValue": _cache[5] || (_cache[5] = ($event) => $setup.formData.scale = $event),
+                            "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.formData.scale = $event),
                             onChanging: $setup.formDataScale,
                             min: "1",
                             max: "100"
@@ -8002,38 +8173,50 @@ if (uni.restoreGlobal) {
     __name: "addWatermark",
     setup(__props, { expose: __expose }) {
       __expose();
+      const instance = vue.getCurrentInstance();
       const imageurl = vue.ref({
         url: "",
         status: "success",
         message: 0
       });
-      const cropImage = vue.ref();
       const formData = vue.ref({
         test: "",
-        iamge: "",
+        image: "",
         opacity: "",
-        angle: 45,
+        angle: -45,
         // 角度
         density: ""
         // 密度
       });
-      const selectImageFn = (item) => {
-        if (item) {
-          previewImage(item.url);
-        } else {
-          chooseImage();
-        }
+      const previewMain = vue.ref({ width: "", height: "" });
+      const clearCanvas = () => {
+        const ctx = uni.createCanvasContext("watermark");
+        ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
+        ctx.draw();
       };
+      vue.onMounted(() => {
+        const query = uni.createSelectorQuery().in(instance.proxy);
+        query.select("#contentMain").boundingClientRect((data) => {
+          if (data) {
+            formatAppLog("log", "at pages/home/ph/addWatermark/addWatermark.vue:52", "元素的宽：" + data.width);
+            formatAppLog("log", "at pages/home/ph/addWatermark/addWatermark.vue:53", "元素的高：" + data.height);
+            previewMain.value = {
+              width: data.width,
+              height: data.height
+            };
+          }
+        }).exec();
+      });
       const previewImage = (urls) => {
         uni.previewImage({
-          urls,
+          urls: [urls],
           current: 1,
           longPressActions: {
             itemList: ["发送给朋友", "保存图片", "收藏"],
             success: function(data) {
             },
-            fail: function(err) {
-              formatAppLog("log", "at pages/home/ph/addWatermark/addWatermark.vue:49", err.errMsg);
+            fail: function(err2) {
+              formatAppLog("log", "at pages/home/ph/addWatermark/addWatermark.vue:71", err2.errMsg);
               uni.showToast({
                 title: "预览失败",
                 icon: "none"
@@ -8042,22 +8225,54 @@ if (uni.restoreGlobal) {
           }
         });
       };
+      const getImageInfo = (src) => {
+        return new Promise((resolve, reject) => {
+          uni.getImageInfo({
+            src,
+            success: resolve,
+            fail: reject
+          });
+        });
+      };
       const chooseImage = () => {
         uni.chooseImage({
           count: 1,
           sizeType: ["original", "compressed"],
           sourceType: ["album"],
-          success: function(res) {
-            debugger;
-            cropImage.value = res.tempFilePaths[0];
+          success: async function(res) {
+            clearCanvas();
+            const width = previewMain.value.width;
+            const height = previewMain.value.height;
+            const imageInfo = await getImageInfo(res.tempFilePaths[0]);
+            let imageW = imageInfo.width;
+            let imageH = imageInfo.height;
+            let scale = 1;
+            if (imageW > imageH) {
+              scale = imageW / width;
+            } else {
+              scale = imageH / height;
+            }
+            imageW /= scale;
+            imageH /= scale;
+            let drawX = (width - imageW) / 2;
+            let drawY = (height - imageH) / 2;
+            const ctx = uni.createCanvasContext("watermark");
+            ctx.imageSmoothingEnabled = false;
+            await ctx.drawImage(imageInfo.path, drawX, drawY, imageW, imageH);
+            await ctx.draw(true);
             imageurl.value = {
-              url: res.tempFilePaths[0],
+              url: imageInfo.path,
+              width: imageW,
+              height: imageH,
+              x: drawX,
+              y: drawY,
               status: "success",
               message: 0
             };
+            editeImage.value = false;
           },
-          fail: function(err) {
-            formatAppLog("log", "at pages/home/ph/addWatermark/addWatermark.vue:74", err.errMsg);
+          fail: function(err2) {
+            formatAppLog("log", "at pages/home/ph/addWatermark/addWatermark.vue:146", err2.errMsg);
             uni.showToast({
               title: "选择图片失败",
               icon: "none"
@@ -8065,59 +8280,117 @@ if (uni.restoreGlobal) {
           }
         });
       };
-      const watermarkStyle = (watermark) => {
-        return {
-          transform: `rotate(-${formData.angle}deg) translate(${watermark.x}%, ${watermark.y}%)`,
-          width: `${watermark.width}px`,
-          height: "50px"
-        };
-      };
-      const watermarks = vue.computed(() => {
-        const watermarks2 = [];
-        for (let i = 0; i < 9; i++) {
-          watermarks2.push({
-            x: Math.floor(Math.random() * 130) + 70,
-            // 随机x位置
-            y: Math.floor(Math.random() * 190) + 20,
-            // 随机y位置
-            width: Math.floor(Math.random() * 120) + 70
-            // 随机宽度
-          });
-        }
-        return watermarks2;
-      });
-      const addWatermark = (imageSrc, watermarkText, fontSize) => {
+      const addWatermark = async () => {
+        const imageWidth = imageurl.value.width || 100;
+        const imageHeight = imageurl.value.height || 100;
+        const imageX = imageurl.value.x || 0;
+        const imageY = imageurl.value.y || 0;
         const ctx = uni.createCanvasContext("watermark");
-        uni.getImageInfo({
-          src: imageSrc,
-          success: (info) => {
-            const {
-              width,
-              height
-            } = info;
-            ctx.drawImage(imageSrc, 0, 0, width, height);
-            ctx.setFontSize(fontSize);
-            ctx.setFillStyle("red");
-            ctx.setGlobalAlpha(0.5);
-            ctx.fillText(watermarkText, width - 150, height - 40);
-            ctx.draw(false, () => {
-              uni.canvasToTempFilePath({
-                canvasId: "watermark",
-                success: (res) => {
-                  this.watermarkedImage = res.tempFilePath;
-                },
-                fail: (err) => {
-                  formatAppLog("error", "at pages/home/ph/addWatermark/addWatermark.vue:124", "Failed to add watermark:", err);
-                }
-              });
+        clearCanvas();
+        await ctx.drawImage(imageurl.value.url, imageX, imageY, imageWidth, imageHeight);
+        formatAppLog("log", "at pages/home/ph/addWatermark/addWatermark.vue:163", "imageInfo", imageurl.value.url, imageX, imageY, imageWidth, imageHeight);
+        if (formData.value.text) {
+          let fontSize = formData.value.fontSize || 20;
+          const angle = formData.value.angle * Math.PI / 180;
+          ctx.textAlign = "center";
+          ctx.font = `${fontSize}px Arial`;
+          ctx.fillStyle = `rgba(50, 50, 50, ${formData.value.opacity || 0.3})`;
+          for (let i = 0; i < 15; i++) {
+            ctx.save();
+            const x = i % 5 * (imageWidth / 2);
+            const y = Math.floor(i / 5) * (imageHeight / 2);
+            ctx.translate(x + imageWidth / 2, y + imageHeight / 2);
+            ctx.rotate(angle);
+            ctx.fillText(formData.value.text, 0, 0);
+            ctx.restore();
+          }
+          ctx.restore();
+        } else {
+          ctx.drawImage(formData.value.image.url, 0, 0, 10, formData.value.image.height * formData.value.image.width / 10);
+        }
+        ctx.draw(true, () => {
+        });
+      };
+      const editeImage = vue.ref(false);
+      const iamgeColumns = vue.reactive([[
+        {
+          label: "添加图片/编辑图片",
+          value: 1
+        },
+        {
+          label: "预览图片",
+          value: 2
+        }
+      ]]);
+      const editImagePicker = (item) => {
+        if (item.value[0].value == 1) {
+          chooseImage();
+        } else {
+          previewImage(imageurl.value.url);
+        }
+      };
+      const generateImages = () => {
+        uni.canvasToTempFilePath({
+          canvasId: "watermark",
+          success: (res) => {
+            const tempFilePath = res.tempFilePath;
+            uni.previewImage({
+              current: tempFilePath,
+              // 当前显示的图片链接
+              urls: [tempFilePath],
+              // 需要预览的图片链接列表
+              success: () => {
+              },
+              fail: () => {
+              }
             });
           },
-          fail: (err) => {
-            formatAppLog("error", "at pages/home/ph/addWatermark/addWatermark.vue:130", "Failed to get image info:", err);
+          fail: (err2) => {
+            formatAppLog("error", "at pages/home/ph/addWatermark/addWatermark.vue:267", "合并图片失败:", err2);
+            uni.showToast({
+              title: "合并图片失败",
+              icon: "none"
+            });
           }
         });
       };
-      const __returned__ = { imageurl, cropImage, formData, selectImageFn, previewImage, chooseImage, watermarkStyle, watermarks, addWatermark, nextTick: vue.nextTick, onMounted: vue.onMounted, ref: vue.ref, reactive: vue.reactive, watch: vue.watch, computed: vue.computed, get onLoad() {
+      const selsectImageFn = () => {
+        if (formData.value.image) {
+          uni.previewImage({
+            urls: [formData.value.image],
+            current: 0,
+            longPressActions: {
+              itemList: ["发送给朋友", "保存图片", "收藏"],
+              success: function(data) {
+              },
+              fail: function(err2) {
+                formatAppLog("log", "at pages/home/ph/addWatermark/addWatermark.vue:286", err2.errMsg);
+              }
+            }
+          });
+        } else {
+          uni.chooseImage({
+            count: 1,
+            //默认9
+            sizeType: ["original"],
+            //可以指定是原图还是压缩图，默认二者都有
+            sourceType: ["album"],
+            //从相册选择
+            success: async function(res) {
+              const hw = await getImageInfo(res.tempFilePaths[0]);
+              debugger;
+              formData.value.image = {
+                url: res.tempFilePaths[0],
+                width: hw.width,
+                height: hw.height,
+                status: "success"
+              };
+              addWatermark();
+            }
+          });
+        }
+      };
+      const __returned__ = { instance, imageurl, formData, previewMain, clearCanvas, previewImage, getImageInfo, chooseImage, addWatermark, editeImage, iamgeColumns, editImagePicker, generateImages, selsectImageFn, nextTick: vue.nextTick, onMounted: vue.onMounted, ref: vue.ref, reactive: vue.reactive, watch: vue.watch, computed: vue.computed, get onLoad() {
         return onLoad;
       }, get onPullDownRefresh() {
         return onPullDownRefresh;
@@ -8125,67 +8398,67 @@ if (uni.restoreGlobal) {
         return onShow;
       }, get dayjs() {
         return dayjs;
-      }, imageCropper: PagesHomeComponentsImageCropperImageCropper, page: page$1 };
+      }, imageCropper: PagesHomeComponentsImageCropperImageCropper, page: page$1, getCurrentInstance: vue.getCurrentInstance };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
   };
   function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_u_image = resolveEasycom(vue.resolveDynamicComponent("u-image"), __easycom_0$2);
+    const _component_u_picker = resolveEasycom(vue.resolveDynamicComponent("u-picker"), __easycom_0$2);
     const _component_u_input = resolveEasycom(vue.resolveDynamicComponent("u-input"), __easycom_1$2);
     const _component_u_form_item = resolveEasycom(vue.resolveDynamicComponent("u-form-item"), __easycom_2);
-    const _component_u_form = resolveEasycom(vue.resolveDynamicComponent("u-form"), __easycom_3);
+    const _component_u_image = resolveEasycom(vue.resolveDynamicComponent("u-image"), __easycom_3$1);
+    const _component_u_slider = resolveEasycom(vue.resolveDynamicComponent("u-slider"), __easycom_4);
+    const _component_u_form = resolveEasycom(vue.resolveDynamicComponent("u-form"), __easycom_5);
     return vue.openBlock(), vue.createElementBlock(
       vue.Fragment,
       null,
       [
-        vue.withDirectives(vue.createVNode($setup["imageCropper"], {
-          cropImage: $setup.cropImage,
-          onHandleCrop: _ctx.handleCrop
-        }, null, 8, ["cropImage", "onHandleCrop"]), [
-          [vue.vShow, _ctx.isOpenCropper]
-        ]),
+        vue.createVNode(_component_u_picker, {
+          show: $setup.editeImage,
+          columns: $setup.iamgeColumns,
+          keyName: "label",
+          onCancel: _cache[0] || (_cache[0] = ($event) => $setup.editeImage = false),
+          onConfirm: $setup.editImagePicker,
+          closeOnClickOverlay: true
+        }, null, 8, ["show", "columns"]),
         vue.createVNode($setup["page"], {
           title: "添加水印",
-          rButton: "生成图片"
+          rButton: "生成图片",
+          onRButton: $setup.generateImages
         }, {
           default: vue.withCtx(() => [
             vue.createElementVNode("view", { class: "content" }, [
-              vue.createElementVNode("view", { class: "content-main" }, [
-                vue.createElementVNode("view", { class: "iamge" }, [
-                  vue.createVNode(_component_u_image, {
-                    mode: "aspectFit",
-                    width: "350",
-                    height: "350",
-                    src: $setup.imageurl.url,
-                    onClick: _cache[0] || (_cache[0] = vue.withModifiers(($event) => $setup.selectImageFn(_ctx.item), ["stop"]))
-                  }, null, 8, ["src"])
-                ]),
-                vue.createElementVNode("view", { class: "watermark-container" }, [
-                  (vue.openBlock(true), vue.createElementBlock(
-                    vue.Fragment,
+              vue.createElementVNode("view", {
+                class: "content-main",
+                id: "contentMain"
+              }, [
+                vue.createElementVNode("view", {
+                  class: "watermark-canvas",
+                  onClick: _cache[1] || (_cache[1] = ($event) => $setup.editeImage = true)
+                }, [
+                  vue.createElementVNode(
+                    "canvas",
+                    {
+                      "canvas-id": "watermark",
+                      style: vue.normalizeStyle({ width: $setup.previewMain.width + "px", height: $setup.previewMain.height + "px" })
+                    },
                     null,
-                    vue.renderList($setup.watermarks, (item) => {
-                      return vue.openBlock(), vue.createElementBlock(
-                        "view",
-                        {
-                          class: "watermark",
-                          style: vue.normalizeStyle($setup.watermarkStyle(item))
-                        },
-                        vue.toDisplayString($setup.formData.text),
-                        5
-                        /* TEXT, STYLE */
-                      );
-                    }),
-                    256
-                    /* UNKEYED_FRAGMENT */
-                  ))
+                    4
+                    /* STYLE */
+                  )
                 ]),
-                vue.createElementVNode("view", { class: "preview-main-bottom" }, [
-                  vue.createElementVNode("canvas", {
-                    "canvas-id": "watermark",
-                    style: { "height": "370px", "width": "370px" }
-                  })
+                vue.createElementVNode("view", { class: "watermark-canvas-image" }, [
+                  vue.createElementVNode(
+                    "canvas",
+                    {
+                      "canvas-id": "watermarkImage",
+                      style: vue.normalizeStyle({ width: $setup.previewMain.width + "px", height: $setup.previewMain.height + "px" })
+                    },
+                    null,
+                    4
+                    /* STYLE */
+                  )
                 ])
               ]),
               vue.createElementVNode("view", { class: "controlPanel" }, [
@@ -8209,8 +8482,9 @@ if (uni.restoreGlobal) {
                         default: vue.withCtx(() => [
                           vue.createVNode(_component_u_input, {
                             modelValue: $setup.formData.text,
-                            "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.formData.text = $event),
-                            border: "none"
+                            "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => $setup.formData.text = $event),
+                            border: "none",
+                            onChange: $setup.addWatermark
                           }, null, 8, ["modelValue"])
                         ]),
                         _: 1
@@ -8219,8 +8493,128 @@ if (uni.restoreGlobal) {
                       512
                       /* NEED_PATCH */
                     ),
-                    vue.createCommentVNode(' <u-form-item label="水印图片" prop="image" borderBottom ref="text">\r\n						<u-image width="40" height="40" :src="formData.image" @click.stop="selsectImageFn(item)">\r\n						</u-image>\r\n					</u-form-item>\r\n					<u-form-item label="水印透明度" prop="opacity" borderBottom ref="text">\r\n						<view style="display: flex;align-items: center;">\r\n							<view style="width: 83%">\r\n								<u-slider v-model="formData.opacity" @changing="(e)=> formData.opacity = e" min="1"\r\n									max="100"></u-slider>\r\n							</view>\r\n\r\n							{{`${formData.opacity} %`}}\r\n						</view>\r\n					</u-form-item>\r\n					<u-form-item label="水印旋转" prop="angle" borderBottom ref="text">\r\n						<view style="display: flex;align-items: center;">\r\n							<view style="width: 83%">\r\n								<u-slider v-model="formData.angle" @changing="(e)=> formData.angle = e" min="1"\r\n									max="100"></u-slider>\r\n							</view>\r\n\r\n							{{`${formData.angle} C`}}\r\n						</view>\r\n					</u-form-item> '),
-                    vue.createCommentVNode(' <u-form-item label="水印密度" prop="density" borderBottom ref="text">\r\n						<view style="display: flex;align-items: center;">\r\n							<view style="width: 83%">\r\n								<u-slider v-model="formData.density" @changing="(e)=> formData.density = e" min="1"\r\n									max="100"></u-slider>\r\n							</view>\r\n\r\n							{{`${formData.density} %`}}\r\n						</view>\r\n					</u-form-item> ')
+                    vue.createVNode(
+                      _component_u_form_item,
+                      {
+                        label: "水印图片",
+                        prop: "image",
+                        borderBottom: "",
+                        ref: "text"
+                      },
+                      {
+                        default: vue.withCtx(() => [
+                          vue.createVNode(_component_u_image, {
+                            width: "40",
+                            height: "40",
+                            src: $setup.formData.image,
+                            onClick: _cache[3] || (_cache[3] = vue.withModifiers(($event) => $setup.selsectImageFn(_ctx.item), ["stop"]))
+                          }, null, 8, ["src"])
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      },
+                      512
+                      /* NEED_PATCH */
+                    ),
+                    vue.createVNode(
+                      _component_u_form_item,
+                      {
+                        label: "水印透明度",
+                        prop: "opacity",
+                        borderBottom: "",
+                        ref: "text"
+                      },
+                      {
+                        default: vue.withCtx(() => [
+                          vue.createElementVNode("view", { style: { "display": "flex", "align-items": "center" } }, [
+                            vue.createElementVNode("view", { style: { "width": "83%" } }, [
+                              vue.createVNode(_component_u_slider, {
+                                modelValue: $setup.formData.opacity,
+                                "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $setup.formData.opacity = $event),
+                                onChanging: _cache[5] || (_cache[5] = (e) => $setup.formData.opacity = e),
+                                min: "1",
+                                max: "100"
+                              }, null, 8, ["modelValue"])
+                            ]),
+                            vue.createTextVNode(
+                              " " + vue.toDisplayString(`${$setup.formData.opacity} %`),
+                              1
+                              /* TEXT */
+                            )
+                          ])
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      },
+                      512
+                      /* NEED_PATCH */
+                    ),
+                    vue.createVNode(
+                      _component_u_form_item,
+                      {
+                        label: "水印旋转",
+                        prop: "angle",
+                        borderBottom: "",
+                        ref: "text"
+                      },
+                      {
+                        default: vue.withCtx(() => [
+                          vue.createElementVNode("view", { style: { "display": "flex", "align-items": "center" } }, [
+                            vue.createElementVNode("view", { style: { "width": "83%" } }, [
+                              vue.createVNode(_component_u_slider, {
+                                modelValue: $setup.formData.angle,
+                                "onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => $setup.formData.angle = $event),
+                                onChanging: _cache[7] || (_cache[7] = (e) => $setup.formData.angle = e),
+                                min: "1",
+                                max: "100"
+                              }, null, 8, ["modelValue"])
+                            ]),
+                            vue.createTextVNode(
+                              " " + vue.toDisplayString(`${$setup.formData.angle} C`),
+                              1
+                              /* TEXT */
+                            )
+                          ])
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      },
+                      512
+                      /* NEED_PATCH */
+                    ),
+                    vue.createVNode(
+                      _component_u_form_item,
+                      {
+                        label: "水印密度",
+                        prop: "density",
+                        borderBottom: "",
+                        ref: "text"
+                      },
+                      {
+                        default: vue.withCtx(() => [
+                          vue.createElementVNode("view", { style: { "display": "flex", "align-items": "center" } }, [
+                            vue.createElementVNode("view", { style: { "width": "83%" } }, [
+                              vue.createVNode(_component_u_slider, {
+                                modelValue: $setup.formData.density,
+                                "onUpdate:modelValue": _cache[8] || (_cache[8] = ($event) => $setup.formData.density = $event),
+                                onChanging: _cache[9] || (_cache[9] = (e) => $setup.formData.density = e),
+                                min: "1",
+                                max: "100"
+                              }, null, 8, ["modelValue"])
+                            ]),
+                            vue.createTextVNode(
+                              " " + vue.toDisplayString(`${$setup.formData.density} %`),
+                              1
+                              /* TEXT */
+                            )
+                          ])
+                        ]),
+                        _: 1
+                        /* STABLE */
+                      },
+                      512
+                      /* NEED_PATCH */
+                    )
                   ]),
                   _: 1
                   /* STABLE */
@@ -8244,12 +8638,20 @@ if (uni.restoreGlobal) {
   const _sfc_main = {
     onLaunch: function() {
       formatAppLog("log", "at App.vue:4", "App Launch");
+      const systemInfo = uni.getSystemInfoSync();
+      if (systemInfo.platform == "tt" || systemInfo.platform == "devtools") {
+        wx.cloud.init({
+          "env": "prod-8gqm1nbtf8eae76e",
+          // 云环境id
+          traceUser: true
+        });
+      }
     },
     onShow: function() {
-      formatAppLog("log", "at App.vue:7", "App Show");
+      formatAppLog("log", "at App.vue:14", "App Show");
     },
     onHide: function() {
-      formatAppLog("log", "at App.vue:10", "App Hide");
+      formatAppLog("log", "at App.vue:17", "App Hide");
     }
   };
   const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__file", "/Users/pq/code/ph/App.vue"]]);
@@ -8714,8 +9116,8 @@ if (uni.restoreGlobal) {
           child = new nativePromise(function(resolve, reject) {
             parent2.then(function(value) {
               resolve(_clone(value, depth2 - 1));
-            }, function(err) {
-              reject(_clone(err, depth2 - 1));
+            }, function(err2) {
+              reject(_clone(err2, depth2 - 1));
             });
           });
         } else if (clone2.__isArray(parent2)) {
@@ -9572,9 +9974,9 @@ if (uni.restoreGlobal) {
     }
     return target;
   }
-  function error(err) {
+  function error(err2) {
     {
-      formatAppLog("error", "at node_modules/uview-plus/libs/function/index.js:238", `uView提示：${err}`);
+      formatAppLog("error", "at node_modules/uview-plus/libs/function/index.js:238", `uView提示：${err2}`);
     }
   }
   function randomArray(array3 = []) {

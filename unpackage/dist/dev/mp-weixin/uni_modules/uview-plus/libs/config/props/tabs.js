@@ -23,3 +23,4 @@ const Tabs = {
   }
 };
 exports.Tabs = Tabs;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/tabs.js.map

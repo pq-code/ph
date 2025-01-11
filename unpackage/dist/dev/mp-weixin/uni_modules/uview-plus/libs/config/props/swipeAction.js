@@ -6,3 +6,4 @@ const SwipeAction = {
   }
 };
 exports.SwipeAction = SwipeAction;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/swipeAction.js.map

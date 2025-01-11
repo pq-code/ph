@@ -15,3 +15,4 @@ const Section = {
   }
 };
 exports.Section = Section;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/section.js.map

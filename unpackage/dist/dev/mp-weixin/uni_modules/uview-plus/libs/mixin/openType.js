@@ -25,3 +25,4 @@ const openType = {
   }
 };
 exports.openType = openType;
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/mixin/openType.js.map

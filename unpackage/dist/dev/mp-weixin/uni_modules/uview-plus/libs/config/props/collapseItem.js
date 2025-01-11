@@ -16,3 +16,4 @@ const CollapseItem = {
   }
 };
 exports.CollapseItem = CollapseItem;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/collapseItem.js.map

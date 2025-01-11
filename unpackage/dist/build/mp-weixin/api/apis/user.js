@@ -1,0 +1,1 @@
+"use strict";const t=require("../index.js");exports.armorTransformation=e=>t.http.post("wx/users/xcx/login",e),exports.editUserInfo=e=>t.http.patch("users/editUserInfo",e),exports.getUerInfo=e=>t.http.post("users/getUerInfo",e);

@@ -10,3 +10,4 @@ const Gap = {
   }
 };
 exports.Gap = Gap;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/gap.js.map

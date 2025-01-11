@@ -33,3 +33,4 @@ const Button = {
   }
 };
 exports.Button = Button;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/button.js.map

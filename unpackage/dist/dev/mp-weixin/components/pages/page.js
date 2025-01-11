@@ -43,11 +43,11 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     const props = __props;
     const emits = __emit;
     const leftClick = () => {
-      console.log(props.backUrl);
+      common_vendor.index.__f__("log", "at components/pages/page.vue:31", props.backUrl);
       if (props.backUrl == "") {
         common_vendor.index.navigateBack({});
       } else {
-        console.log(props.backUrl);
+        common_vendor.index.__f__("log", "at components/pages/page.vue:35", props.backUrl);
         common_vendor.index.navigateTo({
           url: props.backUrl
         });
@@ -92,3 +92,4 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
 });
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-e4f1132a"]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/components/pages/page.js.map

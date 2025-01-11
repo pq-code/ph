@@ -1,5 +1,5 @@
 import { wxService } from './service/wxService'
-import { getSetting, getLoginFn, showToast } from "@/utils/index.js";
+import { getSetting, getLoginFn, showToast,wxUserlLogin } from "@/utils/index.js";
 import { errTips } from '@/api/error/errTips';
 
 export const http = {
@@ -9,11 +9,14 @@ export const http = {
     post: (url, config) => {
         return requset(url, config, 'post');
     },
+	patch: (url, config) => {
+	    return requset(url, config, 'patch');
+	},
 }
 
 const wxRequset = async(url, config, method) => {
 	let SERVICE ="login"
-	if (url.startsWith('wx/users')) {
+	if (url.startsWith('users')) {
 		SERVICE ="login"
 	} else {
 		SERVICE ="koa-0jh8"
@@ -26,7 +29,8 @@ const wxRequset = async(url, config, method) => {
 		  },
 		  "path": url,
 		  "header": {
-			"X-WX-SERVICE": SERVICE
+			"X-WX-SERVICE": SERVICE,
+			"authorization": uni.getStorageSync("token")
 		  },
 		  "method": method,
 		  "data": config
@@ -35,14 +39,16 @@ const wxRequset = async(url, config, method) => {
 		if (res.code == 0) {
 		    resolve(res)
 		} else if (res.error == '10101') {
-		    showToast('token已过期重新登录');
-		    getSetting("scope.record").then((res) => {
-		        getLoginFn().then((res) => {
-		            console.log("res", res);
-		        });
-		    });
+			showToast('token已过期重新登录');
+		    wxUserlLogin().then((res) => {
+				console.log("res", res);
+				resolve(res)
+		    },rej => {
+				reject(rej)
+			})
 		} else {
-		    showToast(errTips[res.code] || res.message || '未知错误');
+		    showToast(errTips[res.error] || res.message || '未知错误');
+			reject(res)
 		}
 	})
 }
@@ -57,7 +63,7 @@ export default async function requset(url, config = {}, method) {
 
   try {
       let res;
-      if (systemInfo.platform === 'tt' || systemInfo.platform === 'devtools') {
+      if (true) {
 		// 微信云托管接口
 		return wxRequset(url, config, method);
       } else {

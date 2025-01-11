@@ -16,3 +16,4 @@ const Album = {
   }
 };
 exports.Album = Album;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/album.js.map

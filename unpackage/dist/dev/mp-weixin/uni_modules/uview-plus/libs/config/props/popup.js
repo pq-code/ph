@@ -21,3 +21,4 @@ const Popup = {
   }
 };
 exports.Popup = Popup;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/popup.js.map

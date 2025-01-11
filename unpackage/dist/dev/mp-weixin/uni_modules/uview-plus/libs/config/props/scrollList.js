@@ -11,3 +11,4 @@ const ScrollList = {
   }
 };
 exports.ScrollList = ScrollList;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/scrollList.js.map

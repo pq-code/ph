@@ -13,3 +13,4 @@ const color = {
   borderColor: "#e4e7ed"
 };
 exports.color = color;
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/color.js.map

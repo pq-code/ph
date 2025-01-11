@@ -26,26 +26,43 @@ import useUserStore from "@/store/user.js";
 let useStore = useUserStore();
 
 const tabbarItems = [
+	{
+	  pagePath: "/pages/home/home",
+	  text: "首页",
+	  iconPath: "/static/tab_icons/home.png",
+	  // selectedIconPath: '/static/tab_icons/home-active.png'
+	  selectedIconPath: "/static/tab_icons/home.png",
+	},
+	{
+	  pagePath: "/pages/user/home",
+	  text: "我的",
+	  iconPath: "/static/tab_icons/user.png",
+	  selectedIconPath: "/static/tab_icons/user.png",
+	},
 ];
 
 //点击tabbar按钮
 const handleTabbarItemClick = (item, index) => {
-  if (useStore.activeTab !== index) {
-    //如果点击的是扫描按钮
-    if (index === 1) {
-      useStore.setActive(index);
-      const path = item.pagePath;
-      uni.switchTab({
-        url: path,
-      });
-    } else {
-      useStore.setActive(index);
-      const path = item.pagePath;
-      uni.switchTab({
-        url: path,
-      });
-    }
-  }
+	const path = item.pagePath;
+	uni.switchTab({
+	  url: path,
+	});
+  // if (useStore.activeTab !== index) {
+  //   //如果点击的是扫描按钮
+  //   if (index === 1) {
+  //     useStore.setActive(index);
+  //     const path = item.pagePath;
+  //     uni.switchTab({
+  //       url: path,
+  //     });
+  //   } else {
+  //     useStore.setActive(index);
+  //     const path = item.pagePath;
+  //     uni.switchTab({
+  //       url: path,
+  //     });
+  //   }
+  // }
 };
 
 //图标的切换

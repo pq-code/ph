@@ -10,3 +10,4 @@ const IndexAnchor = {
   }
 };
 exports.IndexAnchor = IndexAnchor;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/indexAnchor.js.map

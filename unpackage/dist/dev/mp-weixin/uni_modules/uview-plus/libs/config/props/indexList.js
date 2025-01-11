@@ -10,3 +10,4 @@ const IndexList = {
   }
 };
 exports.IndexList = IndexList;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/uview-plus/libs/config/props/indexList.js.map
