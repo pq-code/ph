@@ -21,7 +21,7 @@ const _sfc_main = {
     const emits = __emit;
     const props = __props;
     const handleCrop = (e) => {
-      common_vendor.index.__f__("log", "at pages/home/components/imageCropper/imageCropper.vue:15", e.tempFilePath);
+      common_vendor.index.__f__("log", "at pages/home/components/imageCropper/imageCropper.vue:15", "232323", e.tempFilePath);
       emits("handleCrop", e.tempFilePath);
     };
     common_vendor.watch(props.cropImage, (n, o) => {

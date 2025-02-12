@@ -42,9 +42,9 @@
 		// {name: '国考（小二寸）',tips:'35*45mm | 413*531px', router: ''},
 		// {name: '国家公务员（小二寸）',tips:'35*45mm | 413*531px', router: ''},
 		// {name: '全国计算机等级考试',tips:'33*48mm | 390*567px', router: ''},
-		{name: '测试1123',tips:'35*49mm | 413*579px', router: ''},
-		{name: '测试1123',tips:'22*32mm | 260*378px', router: ''},
-		{name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
+		// {name: '测试1123',tips:'35*49mm | 413*579px', router: ''},
+		// {name: '测试1123',tips:'22*32mm | 260*378px', router: ''},
+		// {name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
 	];
 
 	// 获取天气
@@ -95,7 +95,7 @@
 		uerInfo.value = uni.getStorageSync("userInfo");
 		userProfilePhoto.value = uerInfo.value?.userProfilePhoto;
 
-		getUserInfo() // 登录
+		// getUserInfo() // 登录
 		getWeather(); // 获取天气
 	};
 
@@ -110,7 +110,7 @@
 	});
 
 	onLoad(() => {
-		// init()
+		init()
 	});
 
 	const getUserInfo = () => {
@@ -148,10 +148,10 @@
 	<view class="content">
 		<view class="content-heard">
 			<view class="content-heard-profile" @click="handleTabbarItemClick">
-				<u-image width="40px" height="40px" :src="userProfilePhoto" mode="aspectFill" shape="circle"></u-image>
+				<u-image width="30px" height="30px" :src="userProfilePhoto" mode="aspectFill" shape="circle"></u-image>
 			</view>
 			<view>{{uerInfo.userNickname}}</view>
-			<view style="font-size: 15px;margin:0 10px;display: flex;">
+			<view style="font-size: 13px;margin:0 10px;display: flex;">
 				<view style="margin-right: 10px;">{{ weather.title || '' }}</view>
 				<!-- <u-image
 				shape="circle"
@@ -224,8 +224,8 @@
 			align-items: center;
 			flex-direction: row;
 			.content-heard-profile {
-				 width: 40px;
-				 height: 40px;
+				 width: 30px;
+				 height: 30px;
 				 margin:0 10px;
 				 border-radius: 50%;
 				 background: #aaffc5;

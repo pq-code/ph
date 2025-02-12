@@ -18,8 +18,8 @@
   flex-direction: row;
 }
 .content .content-heard .content-heard-profile.data-v-07e72d3c {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   margin: 0 10px;
   border-radius: 50%;
   background: #aaffc5;

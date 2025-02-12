@@ -1,1 +1,1 @@
-<view class="content data-v-61612e85"><qf-image-cropper wx:if="{{b}}" class="data-v-61612e85" bindcrop="{{a}}" u-i="61612e85-0" bind:__l="__l" u-p="{{b}}"></qf-image-cropper></view>
+<view class="content data-v-7e7704ab"><qf-image-cropper wx:if="{{b}}" class="data-v-7e7704ab" bindcrop="{{a}}" u-i="7e7704ab-0" bind:__l="__l" u-p="{{b}}"></qf-image-cropper></view>

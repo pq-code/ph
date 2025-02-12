@@ -120,7 +120,8 @@ const _sfc_main = {
     const nineSquareGrid = () => {
       const width = (previewMain.value.width - spacing.value * 2) / 3;
       const height = (previewMain.value.height - spacing.value * 2) / 3;
-      fileListBackups.value = new Array(9).fill({}).map((item, index) => {
+      let list = new Array(9).fill({}).map((item, index) => {
+        var _a;
         let row = Math.floor(index / 3);
         let col = index % 3;
         let x = col * (width + spacing.value);
@@ -130,15 +131,17 @@ const _sfc_main = {
           height,
           x,
           y,
-          url: ""
+          url: fileListBackups.value[index] ? (_a = fileListBackups.value[index]) == null ? void 0 : _a.url : ""
         };
       });
+      fileListBackups.value = JSON.parse(JSON.stringify(list));
       fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
     };
     const lrSymmetry = () => {
       const width = (previewMain.value.width - spacing.value) / 2;
       const height = previewMain.value.height;
-      fileListBackups.value = new Array(2).fill({}).map((item, index) => {
+      let list = new Array(2).fill({}).map((item, index) => {
+        var _a;
         let col = index % 2;
         let x = col * (width + spacing.value);
         let y = 0;
@@ -147,9 +150,10 @@ const _sfc_main = {
           height,
           x,
           y,
-          url: ""
+          url: fileListBackups.value[index] ? (_a = fileListBackups.value[index]) == null ? void 0 : _a.url : ""
         };
       });
+      fileListBackups.value = JSON.parse(JSON.stringify(list));
       fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
     };
     const tbSymmetry = () => {
@@ -174,27 +178,33 @@ const _sfc_main = {
       [
         {
           label: "九宫格",
-          value: 1
+          value: 1,
+          url: "@/assets/images/jgg.png"
         },
         {
           label: "九宫格(中间放大)",
-          value: 2
+          value: 2,
+          url: "@/assets/images/jgg.png"
         },
         {
           label: "左右对称",
-          value: 3
+          value: 3,
+          url: "@/assets/images/lr.png"
         },
         {
           label: "上下对称",
-          value: 4
+          value: 4,
+          url: ""
         },
         {
           label: "左三右二",
-          value: 5
+          value: 5,
+          url: ""
         },
         {
           label: "左二右三",
-          value: 6
+          value: 6,
+          url: ""
         }
       ]
     ]);
@@ -219,13 +229,14 @@ const _sfc_main = {
       ]
     ]);
     common_vendor.onPullDownRefresh(() => {
-      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:231", "下拉刷新");
+      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:241", "下拉刷新");
     });
     common_vendor.onShow(() => {
     });
     const editPicture = (item, index) => {
       editeImage.value = true;
       seletIndex.value = index;
+      cropImage.value = fileListBackups.value[index].url;
     };
     const editImagePicker = (item) => {
       editeImage.value = false;
@@ -262,12 +273,12 @@ const _sfc_main = {
             success: function(data) {
               common_vendor.index.__f__(
                 "log",
-                "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:275",
+                "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:286",
                 "选中了第" + (data.tapIndex + 1) + "个按钮,第" + (data.index + 1) + "张图片"
               );
             },
             fail: function(err) {
-              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:284", err.errMsg);
+              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:295", err.errMsg);
             }
           }
         });
@@ -334,7 +345,7 @@ const _sfc_main = {
             });
           },
           fail: (err) => {
-            common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:367", "合并图片失败:", err);
+            common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:378", "合并图片失败:", err);
             common_vendor.index.showToast({
               title: "合并图片失败",
               icon: "none"
@@ -400,7 +411,7 @@ const _sfc_main = {
               })).tempFilePath;
               await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
               await ctx.draw();
-              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:441", "cropImage", cropImage2);
+              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:452", "cropImage", cropImage2);
               fileList.value[index] = {
                 ...fileList.value[index],
                 url: cropImage2,
@@ -408,7 +419,7 @@ const _sfc_main = {
                 message: `${index}`
               };
             } catch (error) {
-              common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:451", "处理图片失败: ", error);
+              common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:462", "处理图片失败: ", error);
               fileListBackups.value[index] = {
                 ...fileListBackups.value[index],
                 status: "error",
@@ -418,7 +429,7 @@ const _sfc_main = {
           }
         },
         fail: function(error) {
-          common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:461", "选择图片失败: ", error);
+          common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:472", "选择图片失败: ", error);
         }
       });
     };
@@ -432,12 +443,14 @@ const _sfc_main = {
       });
     };
     const typeConfirm = (item) => {
-      formData.imageType = item.value[0].value;
-      formData.imageTypeText = item.value[0].label;
+      item = item.value[0];
+      formData.imageType = item.value;
+      formData.imageTypeText = item.label;
       showImageType.value = false;
       formData.scale = 1;
       const typeFunctions = {
         1: nineSquareGrid,
+        2: nineSquareGrid,
         3: lrSymmetry,
         4: tbSymmetry,
         5: l3r2,
@@ -475,7 +488,7 @@ const _sfc_main = {
       };
     };
     const spacingSize = (e) => {
-      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:534", e);
+      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:548", e);
       spacing.value = e;
       const typeFunctions = {
         1: nineSquareGrid,

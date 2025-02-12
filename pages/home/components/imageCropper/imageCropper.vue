@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 const handleCrop =(e)=> {
-	console.log(e.tempFilePath)
+	console.log('232323',e.tempFilePath)
 	emits('handleCrop',e.tempFilePath)
 }
 

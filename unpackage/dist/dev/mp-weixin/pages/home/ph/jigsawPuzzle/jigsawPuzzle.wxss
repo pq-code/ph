@@ -5,6 +5,7 @@
   padding: 10px;
   height: calc(100vh - 20px);
   background: #e8e8e8;
+  overflow-y: hidden;
 }
 .content .content-main.data-v-e8e9eaac {
   position: relative;
@@ -12,7 +13,6 @@
   height: calc(100vw - 20px);
   border-radius: 6px;
   background: #ffffff;
-  overflow: auto;
 }
 .content .content-main .preview-main-top.data-v-e8e9eaac {
   pointer-events: none;
@@ -77,19 +77,27 @@
   z-index: 200;
   grid-template-rows: 1fr 1fr;
 }
-.content .content-main .preview-main-l3r2.data-v-e8e9eaac {
-  width: calc(100vw - 40px);
-  height: calc(100vw - 40px);
-  margin: 10px;
-  background-color: #e8e8e8;
-}
 .content .controlPanel.data-v-e8e9eaac {
   margin-top: 10px;
   width: calc(100vw - 40px);
   padding: 10px;
-  overflow-y: auto;
   border-radius: 6px;
   background: #ffffff;
+  overflow-y: auto;
+}
+.content .controlPanel .puzzleType.data-v-e8e9eaac {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.content .controlPanel .puzzleType .puzzleType-list.data-v-e8e9eaac {
+  height: 100px;
+  background: #f3f4f6;
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 .image-container.data-v-e8e9eaac {
   width: calc(100vw - 40px);
@@ -108,4 +116,7 @@
   display: flex;
   justify-content: space-between;
   pointer-events: auto;
+}
+.u-cell__body.data-v-e8e9eaac {
+  padding: 10px 0 !important;
 }

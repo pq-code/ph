@@ -127,7 +127,8 @@
 	const nineSquareGrid = () => {
 		const width = (previewMain.value.width - spacing.value * 2) / 3;
 		const height = (previewMain.value.height - spacing.value * 2) / 3;
-		fileListBackups.value = new Array(9).fill({}).map((item, index) => {
+		
+		let list = new Array(9).fill({}).map((item, index) => {
 			let row = Math.floor(index / 3);
 			let col = index % 3;
 			let x = col * (width + spacing.value);
@@ -137,16 +138,18 @@
 				height,
 				x,
 				y,
-				url: "",
+				url: fileListBackups.value[index] ? fileListBackups.value[index]?.url : '',
 			};
 		});
+		
+		fileListBackups.value = JSON.parse(JSON.stringify(list));
 		fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
 	};
 	// 左右对称
 	const lrSymmetry = () => {
 		const width = (previewMain.value.width - spacing.value) / 2;
 		const height = previewMain.value.height;
-		fileListBackups.value = new Array(2).fill({}).map((item, index) => {
+		let list = new Array(2).fill({}).map((item, index) => {
 			let col = index % 2;
 			let x = col * (width + spacing.value);
 			let y = 0
@@ -155,9 +158,10 @@
 				height,
 				x,
 				y,
-				url: "",
+				url: fileListBackups.value[index] ? fileListBackups.value[index]?.url : '',
 			};
 		});
+		fileListBackups.value = JSON.parse(JSON.stringify(list));
 		fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
 	}
 	
@@ -183,26 +187,32 @@
 		[	{
 				label: "九宫格",
 				value: 1,
+				url: '@/assets/images/jgg.png'
 			},
 			{
 				label: "九宫格(中间放大)",
 				value: 2,
+				url: '@/assets/images/jgg.png'
 			},
 			{
 				label: "左右对称",
 				value: 3,
+				url: '@/assets/images/lr.png'
 			},
 			{
 				label: "上下对称",
 				value: 4,
+				url: ''
 			},
 			{
 				label: "左三右二",
 				value: 5,
+				url: ''
 			},
 			{
 				label: "左二右三",
 				value: 6,
+				url: ''
 			},
 		],
 	]);
@@ -237,6 +247,7 @@
 	const editPicture = (item, index) => {
 		editeImage.value = true
 		seletIndex.value = index
+		cropImage.value = fileListBackups.value[index].url;
 	}
 
 	// 
@@ -475,13 +486,15 @@
 
 	// 选择图片类型
 	const typeConfirm = (item) => {
-		formData.imageType = item.value[0].value;
-		formData.imageTypeText = item.value[0].label;
+		item = item.value[0]
+		formData.imageType = item.value;
+		formData.imageTypeText = item.label;
 		showImageType.value = false;
 		formData.scale = 1;
 
 		const typeFunctions = {
 			1: nineSquareGrid,
+			2: nineSquareGrid,
 			3: lrSymmetry,
 			4: tbSymmetry,
 			5: l3r2,
@@ -530,6 +543,7 @@
 			zIndex: 700
 		};
 	}
+	// 间距调节
 	const spacingSize = (e) => {
 		console.log(e)
 		spacing.value = e
@@ -547,6 +561,104 @@
 			selectedFunction();
 		}
 	}
+	// 图片缩放到容器合适大小
+	const imageAdaptation = async (container,image) => {
+		const { width, height } = container // 容器大小
+		const proportion = width / height; // 容器宽高比
+		let { imageW, imageH } = image // 图片大小
+		let drawX = 0;
+		let drawY = 0;
+		
+		if(image.width) {
+			imageW = image.width;
+			imageH = image.height;
+		} else {
+			// 获取图片宽高做裁切
+			const imageInfo = await getImageInfo(image);
+			// 计算宽高比例最大限度不变形适配
+			imageW = imageInfo.width;
+			imageH = imageInfo.height;
+		}
+		
+		// 计算绘制位置
+		if (imageW / imageH > proportion) {
+				imageW = imageH * proportion;
+				drawX = (imageInfo.width - imageW) / 2;
+		} else {
+				imageH = imageW / proportion;
+				drawY = (imageInfo.height - imageH) / 2;
+		}
+	}
+	// 图片裁切
+	const imageCropping = () => {
+		uni.chooseImage({
+			count: 1, //默认9
+			sizeType: ["original"], //可以指定是原图还是压缩图，默认二者都有
+			sourceType: ["album"], //从相册选择
+			success: async function(res) {
+				const image = res.tempFilePaths[0];
+				try {
+					debugger
+					const ctx = uni.createCanvasContext("myCanvas");
+					const { width, height } = previewMain.value; // 容器大小
+					const proportion = width / height; // 容器宽高比
+					
+					// 获取图片宽高做裁切
+					const imageInfo = await getImageInfo(image);
+				
+					// 计算宽高比例最大限度不变形适配
+					let imageW = imageInfo.width;
+					let imageH = imageInfo.height;
+					let drawX = 0;
+					let drawY = 0;
+				
+					// 计算绘制位置
+					if (imageW / imageH > proportion) {
+							imageW = imageH * proportion;
+							drawX = (imageInfo.width - imageW) / 2;
+					} else {
+							imageH = imageW / proportion;
+							drawY = (imageInfo.height - imageH) / 2;
+					}
+				
+					// 禁用图像平滑处理以保持清晰度
+					ctx.imageSmoothingEnabled = false;
+				
+					// 绘制图片
+					await ctx.drawImage(res.tempFilePaths[index], drawX, drawY, imageW, imageH, 0, 0,
+						previewMain.value.width, previewMain.value.height);
+				
+					// 绘制完成后导出图片
+					await ctx.draw(true);
+					const cropImage = (await uni.canvasToTempFilePath({
+						canvasId: "myCanvas"
+					})).tempFilePath;
+					await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value
+					.height); // 清空整个画布
+					await ctx.draw(); // 清除
+				
+					console.log('cropImage', cropImage);
+				
+					// 预览生成的图片
+					fileList.value[index] = {
+						...fileList.value[index],
+						url: cropImage,
+						status: "success",
+						message: `${index}`,
+					};
+				} catch (error) {
+					console.error("处理图片失败: ", error);
+					fileListBackups.value[index] = {
+						...fileListBackups.value[index],
+						status: "error",
+						message: error.message,
+					};
+				}
+				
+			},
+		});
+	}
+	
 </script>
 
 <template>
@@ -579,6 +691,24 @@
 			</view>
 
 			<view class="controlPanel">
+				<!-- <u-collapse
+					@change="change"
+					@close="close"
+					@open="open"
+				>
+					<u-collapse-item
+					  title="选择拼图类型"
+					  name="Docs guide"
+					>
+					 <view class="puzzleType">
+						 <view @click="typeConfirm(item)" class="puzzleType-list" v-for="(item, index) of columns[0]" :key="item.label || index">
+							  <u-image height="70px" width="70px" :src="item.url" mode=""></u-image>
+							{{item.label}}
+						</view>
+					 </view>
+					</u-collapse-item>
+				</u-collapse> -->
+		
 				<u-form labelWidth="100px" labelPosition="left" labelAlign="left" :model="formData" ref="form1">
 					<u-form-item label="选择拼图类型" prop="imageType" borderBottom ref="imageType" border="none"
 						placeholder="请选择" @click="showImageType = true">
@@ -606,6 +736,16 @@
 							{{ `${formData.scale} %` }}
 						</view>
 					</u-form-item>
+					
+					<!-- <u-form-item label="图片裁切" prop="opacity" borderBottom ref="text">
+						<view style="display: flex; align-items: center">
+							<view style="width: 83%">
+								<u-image height="30px" width="30px" mode="aspectFill"
+									:src="formData.image" @click="imageCropping">
+								</u-image>
+							</view>
+						</view>
+					</u-form-item> -->
 				</u-form>
 			</view>
 		</view>
@@ -620,14 +760,15 @@
 		padding: 10px;
 		height: calc(100vh - 20px);
 		background: #e8e8e8;
-
+		overflow-y: hidden;
+		
 		.content-main {
 			position: relative;
 			width: calc(100vw - 20px);
 			height: calc(100vw - 20px);
 			border-radius: 6px;
 			background: #ffffff;
-			overflow: auto;
+			// overflow: auto;
 
 			.preview-main-top {
 				pointer-events: none;
@@ -698,38 +839,30 @@
 				z-index: 200;
 				grid-template-rows: 1fr 1fr;
 			}
-
-			.preview-main-l3r2 {
-				width: calc(100vw - 40px);
-				height: calc(100vw - 40px);
-				margin: 10px;
-				background-color: #e8e8e8;
-
-				// .preview-main-l3r2-l {
-				// 	width: 30%;
-				// 	display: grid;
-				// 	grid-gap: 5px;
-				// 	grid-template-rows: 1fr 1fr 1fr;
-				// }
-
-				// .preview-main-l3r2-r {
-				// 	width: 70%;
-				// 	display: grid;
-				// 	grid-gap: 5px;
-				// 	grid-template-rows: 1fr 1fr;
-				// }
-
-				// .image-button {}
-			}
 		}
 
 		.controlPanel {
 			margin-top: 10px;
 			width: calc(100vw - 40px);
 			padding: 10px;
-			overflow-y: auto;
+			// overflow-y: auto;
 			border-radius: 6px;
 			background: #ffffff;
+			overflow-y: auto;
+			.puzzleType {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 10px;
+				.puzzleType-list {
+					height: 100px;
+					background: #f3f4f6;
+					display: flex;
+					gap: 10px;
+					flex-direction: row;
+					align-items: center;
+					justify-content: center;
+				}
+			}
 		}
 	}
 
@@ -752,5 +885,8 @@
 				pointer-events: auto;
 			}
 		}
+	}
+	.u-cell__body {
+		padding: 10px 0 !important;
 	}
 </style>

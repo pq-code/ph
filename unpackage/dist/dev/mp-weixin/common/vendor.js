@@ -6995,9 +6995,9 @@ function initOnError() {
   };
 }
 function initRuntimeSocketService() {
-  const hosts = "127.0.0.1,192.168.9.136";
+  const hosts = "127.0.0.1,192.168.9.21";
   const port = "8090";
-  const id = "mp-weixin_Tt4Nyr";
+  const id = "mp-weixin_u5qK0t";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -11960,6 +11960,9 @@ const onShow = /* @__PURE__ */ createHook(ON_SHOW);
 const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
 const onPullDownRefresh = /* @__PURE__ */ createHook(ON_PULL_DOWN_REFRESH);
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
+function getDefaultExportFromCjs(x) {
+  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+}
 var dayjs_min = { exports: {} };
 (function(module2, exports2) {
   !function(t2, e2) {
@@ -12250,10 +12253,13 @@ var dayjs_min = { exports: {} };
     }, O.en = D[g], O.Ls = D, O.p = {}, O;
   });
 })(dayjs_min);
+var dayjs_minExports = dayjs_min.exports;
+const dayjs = /* @__PURE__ */ getDefaultExportFromCjs(dayjs_minExports);
 exports.Pinia = Pinia;
 exports._export_sfc = _export_sfc;
 exports.createPinia = createPinia;
 exports.createSSRApp = createSSRApp;
+exports.dayjs = dayjs;
 exports.defineComponent = defineComponent;
 exports.defineStore = defineStore;
 exports.e = e;
