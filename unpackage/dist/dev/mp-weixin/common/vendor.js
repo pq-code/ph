@@ -12266,6 +12266,7 @@ exports.e = e;
 exports.f = f;
 exports.getCurrentInstance = getCurrentInstance;
 exports.index = index$1;
+exports.isRef = isRef;
 exports.n = n;
 exports.nextTick$1 = nextTick$1;
 exports.o = o;

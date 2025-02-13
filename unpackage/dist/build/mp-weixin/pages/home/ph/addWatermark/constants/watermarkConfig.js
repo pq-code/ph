@@ -1,0 +1,1 @@
+"use strict";exports.WATERMARK_TYPES=[{id:1,name:"左下角",style:{x:20,y:-60,fontSize:12,color:"#333333",type:"text",background:"#FFFFFF",padding:12,opacity:.9}},{id:2,name:"右上角",style:{x:280,y:30,fontSize:16,color:"#ffffff",type:"text"}},{id:3,name:"左下角",style:{x:10,y:580,fontSize:16,color:"#ffffff",type:"text"}}];

@@ -3,10 +3,9 @@
   "enablePullDownRefresh": false,
   "navigationStyle": "custom",
   "usingComponents": {
-    "u-picker": "../../../../uni_modules/uview-plus/components/u-picker/u-picker",
-    "u-input": "../../../../uni_modules/uview-plus/components/u-input/u-input",
-    "u-form-item": "../../../../uni_modules/uview-plus/components/u-form-item/u-form-item",
-    "u-form": "../../../../uni_modules/uview-plus/components/u-form/u-form",
-    "page": "../../../../components/pages/page"
+    "u-icon": "../../../../uni_modules/uview-plus/components/u-icon/u-icon",
+    "page": "../../../../components/pages/page",
+    "watermark-type-selector": "./components/WatermarkTypeSelector",
+    "watermark-form": "./components/WatermarkForm"
   }
 }

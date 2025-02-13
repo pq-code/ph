@@ -1,0 +1,1 @@
+<u-picker wx:if="{{f}}" class="r data-v-e7a0f1eb" u-r="picker" bindclose="{{b}}" bindcancel="{{c}}" bindconfirm="{{d}}" bindchange="{{e}}" u-i="e7a0f1eb-0" bind:__l="__l" u-p="{{f}}"></u-picker>
