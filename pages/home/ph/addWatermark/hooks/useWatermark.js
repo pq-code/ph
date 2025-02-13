@@ -1,7 +1,80 @@
 import { ref } from 'vue'
+import dayjs from 'dayjs'
 
 export const useWatermark = (canvasId) => {
-  // 绘制图片
+  // 绘制中间大水印
+  const drawCenterWatermark = (ctx, imageRect) => {
+    const { x: imageX, y: imageY, drawWidth: imageWidth, drawHeight: imageHeight } = imageRect
+    
+    ctx.save()
+    
+    // 计算中心点和字体大小
+    const centerX = imageX + imageWidth / 2
+    const centerY = imageY + imageHeight / 2
+    const centerFontSize = Math.min(imageWidth, imageHeight) * 0.15
+    
+    // 移动到中心点
+    ctx.translate(centerX, centerY)
+    
+    // 设置文字样式
+    ctx.setTextAlign('center')
+    ctx.setTextBaseline('middle')
+    ctx.setFontSize(centerFontSize)
+    ctx.font = `bold ${centerFontSize}px sans-serif`
+    
+    const centerText = "现场拍照"
+    
+    // 绘制白色描边
+    ctx.setGlobalAlpha(0.2)
+    ctx.setLineWidth(3)
+    ctx.setStrokeStyle('#FFFFFF')
+    ctx.strokeText(centerText, 0, 0)
+    
+    // 绘制主体文字
+    ctx.setGlobalAlpha(0.2)
+    ctx.setFillStyle('#666666')
+    ctx.fillText(centerText, 0, 0)
+    
+    ctx.restore()
+  }
+  
+  // 绘制底部信息水印
+  const drawBottomWatermark = (ctx, imageRect, info) => {
+    const { x: imageX, y: imageY, drawWidth: imageWidth, drawHeight: imageHeight } = imageRect
+    
+    // 设置文字样式
+    const fontSize = 14
+    ctx.setFontSize(fontSize)
+    ctx.setTextAlign('left')
+    ctx.setTextBaseline('top')
+    
+    // 准备水印文字内容
+    const watermarkLines = [
+      `经度：${info.longitude || '121.0126'}`,
+      `纬度：${info.latitude || '31.288511'}`,
+      `坐标：WGS84坐标系`,
+      `地址：${info.address || ''}`,
+      `时间：${dayjs().format('YYYY-MM-DD HH:mm:ss')}`,
+      `备注：${info.remark || '编辑备注'}`
+    ]
+    
+    // 计算文字位置
+    const padding = 10
+    const lineHeight = fontSize
+    const totalHeight = watermarkLines.length * lineHeight
+    let currentY = imageY + imageHeight - totalHeight - padding
+    
+    
+    // 绘制文字
+    ctx.setGlobalAlpha(1)
+    ctx.setFillStyle('#FFFFFF')
+    
+    watermarkLines.forEach(line => {
+      ctx.fillText(line, imageX + padding * 1, currentY)
+      currentY += lineHeight
+    })
+  }
+
   const addWatermark = async ({ image, style, info }) => {
     if (!image?.path) {
       console.error('无效的图片路径')
@@ -22,7 +95,20 @@ export const useWatermark = (canvasId) => {
         image.drawWidth,
         image.drawHeight
       )
-
+      
+      const imageRect = {
+        x: image.x,
+        y: image.y,
+        drawWidth: image.drawWidth,
+        drawHeight: image.drawHeight
+      }
+      
+      // 绘制中间水印
+      drawCenterWatermark(ctx, imageRect)
+      
+      // 绘制底部信息水印
+      drawBottomWatermark(ctx, imageRect, info)
+      
       // 应用绘制
       await new Promise(resolve => ctx.draw(false, resolve))
       
@@ -38,5 +124,5 @@ export const useWatermark = (canvasId) => {
   return {
     addWatermark
   }
-} 
+}
 

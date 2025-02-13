@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import { useImageHandler } from './hooks/useImageHandler'
 import { useWatermark } from './hooks/useWatermark'
 import { useWatermarkForm } from './hooks/useWatermarkForm'
-import { WATERMARK_TYPES } from './constants/watermarkConfig'
+import { WATERMARK_TYPES } from './components/watermarkConfig'
 import WatermarkTypeSelector from './components/WatermarkTypeSelector.vue'
 import WatermarkForm from './components/WatermarkForm.vue'
 
@@ -16,8 +16,10 @@ const { addWatermark } = useWatermark('watermark')
 const { formData, getFormFields, validateForm, resetForm } = useWatermarkForm()
 
 // 处理水印类型变化
-const handleTypeChange = (style) => {
-  currentStyle.value = style
+const handleTypeChange = (item) => {
+	console.log('style',item)
+	currentStyle.value = item.style
+	watermarkType.value = item.id
   if (imageInfo.value) {
     updateWatermark()
   }
@@ -25,8 +27,9 @@ const handleTypeChange = (style) => {
 
 // 更新水印
 const updateWatermark = async () => {
+  console.log('formData',formData.value)
   if (!imageInfo.value || !currentStyle.value) return
-  await addWatermark({
+	await addWatermark({
     image: imageInfo.value,
     style: currentStyle.value,
     info: formData.value
@@ -41,6 +44,7 @@ const onImageSelect = async () => {
     await updateWatermark() // 更新水印
   }
 }
+
 // 生成最终图片
 const generateImage = async () => {
   if (!imageInfo.value) {
@@ -50,13 +54,73 @@ const generateImage = async () => {
     })
     return
   }
-}
+
+  try {
+    const { canvasWidth, canvasHeight } = imageInfo.value;
+    const { tempFilePath } = await uni.canvasToTempFilePath({
+      canvasId: 'watermark',
+      fileType: 'png', // 使用 PNG 格式以保证无损
+      quality: 1, // 设置图片质量为最高
+      x: 0, // 截取区域的左上角 x 坐标
+      y: 0, // 截取区域的左上角 y 坐标
+      width: canvasWidth, // 截取区域的宽度
+      height: canvasHeight // 截取区域的高度
+    });
+
+    console.log('生成图片成功', tempFilePath);
+    uni.showToast({
+      title: '生成图片成功',
+      icon: 'success'
+    });
+
+    // 预览图片
+    uni.previewImage({
+      urls: [tempFilePath],
+      longPressActions: {
+        itemList: ['保存图片'],
+        success: function (data) {
+          if (data.tapIndex === 0) {
+            // 保存图片到相册
+            uni.saveImageToPhotosAlbum({
+              filePath: tempFilePath,
+              success: function () {
+                uni.showToast({
+                  title: '保存成功',
+                  icon: 'success'
+                });
+              },
+              fail: function (err) {
+                console.error('保存失败', err);
+                uni.showToast({
+                  title: '保存失败',
+                  icon: 'none'
+                });
+              }
+            });
+          }
+        },
+        fail: function (err) {
+          console.error('长按操作失败', err);
+        }
+      }
+    });
+  } catch (error) {
+    console.error('生成图片出错', error);
+    uni.showToast({
+      title: '生成图片出错',
+      icon: 'none'
+    });
+  }
+};
+
+
+
 </script>
 
 <template>
-  <page 
-    title="添加水印" 
-    rButton="生成图片" 
+  <page
+    title="添加水印"
+    rButton="生成图片"
     :rButtonDisabled="isProcessing"
     @rButton="generateImage"
   >
@@ -85,7 +149,7 @@ const generateImage = async () => {
 			 <!-- 水印类型选择器 -->
 			 <WatermarkTypeSelector
         v-model="watermarkType"
-        @change="handleTypeChange"
+        @handleTypeChange="handleTypeChange"
       />
       
       <!-- 表单区域 -->
@@ -94,7 +158,7 @@ const generateImage = async () => {
         v-model="formData"
         :fields="getFormFields(currentStyle)"
         :disabled="isProcessing"
-        @change="updateWatermark"
+        @dataChanged="updateWatermark"
       />
     </view>
   </page>

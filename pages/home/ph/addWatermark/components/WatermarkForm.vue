@@ -21,6 +21,7 @@
           <u-input 
             v-model="modelValue[field.field]"
             :placeholder="field.placeholder"
+            @input="onInputChange"
           />
         </template>
         
@@ -29,6 +30,7 @@
           <u-datetime-picker
             v-model="modelValue[field.field]"
             :placeholder="field.placeholder"
+            @change="onInputChange"
           />
         </template>
         
@@ -38,6 +40,7 @@
             v-model="modelValue[field.field]"
             :placeholder="field.placeholder"
             :maxlength="field.maxlength"
+            @input="onInputChange"
           />
         </template>
       </u-form-item>
@@ -46,7 +49,8 @@
 </template>
 
 <script setup>
-defineProps({
+import { ref, watch } from 'vue';
+const props = defineProps({
   modelValue: {
     type: Object,
     required: true
@@ -60,6 +64,22 @@ defineProps({
     default: false
   }
 })
+
+
+const emit = defineEmits(['dataChanged']);
+
+const onInputChange = () => {
+  console.log('modelValue',props.modelValue)
+  emit('dataChanged', props.modelValue);
+};
+
+// 也可以使用 watch 监听 modelValue 的变化
+watch(() => props.modelValue, (newValue) => {
+  console.log('modelValue----',props.modelValue)
+  emit('dataChanged', newValue);
+  
+}, { deep: true });
+
 </script>
 
 <style lang="less" scoped>

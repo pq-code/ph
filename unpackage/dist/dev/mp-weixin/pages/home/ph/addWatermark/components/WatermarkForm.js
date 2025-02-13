@@ -32,40 +32,54 @@ const _sfc_main = {
       default: false
     }
   },
-  setup(__props) {
+  emits: ["dataChanged"],
+  setup(__props, { emit: __emit }) {
+    const props = __props;
+    const emit = __emit;
+    const onInputChange = () => {
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:72", "modelValue", props.modelValue);
+      emit("dataChanged", props.modelValue);
+    };
+    common_vendor.watch(() => props.modelValue, (newValue) => {
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:78", "modelValue----", props.modelValue);
+      emit("dataChanged", newValue);
+    }, { deep: true });
     return (_ctx, _cache) => {
       return {
         a: common_vendor.f(__props.fields, (field, k0, i0) => {
           return common_vendor.e({
             a: field.type === "input"
           }, field.type === "input" ? {
-            b: "8883b4bf-2-" + i0 + "," + ("8883b4bf-1-" + i0),
-            c: common_vendor.o(($event) => __props.modelValue[field.field] = $event, field.field),
-            d: common_vendor.p({
+            b: common_vendor.o(onInputChange, field.field),
+            c: "8883b4bf-2-" + i0 + "," + ("8883b4bf-1-" + i0),
+            d: common_vendor.o(($event) => __props.modelValue[field.field] = $event, field.field),
+            e: common_vendor.p({
               placeholder: field.placeholder,
               modelValue: __props.modelValue[field.field]
             })
           } : field.type === "datetime" ? {
-            f: "8883b4bf-3-" + i0 + "," + ("8883b4bf-1-" + i0),
-            g: common_vendor.o(($event) => __props.modelValue[field.field] = $event, field.field),
-            h: common_vendor.p({
+            g: common_vendor.o(onInputChange, field.field),
+            h: "8883b4bf-3-" + i0 + "," + ("8883b4bf-1-" + i0),
+            i: common_vendor.o(($event) => __props.modelValue[field.field] = $event, field.field),
+            j: common_vendor.p({
               placeholder: field.placeholder,
               modelValue: __props.modelValue[field.field]
             })
           } : field.type === "textarea" ? {
-            j: "8883b4bf-4-" + i0 + "," + ("8883b4bf-1-" + i0),
-            k: common_vendor.o(($event) => __props.modelValue[field.field] = $event, field.field),
-            l: common_vendor.p({
+            l: common_vendor.o(onInputChange, field.field),
+            m: "8883b4bf-4-" + i0 + "," + ("8883b4bf-1-" + i0),
+            n: common_vendor.o(($event) => __props.modelValue[field.field] = $event, field.field),
+            o: common_vendor.p({
               placeholder: field.placeholder,
               maxlength: field.maxlength,
               modelValue: __props.modelValue[field.field]
             })
           } : {}, {
-            e: field.type === "datetime",
-            i: field.type === "textarea",
-            m: field.field,
-            n: "8883b4bf-1-" + i0 + ",8883b4bf-0",
-            o: common_vendor.p({
+            f: field.type === "datetime",
+            k: field.type === "textarea",
+            p: field.field,
+            q: "8883b4bf-1-" + i0 + ",8883b4bf-0",
+            r: common_vendor.p({
               label: field.label,
               required: field.required
             })
