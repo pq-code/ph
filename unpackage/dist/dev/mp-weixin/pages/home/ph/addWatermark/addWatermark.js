@@ -58,21 +58,21 @@ const _sfc_main = {
         return;
       }
       try {
-        const { canvasWidth, canvasHeight } = imageInfo.value;
+        const { x, y, drawWidth, drawHeight } = imageInfo.value;
         const { tempFilePath } = await common_vendor.index.canvasToTempFilePath({
           canvasId: "watermark",
           fileType: "png",
           // 使用 PNG 格式以保证无损
           quality: 1,
           // 设置图片质量为最高
-          x: 0,
+          x: x + 0.1,
           // 截取区域的左上角 x 坐标
-          y: 0,
+          y: y + 0.1,
           // 截取区域的左上角 y 坐标
-          width: canvasWidth,
-          // 截取区域的宽度
-          height: canvasHeight
-          // 截取区域的高度
+          width: drawWidth - 0.5,
+          // 截取区域的宽度，使用图片实际绘制的宽度
+          height: drawHeight - 0.5
+          // 截取区域的高度，使用图片实际绘制的高度
         });
         common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:70", "生成图片成功", tempFilePath);
         common_vendor.index.showToast({

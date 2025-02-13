@@ -2,9 +2,9 @@
 export const WATERMARK_TYPES = [
   {
     id: 1,
-    name: '标准水印',
+    name: '现场拍照',
     description: '包含完整位置信息',
-    preview: '/static/watermark/type1.png',
+    preview: '/static/assets/images/watermark/xcpz.jpg',
     style: {
       showLocation: true,
       showTime: true,
@@ -19,7 +19,7 @@ export const WATERMARK_TYPES = [
   },
   {
     id: 2,
-    name: '简约水印',
+    name: '标准水印',
     description: '仅显示位置信息',
     preview: '/static/watermark/type2.png',
     style: {

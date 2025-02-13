@@ -153,15 +153,6 @@
 			<view>{{uerInfo.userNickname}}</view>
 			<view style="font-size: 13px;margin:0 10px;display: flex;">
 				<view style="margin-right: 10px;">{{ weather.title || '' }}</view>
-				<!-- <u-image
-				shape="circle"
-				width="20px" height="20px"
-				src="https://a.hecdn.net/img/common/icon/202106d/100.png"
-				style="
-				width: 20px;
-				height: 20px;
-				margin-left: 10px;
-				"/> -->
 			</view>
 		</view>
 
@@ -315,7 +306,7 @@
 				border-radius: 10px;
 				width: calc(100% - 40px);
 				height: 60px;
-				margin-to p: 10px ;
+				margin-top: 10px ;
 				background: #ffffff;
 				padding: 10px 20px;
 				display: flex;

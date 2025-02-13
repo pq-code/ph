@@ -11,7 +11,7 @@ export const useWatermark = (canvasId) => {
     // 计算中心点和字体大小
     const centerX = imageX + imageWidth / 2
     const centerY = imageY + imageHeight / 2
-    const centerFontSize = Math.min(imageWidth, imageHeight) * 0.15
+    const centerFontSize = Math.min(imageWidth, imageHeight) * 0.08
     
     // 移动到中心点
     ctx.translate(centerX, centerY)
@@ -25,13 +25,13 @@ export const useWatermark = (canvasId) => {
     const centerText = "现场拍照"
     
     // 绘制白色描边
-    ctx.setGlobalAlpha(0.2)
-    ctx.setLineWidth(3)
+    ctx.setGlobalAlpha(0.5)
+    ctx.setLineWidth(2)
     ctx.setStrokeStyle('#FFFFFF')
     ctx.strokeText(centerText, 0, 0)
     
     // 绘制主体文字
-    ctx.setGlobalAlpha(0.2)
+    ctx.setGlobalAlpha(0.5)
     ctx.setFillStyle('#666666')
     ctx.fillText(centerText, 0, 0)
     
@@ -58,12 +58,11 @@ export const useWatermark = (canvasId) => {
       `备注：${info.remark || '编辑备注'}`
     ]
     
-    // 计算文字位置
+    // 调整行间距，设置较宽的行高，比如 fontSize * 1.5
     const padding = 10
-    const lineHeight = fontSize
+    const lineHeight = fontSize * 1.5
     const totalHeight = watermarkLines.length * lineHeight
     let currentY = imageY + imageHeight - totalHeight - padding
-    
     
     // 绘制文字
     ctx.setGlobalAlpha(1)

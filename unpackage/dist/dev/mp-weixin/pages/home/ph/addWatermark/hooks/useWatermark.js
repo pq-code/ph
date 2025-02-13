@@ -6,18 +6,18 @@ const useWatermark = (canvasId) => {
     ctx.save();
     const centerX = imageX + imageWidth / 2;
     const centerY = imageY + imageHeight / 2;
-    const centerFontSize = Math.min(imageWidth, imageHeight) * 0.15;
+    const centerFontSize = Math.min(imageWidth, imageHeight) * 0.08;
     ctx.translate(centerX, centerY);
     ctx.setTextAlign("center");
     ctx.setTextBaseline("middle");
     ctx.setFontSize(centerFontSize);
     ctx.font = `bold ${centerFontSize}px sans-serif`;
     const centerText = "现场拍照";
-    ctx.setGlobalAlpha(0.2);
-    ctx.setLineWidth(3);
+    ctx.setGlobalAlpha(0.5);
+    ctx.setLineWidth(2);
     ctx.setStrokeStyle("#FFFFFF");
     ctx.strokeText(centerText, 0, 0);
-    ctx.setGlobalAlpha(0.2);
+    ctx.setGlobalAlpha(0.5);
     ctx.setFillStyle("#666666");
     ctx.fillText(centerText, 0, 0);
     ctx.restore();
@@ -37,7 +37,7 @@ const useWatermark = (canvasId) => {
       `备注：${info.remark || "编辑备注"}`
     ];
     const padding = 10;
-    const lineHeight = fontSize;
+    const lineHeight = fontSize * 1.5;
     const totalHeight = watermarkLines.length * lineHeight;
     let currentY = imageY + imageHeight - totalHeight - padding;
     ctx.setGlobalAlpha(1);
@@ -49,7 +49,7 @@ const useWatermark = (canvasId) => {
   };
   const addWatermark = async ({ image, style, info }) => {
     if (!(image == null ? void 0 : image.path)) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:80", "无效的图片路径");
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:79", "无效的图片路径");
       return;
     }
     try {
@@ -72,7 +72,7 @@ const useWatermark = (canvasId) => {
       drawBottomWatermark(ctx, imageRect, info);
       await new Promise((resolve) => ctx.draw(false, resolve));
     } catch (error) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:116", "绘制失败:", error);
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:115", "绘制失败:", error);
       common_vendor.index.showToast({
         title: "绘制失败",
         icon: "none"
