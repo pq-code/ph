@@ -3,3 +3,6 @@
   border-radius: 8px;
   padding: 15px;
 }
+.u-form-item__body__right__content__slot .u-popup.data-v-8883b4bf {
+  flex: 0;
+}

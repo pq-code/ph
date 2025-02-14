@@ -7,6 +7,11 @@
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
+        "maps": {
+            "qqmap": {
+            "key": "TINBZ-DRE6I-H7XGE-UG7XQ-UGPHH-4ZBR6"
+            }
+        }
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,

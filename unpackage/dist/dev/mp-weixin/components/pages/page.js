@@ -36,6 +36,18 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       default() {
         return "";
       }
+    },
+    rButtonDisabled: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    lButtonDisabled: {
+      type: Boolean,
+      default() {
+        return false;
+      }
     }
   },
   emits: ["lButton", "rButton"],
@@ -43,11 +55,11 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     const props = __props;
     const emits = __emit;
     const leftClick = () => {
-      common_vendor.index.__f__("log", "at components/pages/page.vue:31", props.backUrl);
+      common_vendor.index.__f__("log", "at components/pages/page.vue:43", props.backUrl);
       if (props.backUrl == "") {
         common_vendor.index.navigateBack({});
       } else {
-        common_vendor.index.__f__("log", "at components/pages/page.vue:35", props.backUrl);
+        common_vendor.index.__f__("log", "at components/pages/page.vue:47", props.backUrl);
         common_vendor.index.navigateTo({
           url: props.backUrl
         });
@@ -73,16 +85,20 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       }, __props.lButton || __props.rButton ? common_vendor.e({
         d: __props.lButton
       }, __props.lButton ? {
-        e: common_vendor.o(($event) => bottomBUtton(1)),
-        f: common_vendor.p({
+        e: common_vendor.t(__props.lButton || "批量录入"),
+        f: common_vendor.o(($event) => bottomBUtton(1)),
+        g: common_vendor.p({
+          disabled: __props.lButtonDisabled,
           type: "primary",
           shape: "circle"
         })
       } : {}, {
-        g: __props.rButton
+        h: __props.rButton
       }, __props.rButton ? {
-        h: common_vendor.o(($event) => bottomBUtton(2)),
-        i: common_vendor.p({
+        i: common_vendor.t(__props.rButton || "生成照片"),
+        j: common_vendor.o(($event) => bottomBUtton(2)),
+        k: common_vendor.p({
+          disabled: __props.rButtonDisabled,
           type: "success",
           shape: "circle"
         })

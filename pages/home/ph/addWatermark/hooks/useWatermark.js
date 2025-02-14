@@ -54,7 +54,7 @@ export const useWatermark = (canvasId) => {
       `纬度：${info.latitude || '31.288511'}`,
       `坐标：WGS84坐标系`,
       `地址：${info.address || ''}`,
-      `时间：${dayjs().format('YYYY-MM-DD HH:mm:ss')}`,
+      `时间：${info.datetime  || dayjs().format('YYYY-MM-DD HH:mm:ss')}`,
       `备注：${info.remark || '编辑备注'}`
     ]
     

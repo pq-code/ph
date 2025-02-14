@@ -1,7 +1,11 @@
 "use strict";
 const common_vendor = require("../../../../../common/vendor.js");
 const useImageHandler = () => {
-  const imageInfo = common_vendor.ref(null);
+  const imageInfo = common_vendor.ref({
+    canvasWidth: 0,
+    canvasHeight: 0,
+    url: ""
+  });
   const originalImage = common_vendor.ref(null);
   const isProcessing = common_vendor.ref(false);
   const calculateDrawSize = (containerWidth, containerHeight, imageWidth, imageHeight) => {
@@ -32,7 +36,7 @@ const useImageHandler = () => {
       const tempFile = tempFiles[0];
       const container = await new Promise((resolve) => {
         const query = common_vendor.index.createSelectorQuery();
-        query.select(".content-main").boundingClientRect((data) => {
+        query.select(".preview-wrapper").boundingClientRect((data) => {
           resolve(data);
         }).exec();
       });
@@ -61,10 +65,10 @@ const useImageHandler = () => {
         canvasWidth: container.width,
         canvasHeight: container.height
       };
-      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:84", "图片信息:", imageInfo.value);
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:87", "图片信息:", imageInfo.value);
       return imageInfo.value;
     } catch (error) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:88", "选择图片失败:", error);
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:91", "选择图片失败:", error);
       common_vendor.index.showToast({
         title: "选择图片失败",
         icon: "none"

@@ -27,10 +27,25 @@
         
         <!-- 时间选择器 -->
         <template v-else-if="field.type === 'datetime'">
-          <u-datetime-picker
+          <u-input 
+            style="width: 100%;"
             v-model="modelValue[field.field]"
             :placeholder="field.placeholder"
-            @change="onInputChange"
+            @focus="showPicker = true"
+            :clearable="false"
+            right-icon="calendar"
+          />
+          <u-datetime-picker
+            :show="showPicker"
+            v-model="tempDate"
+            mode="datetime"
+            format="YYYY-MM-DD HH:mm:ss"
+            :defaultValue="dayjs().valueOf()"
+            @confirm="(value) => {
+              handleDateConfirm(value,field.field)
+            }"
+            @cancel="showPicker = false"
+            :closeOnClickOverlay="false"
           />
         </template>
         
@@ -45,11 +60,19 @@
         </template>
       </u-form-item>
     </u-form>
+    <MapDisplay 
+      :latitude="latitude"
+      :longitude="longitude"
+      :markers="covers"
+    />
   </view>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue';
+import dayjs from 'dayjs'
+import MapDisplay from './MapDisplay.vue'
+
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -65,20 +88,33 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['dataChanged', 'update:modelValue']); // 添加缺失的事件声明
 
-const emit = defineEmits(['dataChanged']);
+const showPicker = ref(false)
+const tempDate = ref(dayjs().valueOf())
+
+// 保留 covers 的定义（如果需要在父组件操作标记点）
+const covers = ref([{
+  latitude: 39.90923,
+  longitude: 116.397428,
+  title: '当前位置'
+}])
+
+const handleDateConfirm = (value, field) => {
+  const formattedDate = dayjs(value.value).format('YYYY-MM-DD HH:mm:ss');
+  const newModelValue = { 
+    ...props.modelValue, 
+    [field] : formattedDate 
+  };
+  tempDate.value = formattedDate
+  emit('update:modelValue', newModelValue);
+  showPicker.value = false;
+};
 
 const onInputChange = () => {
   console.log('modelValue',props.modelValue)
-  emit('dataChanged', props.modelValue);
+  emit('update:modelValue', props.modelValue);
 };
-
-// 也可以使用 watch 监听 modelValue 的变化
-watch(() => props.modelValue, (newValue) => {
-  console.log('modelValue----',props.modelValue)
-  emit('dataChanged', newValue);
-  
-}, { deep: true });
 
 </script>
 
@@ -88,4 +124,10 @@ watch(() => props.modelValue, (newValue) => {
   border-radius: 8px;
   padding: 15px;
 }
+.u-form-item__body__right__content__slot {
+  .u-popup {
+    flex: 0;
+  }
+}
+
 </style> 

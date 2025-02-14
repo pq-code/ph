@@ -11,20 +11,13 @@ if (!Math) {
 const _sfc_main = {
   onLaunch: function() {
     common_vendor.index.__f__("log", "at App.vue:4", "App Launch");
-    common_vendor.index.getSystemInfoSync();
-    {
-      common_vendor.wx$1.cloud.init({
-        "env": "prod-8gqm1nbtf8eae76e",
-        // 云环境id
-        traceUser: true
-      });
-    }
+    common_vendor.index.__f__("log", "at App.vue:5", common_vendor.index.$u.config.v);
   },
   onShow: function() {
-    common_vendor.index.__f__("log", "at App.vue:14", "App Show");
+    common_vendor.index.__f__("log", "at App.vue:8", "App Show");
   },
   onHide: function() {
-    common_vendor.index.__f__("log", "at App.vue:17", "App Hide");
+    common_vendor.index.__f__("log", "at App.vue:11", "App Hide");
   }
 };
 function createApp() {

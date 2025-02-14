@@ -4,20 +4,47 @@
   gap: 15px;
   padding: 10px;
   background: #e6e6e6;
+  height: 100%;
+  overflow-y: hidden;
 }
-.content .content-main.data-v-5bd6fc7f {
+/* 预览区域样式 */
+.preview-wrapper.data-v-5bd6fc7f {
   position: relative;
   width: 100%;
-  height: 600px;
-  background: #ffffff;
+  height: 100%;
+  min-height: 450px;
+  max-height: 70vh;
+  background: #fff;
+  border: 1px solid #ddd;
   border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-.content .content-main .watermark-canvas.data-v-5bd6fc7f {
+/* 隐藏 canvas */
+.hidden-canvas.data-v-5bd6fc7f {
+  position: absolute;
+  top: -700px;
+  left: 10px;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
-.content .content-main .placeholder.data-v-5bd6fc7f {
+/* 预览图片样式 */
+.preview-image.data-v-5bd6fc7f {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  transition: transform 0.3s ease;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+/* 占位提示样式 */
+.placeholder.data-v-5bd6fc7f {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -27,7 +54,10 @@
   align-items: center;
   gap: 10px;
 }
-.content .content-main .placeholder .placeholder-text.data-v-5bd6fc7f {
+.placeholder-text.data-v-5bd6fc7f {
   font-size: 14px;
   color: #999;
+}
+.popup-content.data-v-5bd6fc7f {
+  padding-top: 30px;
 }

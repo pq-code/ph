@@ -8,11 +8,17 @@
         :class="{ active: modelValue === item.id }"
         @click="onImageSelect(item)"
       >
-        <image
+      <up-image 
+        :show-loading="true" 
+        :src="item.preview"
+        mode="aspectFit"
+        class="preview-image">
+      </up-image>
+        <!-- <image
           :src="item.preview"
           mode="aspectFit"
           class="preview-image"
-        />
+        /> -->
         <text class="type-name">{{ item.name }}</text>
       </view>
     </scroll-view>

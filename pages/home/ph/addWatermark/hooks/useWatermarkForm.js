@@ -34,7 +34,7 @@ export const useWatermarkForm = () => {
       {
         field: 'datetime',
         label: '时间',
-        type: 'input',
+        type: 'datetime',
         required: false,
         placeholder: '请输入时间'
       },

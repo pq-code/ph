@@ -6345,7 +6345,7 @@ const getAppBaseInfo = {
     extend(toRes, parameters);
   }
 };
-const getWindowInfo = {
+const getWindowInfo$1 = {
   returnValue: (fromRes, toRes) => {
     addSafeAreaInsets(fromRes, toRes);
     toRes = sortObject(extend(toRes, {
@@ -6555,7 +6555,7 @@ var protocols = /* @__PURE__ */ Object.freeze({
   getDeviceInfo,
   getSystemInfo,
   getSystemInfoSync,
-  getWindowInfo,
+  getWindowInfo: getWindowInfo$1,
   offError,
   onError,
   onSocketMessage,
@@ -6997,7 +6997,7 @@ function initOnError() {
 function initRuntimeSocketService() {
   const hosts = "127.0.0.1,192.168.9.21";
   const port = "8090";
-  const id = "mp-weixin_u5qK0t";
+  const id = "mp-weixin_r-JGtU";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -7929,7 +7929,911 @@ const createSubpackageApp = initCreateSubpackageApp();
   wx.createPluginApp = global.createPluginApp = createPluginApp;
   wx.createSubpackageApp = global.createSubpackageApp = createSubpackageApp;
 }
-const mixin = {
+const defineMixin = (options) => {
+  return options;
+};
+function email(value) {
+  return /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(value);
+}
+function mobile(value) {
+  return /^1[23456789]\d{9}$/.test(value);
+}
+function url(value) {
+  return /^((https|http|ftp|rtsp|mms):\/\/)(([0-9a-zA-Z_!~*'().&=+$%-]+: )?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z].[a-zA-Z]{2,6})(:[0-9]{1,4})?((\/?)|(\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]+)+\/?)$/.test(value);
+}
+function date(value) {
+  if (!value)
+    return false;
+  if (typeof value === "number") {
+    if (value.toString().length !== 10 && value.toString().length !== 13) {
+      return false;
+    }
+    return !isNaN(new Date(value).getTime());
+  }
+  if (typeof value === "string") {
+    const numV = Number(value);
+    if (!isNaN(numV)) {
+      if (numV.toString().length === 10 || numV.toString().length === 13) {
+        return !isNaN(new Date(numV).getTime());
+      }
+    }
+    if (value.length < 10 || value.length > 19) {
+      return false;
+    }
+    const dateRegex = /^\d{4}[-\/]\d{2}[-\/]\d{2}( \d{1,2}:\d{2}(:\d{2})?)?$/;
+    if (!dateRegex.test(value)) {
+      return false;
+    }
+    const dateValue = new Date(value);
+    return !isNaN(dateValue.getTime());
+  }
+  return false;
+}
+function dateISO(value) {
+  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/.test(value);
+}
+function number(value) {
+  return /^[\+-]?(\d+\.?\d*|\.\d+|\d\.\d+e\+\d+)$/.test(value);
+}
+function string(value) {
+  return typeof value === "string";
+}
+function digits(value) {
+  return /^\d+$/.test(value);
+}
+function idCard(value) {
+  return /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(
+    value
+  );
+}
+function carNo(value) {
+  const xreg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[DF]$)|([DF][A-HJ-NP-Z0-9][0-9]{4}$))/;
+  const creg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$/;
+  if (value.length === 7) {
+    return creg.test(value);
+  }
+  if (value.length === 8) {
+    return xreg.test(value);
+  }
+  return false;
+}
+function amount(value) {
+  return /^[1-9]\d*(,\d{3})*(\.\d{1,2})?$|^0\.\d{1,2}$/.test(value);
+}
+function chinese(value) {
+  const reg = /^[\u4e00-\u9fa5]+$/gi;
+  return reg.test(value);
+}
+function letter(value) {
+  return /^[a-zA-Z]*$/.test(value);
+}
+function enOrNum(value) {
+  const reg = /^[0-9a-zA-Z]*$/g;
+  return reg.test(value);
+}
+function contains(value, param) {
+  return value.indexOf(param) >= 0;
+}
+function range$1(value, param) {
+  return value >= param[0] && value <= param[1];
+}
+function rangeLength(value, param) {
+  return value.length >= param[0] && value.length <= param[1];
+}
+function landline(value) {
+  const reg = /^\d{3,4}-\d{7,8}(-\d{3,4})?$/;
+  return reg.test(value);
+}
+function empty(value) {
+  switch (typeof value) {
+    case "undefined":
+      return true;
+    case "string":
+      if (value.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, "").length == 0)
+        return true;
+      break;
+    case "boolean":
+      if (!value)
+        return true;
+      break;
+    case "number":
+      if (value === 0 || isNaN(value))
+        return true;
+      break;
+    case "object":
+      if (value === null || value.length === 0)
+        return true;
+      for (const i in value) {
+        return false;
+      }
+      return true;
+  }
+  return false;
+}
+function jsonString(value) {
+  if (typeof value === "string") {
+    try {
+      const obj = JSON.parse(value);
+      if (typeof obj === "object" && obj) {
+        return true;
+      }
+      return false;
+    } catch (e2) {
+      return false;
+    }
+  }
+  return false;
+}
+function array(value) {
+  if (typeof Array.isArray === "function") {
+    return Array.isArray(value);
+  }
+  return Object.prototype.toString.call(value) === "[object Array]";
+}
+function object(value) {
+  return Object.prototype.toString.call(value) === "[object Object]";
+}
+function code(value, len = 6) {
+  return new RegExp(`^\\d{${len}}$`).test(value);
+}
+function func(value) {
+  return typeof value === "function";
+}
+function promise(value) {
+  return object(value) && func(value.then) && func(value.catch);
+}
+function image(value) {
+  const newValue = value.split("?")[0];
+  const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
+  return IMAGE_REGEXP.test(newValue);
+}
+function video(value) {
+  const VIDEO_REGEXP = /\.(mp4|mpg|mpeg|dat|asf|avi|rm|rmvb|mov|wmv|flv|mkv|m3u8)/i;
+  return VIDEO_REGEXP.test(value);
+}
+function regExp(o2) {
+  return o2 && Object.prototype.toString.call(o2) === "[object RegExp]";
+}
+const test = {
+  email,
+  mobile,
+  url,
+  date,
+  dateISO,
+  number,
+  digits,
+  idCard,
+  carNo,
+  amount,
+  chinese,
+  letter,
+  enOrNum,
+  contains,
+  range: range$1,
+  rangeLength,
+  empty,
+  isEmpty: empty,
+  jsonString,
+  landline,
+  object,
+  array,
+  code,
+  func,
+  promise,
+  video,
+  image,
+  regExp,
+  string
+};
+function strip(num, precision = 15) {
+  return +parseFloat(Number(num).toPrecision(precision));
+}
+function digitLength(num) {
+  const eSplit = num.toString().split(/[eE]/);
+  const len = (eSplit[0].split(".")[1] || "").length - +(eSplit[1] || 0);
+  return len > 0 ? len : 0;
+}
+function float2Fixed(num) {
+  if (num.toString().indexOf("e") === -1) {
+    return Number(num.toString().replace(".", ""));
+  }
+  const dLen = digitLength(num);
+  return dLen > 0 ? strip(Number(num) * Math.pow(10, dLen)) : Number(num);
+}
+function checkBoundary(num) {
+  {
+    if (num > Number.MAX_SAFE_INTEGER || num < Number.MIN_SAFE_INTEGER) {
+      index$1.__f__("warn", "at node_modules/uview-plus/libs/function/digit.js:45", `${num} 超出了精度限制，结果可能不正确`);
+    }
+  }
+}
+function iteratorOperation(arr, operation) {
+  const [num1, num2, ...others] = arr;
+  let res = operation(num1, num2);
+  others.forEach((num) => {
+    res = operation(res, num);
+  });
+  return res;
+}
+function times(...nums) {
+  if (nums.length > 2) {
+    return iteratorOperation(nums, times);
+  }
+  const [num1, num2] = nums;
+  const num1Changed = float2Fixed(num1);
+  const num2Changed = float2Fixed(num2);
+  const baseNum = digitLength(num1) + digitLength(num2);
+  const leftValue = num1Changed * num2Changed;
+  checkBoundary(leftValue);
+  return leftValue / Math.pow(10, baseNum);
+}
+function divide(...nums) {
+  if (nums.length > 2) {
+    return iteratorOperation(nums, divide);
+  }
+  const [num1, num2] = nums;
+  const num1Changed = float2Fixed(num1);
+  const num2Changed = float2Fixed(num2);
+  checkBoundary(num1Changed);
+  checkBoundary(num2Changed);
+  return times(num1Changed / num2Changed, strip(Math.pow(10, digitLength(num2) - digitLength(num1))));
+}
+function round(num, ratio) {
+  const base = Math.pow(10, ratio);
+  let result = divide(Math.round(Math.abs(times(num, base))), base);
+  if (num < 0 && result !== 0) {
+    result = times(result, -1);
+  }
+  return result;
+}
+const version = "3";
+{
+  index$1.__f__("log", "at node_modules/uview-plus/libs/config/config.js:5", `
+ %c uview-plus V${version} %c https://ijry.github.io/uview-plus/ 
+
+`, "color: #ffffff; background: #3c9cff; padding:5px 0;", "color: #3c9cff;background: #ffffff; padding:5px 0;");
+}
+const config = {
+  v: version,
+  version,
+  // 主题名称
+  type: [
+    "primary",
+    "success",
+    "info",
+    "error",
+    "warning"
+  ],
+  // 颜色部分，本来可以通过scss的:export导出供js使用，但是奈何nvue不支持
+  color: {
+    "u-primary": "#2979ff",
+    "u-warning": "#ff9900",
+    "u-success": "#19be6b",
+    "u-error": "#fa3534",
+    "u-info": "#909399",
+    "u-main-color": "#303133",
+    "u-content-color": "#606266",
+    "u-tips-color": "#909399",
+    "u-light-color": "#c0c4cc",
+    "up-primary": "#2979ff",
+    "up-warning": "#ff9900",
+    "up-success": "#19be6b",
+    "up-error": "#fa3534",
+    "up-info": "#909399",
+    "up-main-color": "#303133",
+    "up-content-color": "#606266",
+    "up-tips-color": "#909399",
+    "up-light-color": "#c0c4cc"
+  },
+  // 默认单位，可以通过配置为rpx，那么在用于传入组件大小参数为数值时，就默认为rpx
+  unit: "px",
+  // 拦截器
+  interceptor: {
+    navbarLeftClick: null
+  }
+};
+function range(min = 0, max = 0, value = 0) {
+  return Math.max(min, Math.min(max, Number(value)));
+}
+function getPx(value, unit = false) {
+  if (number(value)) {
+    return unit ? `${value}px` : Number(value);
+  }
+  if (/(rpx|upx)$/.test(value)) {
+    return unit ? `${index$1.upx2px(parseInt(value))}px` : Number(index$1.upx2px(parseInt(value)));
+  }
+  return unit ? `${parseInt(value)}px` : parseInt(value);
+}
+function sleep(value = 30) {
+  return new Promise((resolve2) => {
+    setTimeout(() => {
+      resolve2();
+    }, value);
+  });
+}
+function os() {
+  return index$1.getDeviceInfo().platform.toLowerCase();
+}
+function sys() {
+  return index$1.getSystemInfoSync();
+}
+function getWindowInfo() {
+  let ret = {};
+  ret = index$1.getWindowInfo();
+  return ret;
+}
+function random(min, max) {
+  if (min >= 0 && max > 0 && max >= min) {
+    const gab = max - min + 1;
+    return Math.floor(Math.random() * gab + min);
+  }
+  return 0;
+}
+function guid(len = 32, firstU = true, radix = null) {
+  const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
+  const uuid = [];
+  radix = radix || chars.length;
+  if (len) {
+    for (let i = 0; i < len; i++)
+      uuid[i] = chars[0 | Math.random() * radix];
+  } else {
+    let r;
+    uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
+    uuid[14] = "4";
+    for (let i = 0; i < 36; i++) {
+      if (!uuid[i]) {
+        r = 0 | Math.random() * 16;
+        uuid[i] = chars[i == 19 ? r & 3 | 8 : r];
+      }
+    }
+  }
+  if (firstU) {
+    uuid.shift();
+    return `u${uuid.join("")}`;
+  }
+  return uuid.join("");
+}
+function $parent(name = void 0) {
+  let parent = this.$parent;
+  while (parent) {
+    name = name.replace(/up-([a-zA-Z0-9-_]+)/g, "u-$1");
+    if (parent.$options && parent.$options.name !== name) {
+      parent = parent.$parent;
+    } else {
+      return parent;
+    }
+  }
+  return false;
+}
+function addStyle(customStyle, target = "object") {
+  if (empty(customStyle) || typeof customStyle === "object" && target === "object" || target === "string" && typeof customStyle === "string") {
+    return customStyle;
+  }
+  if (target === "object") {
+    customStyle = trim(customStyle);
+    const styleArray = customStyle.split(";");
+    const style = {};
+    for (let i = 0; i < styleArray.length; i++) {
+      if (styleArray[i]) {
+        const item = styleArray[i].split(":");
+        style[trim(item[0])] = trim(item[1]);
+      }
+    }
+    return style;
+  }
+  let string2 = "";
+  if (typeof customStyle === "object") {
+    customStyle.forEach((val, i) => {
+      const key = i.replace(/([A-Z])/g, "-$1").toLowerCase();
+      string2 += `${key}:${val};`;
+    });
+  }
+  return trim(string2);
+}
+function addUnit(value = "auto", unit = "") {
+  if (!unit) {
+    unit = config.unit || "px";
+  }
+  if (unit == "rpx" && number(String(value))) {
+    value = value * 2;
+  }
+  value = String(value);
+  return number(value) ? `${value}${unit}` : value;
+}
+function deepClone(obj) {
+  if ([null, void 0, NaN, false].includes(obj))
+    return obj;
+  if (typeof obj !== "object" && typeof obj !== "function") {
+    return obj;
+  }
+  const o2 = array(obj) ? [] : {};
+  for (const i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      o2[i] = typeof obj[i] === "object" ? deepClone(obj[i]) : obj[i];
+    }
+  }
+  return o2;
+}
+function deepMerge$1(targetOrigin = {}, source = {}) {
+  let target = deepClone(targetOrigin);
+  if (typeof target !== "object" || typeof source !== "object")
+    return false;
+  for (const prop in source) {
+    if (!source.hasOwnProperty(prop))
+      continue;
+    if (prop in target) {
+      if (source[prop] == null) {
+        target[prop] = source[prop];
+      } else if (typeof target[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (typeof source[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (target[prop].concat && source[prop].concat) {
+        target[prop] = target[prop].concat(source[prop]);
+      } else {
+        target[prop] = deepMerge$1(target[prop], source[prop]);
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}
+function shallowMerge(target, source = {}) {
+  if (typeof target !== "object" || typeof source !== "object")
+    return false;
+  for (const prop in source) {
+    if (!source.hasOwnProperty(prop))
+      continue;
+    if (prop in target) {
+      if (source[prop] == null) {
+        target[prop] = source[prop];
+      } else if (typeof target[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (typeof source[prop] !== "object") {
+        target[prop] = source[prop];
+      } else if (target[prop].concat && source[prop].concat) {
+        target[prop] = target[prop].concat(source[prop]);
+      } else {
+        target[prop] = shallowMerge(target[prop], source[prop]);
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}
+function error(err) {
+  {
+    index$1.__f__("error", "at node_modules/uview-plus/libs/function/index.js:304", `uView提示：${err}`);
+  }
+}
+function randomArray(array2 = []) {
+  return array2.sort(() => Math.random() - 0.5);
+}
+if (!String.prototype.padStart) {
+  String.prototype.padStart = function(maxLength, fillString = " ") {
+    if (Object.prototype.toString.call(fillString) !== "[object String]") {
+      throw new TypeError(
+        "fillString must be String"
+      );
+    }
+    const str = this;
+    if (str.length >= maxLength)
+      return String(str);
+    const fillLength = maxLength - str.length;
+    let times2 = Math.ceil(fillLength / fillString.length);
+    while (times2 >>= 1) {
+      fillString += fillString;
+      if (times2 === 1) {
+        fillString += fillString;
+      }
+    }
+    return fillString.slice(0, fillLength) + str;
+  };
+}
+function timeFormat(dateTime = null, formatStr = "yyyy-mm-dd") {
+  let date2;
+  if (!dateTime) {
+    date2 = /* @__PURE__ */ new Date();
+  } else if (/^\d{10}$/.test(dateTime.toString().trim())) {
+    date2 = new Date(dateTime * 1e3);
+  } else if (typeof dateTime === "string" && /^\d+$/.test(dateTime.trim())) {
+    date2 = new Date(Number(dateTime));
+  } else {
+    date2 = new Date(
+      typeof dateTime === "string" ? dateTime.replace(/-/g, "/") : dateTime
+    );
+  }
+  const timeSource = {
+    "y": date2.getFullYear().toString(),
+    // 年
+    "m": (date2.getMonth() + 1).toString().padStart(2, "0"),
+    // 月
+    "d": date2.getDate().toString().padStart(2, "0"),
+    // 日
+    "h": date2.getHours().toString().padStart(2, "0"),
+    // 时
+    "M": date2.getMinutes().toString().padStart(2, "0"),
+    // 分
+    "s": date2.getSeconds().toString().padStart(2, "0")
+    // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  };
+  for (const key in timeSource) {
+    const [ret] = new RegExp(`${key}+`).exec(formatStr) || [];
+    if (ret) {
+      const beginIndex = key === "y" && ret.length === 2 ? 2 : 0;
+      formatStr = formatStr.replace(ret, timeSource[key].slice(beginIndex));
+    }
+  }
+  return formatStr;
+}
+function timeFrom(timestamp = null, format = "yyyy-mm-dd") {
+  if (timestamp == null)
+    timestamp = Number(/* @__PURE__ */ new Date());
+  timestamp = parseInt(timestamp);
+  if (timestamp.toString().length == 10)
+    timestamp *= 1e3;
+  let timer = (/* @__PURE__ */ new Date()).getTime() - timestamp;
+  timer = parseInt(timer / 1e3);
+  let tips = "";
+  switch (true) {
+    case timer < 300:
+      tips = "刚刚";
+      break;
+    case (timer >= 300 && timer < 3600):
+      tips = `${parseInt(timer / 60)}分钟前`;
+      break;
+    case (timer >= 3600 && timer < 86400):
+      tips = `${parseInt(timer / 3600)}小时前`;
+      break;
+    case (timer >= 86400 && timer < 2592e3):
+      tips = `${parseInt(timer / 86400)}天前`;
+      break;
+    default:
+      if (format === false) {
+        if (timer >= 2592e3 && timer < 365 * 86400) {
+          tips = `${parseInt(timer / (86400 * 30))}个月前`;
+        } else {
+          tips = `${parseInt(timer / (86400 * 365))}年前`;
+        }
+      } else {
+        tips = timeFormat(timestamp, format);
+      }
+  }
+  return tips;
+}
+function trim(str, pos = "both") {
+  str = String(str);
+  if (pos == "both") {
+    return str.replace(/^\s+|\s+$/g, "");
+  }
+  if (pos == "left") {
+    return str.replace(/^\s*/, "");
+  }
+  if (pos == "right") {
+    return str.replace(/(\s*$)/g, "");
+  }
+  if (pos == "all") {
+    return str.replace(/\s+/g, "");
+  }
+  return str;
+}
+function queryParams(data = {}, isPrefix = true, arrayFormat = "brackets") {
+  const prefix = isPrefix ? "?" : "";
+  const _result = [];
+  if (["indices", "brackets", "repeat", "comma"].indexOf(arrayFormat) == -1)
+    arrayFormat = "brackets";
+  for (const key in data) {
+    const value = data[key];
+    if (["", void 0, null].indexOf(value) >= 0) {
+      continue;
+    }
+    if (value.constructor === Array) {
+      switch (arrayFormat) {
+        case "indices":
+          for (let i = 0; i < value.length; i++) {
+            _result.push(`${key}[${i}]=${value[i]}`);
+          }
+          break;
+        case "brackets":
+          value.forEach((_value) => {
+            _result.push(`${key}[]=${_value}`);
+          });
+          break;
+        case "repeat":
+          value.forEach((_value) => {
+            _result.push(`${key}=${_value}`);
+          });
+          break;
+        case "comma":
+          let commaStr = "";
+          value.forEach((_value) => {
+            commaStr += (commaStr ? "," : "") + _value;
+          });
+          _result.push(`${key}=${commaStr}`);
+          break;
+        default:
+          value.forEach((_value) => {
+            _result.push(`${key}[]=${_value}`);
+          });
+      }
+    } else {
+      _result.push(`${key}=${value}`);
+    }
+  }
+  return _result.length ? prefix + _result.join("&") : "";
+}
+function toast(title, duration = 2e3) {
+  index$1.showToast({
+    title: String(title),
+    icon: "none",
+    duration
+  });
+}
+function type2icon(type = "success", fill = false) {
+  if (["primary", "info", "error", "warning", "success"].indexOf(type) == -1)
+    type = "success";
+  let iconName = "";
+  switch (type) {
+    case "primary":
+      iconName = "info-circle";
+      break;
+    case "info":
+      iconName = "info-circle";
+      break;
+    case "error":
+      iconName = "close-circle";
+      break;
+    case "warning":
+      iconName = "error-circle";
+      break;
+    case "success":
+      iconName = "checkmark-circle";
+      break;
+    default:
+      iconName = "checkmark-circle";
+  }
+  if (fill)
+    iconName += "-fill";
+  return iconName;
+}
+function priceFormat(number2, decimals = 0, decimalPoint = ".", thousandsSeparator = ",") {
+  number2 = `${number2}`.replace(/[^0-9+-Ee.]/g, "");
+  const n2 = !isFinite(+number2) ? 0 : +number2;
+  const prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
+  const sep = typeof thousandsSeparator === "undefined" ? "," : thousandsSeparator;
+  const dec = typeof decimalPoint === "undefined" ? "." : decimalPoint;
+  let s2 = "";
+  s2 = (prec ? round(n2, prec) + "" : `${Math.round(n2)}`).split(".");
+  const re = /(-?\d+)(\d{3})/;
+  while (re.test(s2[0])) {
+    s2[0] = s2[0].replace(re, `$1${sep}$2`);
+  }
+  if ((s2[1] || "").length < prec) {
+    s2[1] = s2[1] || "";
+    s2[1] += new Array(prec - s2[1].length + 1).join("0");
+  }
+  return s2.join(dec);
+}
+function getDuration(value, unit = true) {
+  const valueNum = parseInt(value);
+  if (unit) {
+    if (/s$/.test(value))
+      return value;
+    return value > 30 ? `${value}ms` : `${value}s`;
+  }
+  if (/ms$/.test(value))
+    return valueNum;
+  if (/s$/.test(value))
+    return valueNum > 30 ? valueNum : valueNum * 1e3;
+  return valueNum;
+}
+function padZero(value) {
+  return `00${value}`.slice(-2);
+}
+function formValidate(instance, event) {
+  const formItem = $parent.call(instance, "u-form-item");
+  const form = $parent.call(instance, "u-form");
+  if (formItem && form) {
+    form.validateField(formItem.prop, () => {
+    }, event);
+  }
+}
+function getProperty(obj, key) {
+  if (typeof obj !== "object" || null == obj) {
+    return "";
+  }
+  if (typeof key !== "string" || key === "") {
+    return "";
+  }
+  if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    let firstObj = obj[keys[0]] || {};
+    for (let i = 1; i < keys.length; i++) {
+      if (firstObj) {
+        firstObj = firstObj[keys[i]];
+      }
+    }
+    return firstObj;
+  }
+  return obj[key];
+}
+function setProperty(obj, key, value) {
+  if (typeof obj !== "object" || null == obj) {
+    return;
+  }
+  const inFn = function(_obj, keys, v) {
+    if (keys.length === 1) {
+      _obj[keys[0]] = v;
+      return;
+    }
+    while (keys.length > 1) {
+      const k = keys[0];
+      if (!_obj[k] || typeof _obj[k] !== "object") {
+        _obj[k] = {};
+      }
+      keys.shift();
+      inFn(_obj[k], keys, v);
+    }
+  };
+  if (typeof key !== "string" || key === "")
+    ;
+  else if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    inFn(obj, keys, value);
+  } else {
+    obj[key] = value;
+  }
+}
+function page() {
+  const pages2 = getCurrentPages();
+  return `/${pages2[pages2.length - 1].route || ""}`;
+}
+function pages() {
+  const pages2 = getCurrentPages();
+  return pages2;
+}
+function getValueByPath(obj, path) {
+  const pathArr = path.split(".");
+  return pathArr.reduce((acc, curr) => {
+    return acc && acc[curr] !== void 0 ? acc[curr] : void 0;
+  }, obj);
+}
+const index = {
+  range,
+  getPx,
+  sleep,
+  os,
+  sys,
+  getWindowInfo,
+  random,
+  guid,
+  $parent,
+  addStyle,
+  addUnit,
+  deepClone,
+  deepMerge: deepMerge$1,
+  shallowMerge,
+  error,
+  randomArray,
+  timeFormat,
+  timeFrom,
+  trim,
+  queryParams,
+  toast,
+  type2icon,
+  priceFormat,
+  getDuration,
+  padZero,
+  formValidate,
+  getProperty,
+  setProperty,
+  page,
+  pages,
+  getValueByPath
+  // setConfig
+};
+class Router {
+  constructor() {
+    this.config = {
+      type: "navigateTo",
+      url: "",
+      delta: 1,
+      // navigateBack页面后退时,回退的层数
+      params: {},
+      // 传递的参数
+      animationType: "pop-in",
+      // 窗口动画,只在APP有效
+      animationDuration: 300,
+      // 窗口动画持续时间,单位毫秒,只在APP有效
+      intercept: false
+      // 是否需要拦截
+    };
+    this.route = this.route.bind(this);
+  }
+  // 判断url前面是否有"/"，如果没有则加上，否则无法跳转
+  addRootPath(url2) {
+    return url2[0] === "/" ? url2 : `/${url2}`;
+  }
+  // 整合路由参数
+  mixinParam(url2, params) {
+    url2 = url2 && this.addRootPath(url2);
+    let query = "";
+    if (/.*\/.*\?.*=.*/.test(url2)) {
+      query = queryParams(params, false);
+      return url2 += `&${query}`;
+    }
+    query = queryParams(params);
+    return url2 += query;
+  }
+  // 对外的方法名称
+  async route(options = {}, params = {}) {
+    let mergeConfig2 = {};
+    if (typeof options === "string") {
+      mergeConfig2.url = this.mixinParam(options, params);
+      mergeConfig2.type = "navigateTo";
+    } else {
+      mergeConfig2 = deepMerge$1(this.config, options);
+      mergeConfig2.url = this.mixinParam(options.url, options.params);
+    }
+    if (mergeConfig2.url === page())
+      return;
+    if (params.intercept) {
+      this.config.intercept = params.intercept;
+    }
+    mergeConfig2.params = params;
+    mergeConfig2 = deepMerge$1(this.config, mergeConfig2);
+    if (typeof index$1.$u.routeIntercept === "function") {
+      const isNext = await new Promise((resolve2, reject) => {
+        index$1.$u.routeIntercept(mergeConfig2, resolve2);
+      });
+      isNext && this.openPage(mergeConfig2);
+    } else {
+      this.openPage(mergeConfig2);
+    }
+  }
+  // 执行路由跳转
+  openPage(config2) {
+    const {
+      url: url2,
+      type,
+      delta,
+      animationType,
+      animationDuration
+    } = config2;
+    if (config2.type == "navigateTo" || config2.type == "to") {
+      index$1.navigateTo({
+        url: url2,
+        animationType,
+        animationDuration
+      });
+    }
+    if (config2.type == "redirectTo" || config2.type == "redirect") {
+      index$1.redirectTo({
+        url: url2
+      });
+    }
+    if (config2.type == "switchTab" || config2.type == "tab") {
+      index$1.switchTab({
+        url: url2
+      });
+    }
+    if (config2.type == "reLaunch" || config2.type == "launch") {
+      index$1.reLaunch({
+        url: url2
+      });
+    }
+    if (config2.type == "navigateBack" || config2.type == "back") {
+      index$1.navigateBack({
+        delta
+      });
+    }
+  }
+}
+const route = new Router().route;
+const mixin = defineMixin({
   // 定义每个组件都可能需要用到的外部样式以及类名
   props: {
     // 每个组件都有的父组件传递的样式，可以为字符串或者对象形式
@@ -7966,7 +8870,7 @@ const mixin = {
     // 所以这里通过computed计算属性将其附加到this.$u上，就可以在模板或者js中使用uni.$u.xxx
     // 只在nvue环境通过此方式引入完整的$u，其他平台会出现性能问题，非nvue则按需引入（主要原因是props过大）
     $u() {
-      return index$1.$u.deepMerge(index$1.$u, {
+      return deepMerge$1(index$1.$u, {
         props: void 0,
         http: void 0,
         mixin: void 0
@@ -8004,8 +8908,11 @@ const mixin = {
     openPage(urlKey = "url") {
       const url2 = this[urlKey];
       if (url2) {
-        this.$u.route({ type: this.linkType, url: url2 });
+        route({ type: this.linkType, url: url2 });
       }
+    },
+    navTo(url2 = "", linkType = "navigateTo") {
+      route({ type: this.linkType, url: url2 });
     },
     // 查询节点信息
     // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
@@ -8025,7 +8932,7 @@ const mixin = {
     getParentData(parentName = "") {
       if (!this.parent)
         this.parent = {};
-      this.parent = index$1.$u.$parent.call(this, parentName);
+      this.parent = $parent.call(this, parentName);
       if (this.parent.children) {
         this.parent.children.indexOf(this) === -1 && this.parent.children.push(this);
       }
@@ -8047,8 +8954,8 @@ const mixin = {
   onReachBottom() {
     index$1.$emit("uOnReachBottom");
   },
-  beforeDestroy() {
-    if (this.parent && index$1.$u.test.array(this.parent.children)) {
+  beforeUnmount() {
+    if (this.parent && test.array(this.parent.children)) {
       const childrenList = this.parent.children;
       childrenList.map((child, index2) => {
         if (child === this) {
@@ -8057,13 +8964,13 @@ const mixin = {
       });
     }
   }
-};
-const mpMixin = {
+});
+const mpMixin = defineMixin({
   // 将自定义节点设置成虚拟的，更加接近Vue组件的表现，能更好的使用flex属性
   options: {
     virtualHost: true
   }
-};
+});
 const { toString } = Object.prototype;
 function isArray(val) {
   return toString.call(val) === "[object Array]";
@@ -8099,13 +9006,13 @@ function forEach(obj, fn) {
 function isPlainObject$1(obj) {
   return Object.prototype.toString.call(obj) === "[object Object]";
 }
-function deepMerge$1() {
+function deepMerge() {
   const result = {};
   function assignValue(val, key) {
     if (typeof result[key] === "object" && typeof val === "object") {
-      result[key] = deepMerge$1(result[key], val);
+      result[key] = deepMerge(result[key], val);
     } else if (typeof val === "object") {
-      result[key] = deepMerge$1({}, val);
+      result[key] = deepMerge({}, val);
     } else {
       result[key] = val;
     }
@@ -8276,7 +9183,7 @@ const mergeConfig = (globalsConfig, config2 = {}) => {
     url: config2.url || "",
     params: config2.params || {},
     custom: { ...globalsConfig.custom || {}, ...config2.custom || {} },
-    header: deepMerge$1(globalsConfig.header || {}, config2.header || {})
+    header: deepMerge(globalsConfig.header || {}, config2.header || {})
   };
   const defaultToConfig2Keys = ["getTask", "validateStatus"];
   config3 = { ...config3, ...mergeKeys(defaultToConfig2Keys, globalsConfig, config2) };
@@ -8647,104 +9554,6 @@ class Request {
     return this.middleware(config2);
   }
 }
-class Router {
-  constructor() {
-    this.config = {
-      type: "navigateTo",
-      url: "",
-      delta: 1,
-      // navigateBack页面后退时,回退的层数
-      params: {},
-      // 传递的参数
-      animationType: "pop-in",
-      // 窗口动画,只在APP有效
-      animationDuration: 300,
-      // 窗口动画持续时间,单位毫秒,只在APP有效
-      intercept: false
-      // 是否需要拦截
-    };
-    this.route = this.route.bind(this);
-  }
-  // 判断url前面是否有"/"，如果没有则加上，否则无法跳转
-  addRootPath(url2) {
-    return url2[0] === "/" ? url2 : `/${url2}`;
-  }
-  // 整合路由参数
-  mixinParam(url2, params) {
-    url2 = url2 && this.addRootPath(url2);
-    let query = "";
-    if (/.*\/.*\?.*=.*/.test(url2)) {
-      query = index$1.$u.queryParams(params, false);
-      return url2 += `&${query}`;
-    }
-    query = index$1.$u.queryParams(params);
-    return url2 += query;
-  }
-  // 对外的方法名称
-  async route(options = {}, params = {}) {
-    let mergeConfig2 = {};
-    if (typeof options === "string") {
-      mergeConfig2.url = this.mixinParam(options, params);
-      mergeConfig2.type = "navigateTo";
-    } else {
-      mergeConfig2 = index$1.$u.deepMerge(this.config, options);
-      mergeConfig2.url = this.mixinParam(options.url, options.params);
-    }
-    if (mergeConfig2.url === index$1.$u.page())
-      return;
-    if (params.intercept) {
-      this.config.intercept = params.intercept;
-    }
-    mergeConfig2.params = params;
-    mergeConfig2 = index$1.$u.deepMerge(this.config, mergeConfig2);
-    if (typeof index$1.$u.routeIntercept === "function") {
-      const isNext = await new Promise((resolve2, reject) => {
-        index$1.$u.routeIntercept(mergeConfig2, resolve2);
-      });
-      isNext && this.openPage(mergeConfig2);
-    } else {
-      this.openPage(mergeConfig2);
-    }
-  }
-  // 执行路由跳转
-  openPage(config2) {
-    const {
-      url: url2,
-      type,
-      delta,
-      animationType,
-      animationDuration
-    } = config2;
-    if (config2.type == "navigateTo" || config2.type == "to") {
-      index$1.navigateTo({
-        url: url2,
-        animationType,
-        animationDuration
-      });
-    }
-    if (config2.type == "redirectTo" || config2.type == "redirect") {
-      index$1.redirectTo({
-        url: url2
-      });
-    }
-    if (config2.type == "switchTab" || config2.type == "tab") {
-      index$1.switchTab({
-        url: url2
-      });
-    }
-    if (config2.type == "reLaunch" || config2.type == "launch") {
-      index$1.reLaunch({
-        url: url2
-      });
-    }
-    if (config2.type == "navigateBack" || config2.type == "back") {
-      index$1.navigateBack({
-        delta
-      });
-    }
-  }
-}
-const route = new Router().route;
 function colorGradient(startColor = "rgb(0, 0, 0)", endColor = "rgb(255, 255, 255)", step = 10) {
   const startRGB = hexToRgb(startColor, false);
   const startR = startRGB[0];
@@ -8855,178 +9664,6 @@ const colorGradient$1 = {
   rgbToHex,
   colorToRgba
 };
-function email(value) {
-  return /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(value);
-}
-function mobile(value) {
-  return /^1[23456789]\d{9}$/.test(value);
-}
-function url(value) {
-  return /^((https|http|ftp|rtsp|mms):\/\/)(([0-9a-zA-Z_!~*'().&=+$%-]+: )?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z].[a-zA-Z]{2,6})(:[0-9]{1,4})?((\/?)|(\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]+)+\/?)$/.test(value);
-}
-function date(value) {
-  if (!value)
-    return false;
-  if (number(value))
-    value = +value;
-  return !/Invalid|NaN/.test(new Date(value).toString());
-}
-function dateISO(value) {
-  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/.test(value);
-}
-function number(value) {
-  return /^[\+-]?(\d+\.?\d*|\.\d+|\d\.\d+e\+\d+)$/.test(value);
-}
-function string(value) {
-  return typeof value === "string";
-}
-function digits(value) {
-  return /^\d+$/.test(value);
-}
-function idCard(value) {
-  return /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(
-    value
-  );
-}
-function carNo(value) {
-  const xreg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[DF]$)|([DF][A-HJ-NP-Z0-9][0-9]{4}$))/;
-  const creg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$/;
-  if (value.length === 7) {
-    return creg.test(value);
-  }
-  if (value.length === 8) {
-    return xreg.test(value);
-  }
-  return false;
-}
-function amount(value) {
-  return /^[1-9]\d*(,\d{3})*(\.\d{1,2})?$|^0\.\d{1,2}$/.test(value);
-}
-function chinese(value) {
-  const reg = /^[\u4e00-\u9fa5]+$/gi;
-  return reg.test(value);
-}
-function letter(value) {
-  return /^[a-zA-Z]*$/.test(value);
-}
-function enOrNum(value) {
-  const reg = /^[0-9a-zA-Z]*$/g;
-  return reg.test(value);
-}
-function contains(value, param) {
-  return value.indexOf(param) >= 0;
-}
-function range$1(value, param) {
-  return value >= param[0] && value <= param[1];
-}
-function rangeLength(value, param) {
-  return value.length >= param[0] && value.length <= param[1];
-}
-function landline(value) {
-  const reg = /^\d{3,4}-\d{7,8}(-\d{3,4})?$/;
-  return reg.test(value);
-}
-function empty(value) {
-  switch (typeof value) {
-    case "undefined":
-      return true;
-    case "string":
-      if (value.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, "").length == 0)
-        return true;
-      break;
-    case "boolean":
-      if (!value)
-        return true;
-      break;
-    case "number":
-      if (value === 0 || isNaN(value))
-        return true;
-      break;
-    case "object":
-      if (value === null || value.length === 0)
-        return true;
-      for (const i in value) {
-        return false;
-      }
-      return true;
-  }
-  return false;
-}
-function jsonString(value) {
-  if (typeof value === "string") {
-    try {
-      const obj = JSON.parse(value);
-      if (typeof obj === "object" && obj) {
-        return true;
-      }
-      return false;
-    } catch (e2) {
-      return false;
-    }
-  }
-  return false;
-}
-function array(value) {
-  if (typeof Array.isArray === "function") {
-    return Array.isArray(value);
-  }
-  return Object.prototype.toString.call(value) === "[object Array]";
-}
-function object(value) {
-  return Object.prototype.toString.call(value) === "[object Object]";
-}
-function code(value, len = 6) {
-  return new RegExp(`^\\d{${len}}$`).test(value);
-}
-function func(value) {
-  return typeof value === "function";
-}
-function promise(value) {
-  return object(value) && func(value.then) && func(value.catch);
-}
-function image(value) {
-  const newValue = value.split("?")[0];
-  const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
-  return IMAGE_REGEXP.test(newValue);
-}
-function video(value) {
-  const VIDEO_REGEXP = /\.(mp4|mpg|mpeg|dat|asf|avi|rm|rmvb|mov|wmv|flv|mkv|m3u8)/i;
-  return VIDEO_REGEXP.test(value);
-}
-function regExp(o2) {
-  return o2 && Object.prototype.toString.call(o2) === "[object RegExp]";
-}
-const test = {
-  email,
-  mobile,
-  url,
-  date,
-  dateISO,
-  number,
-  digits,
-  idCard,
-  carNo,
-  amount,
-  chinese,
-  letter,
-  enOrNum,
-  contains,
-  range: range$1,
-  rangeLength,
-  empty,
-  isEmpty: empty,
-  jsonString,
-  landline,
-  object,
-  array,
-  code,
-  func,
-  promise,
-  video,
-  image,
-  regExp,
-  string
-};
 let timeout = null;
 function debounce(func2, wait = 500, immediate = false) {
   if (timeout !== null)
@@ -9062,591 +9699,27 @@ function throttle(func2, wait = 500, immediate = true) {
     }, wait);
   }
 }
-function strip(num, precision = 15) {
-  return +parseFloat(Number(num).toPrecision(precision));
-}
-function digitLength(num) {
-  const eSplit = num.toString().split(/[eE]/);
-  const len = (eSplit[0].split(".")[1] || "").length - +(eSplit[1] || 0);
-  return len > 0 ? len : 0;
-}
-function float2Fixed(num) {
-  if (num.toString().indexOf("e") === -1) {
-    return Number(num.toString().replace(".", ""));
-  }
-  const dLen = digitLength(num);
-  return dLen > 0 ? strip(Number(num) * Math.pow(10, dLen)) : Number(num);
-}
-function checkBoundary(num) {
-  {
-    if (num > Number.MAX_SAFE_INTEGER || num < Number.MIN_SAFE_INTEGER) {
-      index$1.__f__("warn", "at node_modules/uview-plus/libs/function/digit.js:45", `${num} 超出了精度限制，结果可能不正确`);
-    }
-  }
-}
-function iteratorOperation(arr, operation) {
-  const [num1, num2, ...others] = arr;
-  let res = operation(num1, num2);
-  others.forEach((num) => {
-    res = operation(res, num);
-  });
-  return res;
-}
-function times(...nums) {
-  if (nums.length > 2) {
-    return iteratorOperation(nums, times);
-  }
-  const [num1, num2] = nums;
-  const num1Changed = float2Fixed(num1);
-  const num2Changed = float2Fixed(num2);
-  const baseNum = digitLength(num1) + digitLength(num2);
-  const leftValue = num1Changed * num2Changed;
-  checkBoundary(leftValue);
-  return leftValue / Math.pow(10, baseNum);
-}
-function divide(...nums) {
-  if (nums.length > 2) {
-    return iteratorOperation(nums, divide);
-  }
-  const [num1, num2] = nums;
-  const num1Changed = float2Fixed(num1);
-  const num2Changed = float2Fixed(num2);
-  checkBoundary(num1Changed);
-  checkBoundary(num2Changed);
-  return times(num1Changed / num2Changed, strip(Math.pow(10, digitLength(num2) - digitLength(num1))));
-}
-function round(num, ratio) {
-  const base = Math.pow(10, ratio);
-  let result = divide(Math.round(Math.abs(times(num, base))), base);
-  if (num < 0 && result !== 0) {
-    result = times(result, -1);
-  }
-  return result;
-}
-function range(min = 0, max = 0, value = 0) {
-  return Math.max(min, Math.min(max, Number(value)));
-}
-function getPx(value, unit = false) {
-  if (test.number(value)) {
-    return unit ? `${value}px` : Number(value);
-  }
-  if (/(rpx|upx)$/.test(value)) {
-    return unit ? `${index$1.upx2px(parseInt(value))}px` : Number(index$1.upx2px(parseInt(value)));
-  }
-  return unit ? `${parseInt(value)}px` : parseInt(value);
-}
-function sleep(value = 30) {
-  return new Promise((resolve2) => {
-    setTimeout(() => {
-      resolve2();
-    }, value);
-  });
-}
-function os() {
-  return index$1.getSystemInfoSync().platform.toLowerCase();
-}
-function sys() {
-  return index$1.getSystemInfoSync();
-}
-function random(min, max) {
-  if (min >= 0 && max > 0 && max >= min) {
-    const gab = max - min + 1;
-    return Math.floor(Math.random() * gab + min);
-  }
-  return 0;
-}
-function guid(len = 32, firstU = true, radix = null) {
-  const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
-  const uuid = [];
-  radix = radix || chars.length;
-  if (len) {
-    for (let i = 0; i < len; i++)
-      uuid[i] = chars[0 | Math.random() * radix];
-  } else {
-    let r;
-    uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
-    uuid[14] = "4";
-    for (let i = 0; i < 36; i++) {
-      if (!uuid[i]) {
-        r = 0 | Math.random() * 16;
-        uuid[i] = chars[i == 19 ? r & 3 | 8 : r];
-      }
-    }
-  }
-  if (firstU) {
-    uuid.shift();
-    return `u${uuid.join("")}`;
-  }
-  return uuid.join("");
-}
-function $parent(name = void 0) {
-  let parent = this.$parent;
-  while (parent) {
-    if (parent.$options && parent.$options.name !== name) {
-      parent = parent.$parent;
-    } else {
-      return parent;
-    }
-  }
-  return false;
-}
-function addStyle(customStyle, target = "object") {
-  if (test.empty(customStyle) || typeof customStyle === "object" && target === "object" || target === "string" && typeof customStyle === "string") {
-    return customStyle;
-  }
-  if (target === "object") {
-    customStyle = trim(customStyle);
-    const styleArray = customStyle.split(";");
-    const style = {};
-    for (let i = 0; i < styleArray.length; i++) {
-      if (styleArray[i]) {
-        const item = styleArray[i].split(":");
-        style[trim(item[0])] = trim(item[1]);
-      }
-    }
-    return style;
-  }
-  let string2 = "";
-  for (const i in customStyle) {
-    const key = i.replace(/([A-Z])/g, "-$1").toLowerCase();
-    string2 += `${key}:${customStyle[i]};`;
-  }
-  return trim(string2);
-}
-function addUnit(value = "auto", unit = "") {
-  if (!unit) {
-    unit = index$1.$u.config.unit || "px";
-  }
-  value = String(value);
-  return test.number(value) ? `${value}${unit}` : value;
-}
-function deepClone(obj) {
-  if ([null, void 0, NaN, false].includes(obj))
-    return obj;
-  if (typeof obj !== "object" && typeof obj !== "function") {
-    return obj;
-  }
-  const o2 = test.array(obj) ? [] : {};
-  for (const i in obj) {
-    if (obj.hasOwnProperty(i)) {
-      o2[i] = typeof obj[i] === "object" ? deepClone(obj[i]) : obj[i];
-    }
-  }
-  return o2;
-}
-function deepMerge(target = {}, source = {}) {
-  target = deepClone(target);
-  if (typeof target !== "object" || typeof source !== "object")
-    return false;
-  for (const prop in source) {
-    if (!source.hasOwnProperty(prop))
-      continue;
-    if (prop in target) {
-      if (typeof target[prop] !== "object") {
-        target[prop] = source[prop];
-      } else if (typeof source[prop] !== "object") {
-        target[prop] = source[prop];
-      } else if (target[prop].concat && source[prop].concat) {
-        target[prop] = target[prop].concat(source[prop]);
-      } else {
-        target[prop] = deepMerge(target[prop], source[prop]);
-      }
-    } else {
-      target[prop] = source[prop];
-    }
-  }
-  return target;
-}
-function error(err) {
-  {
-    index$1.__f__("error", "at node_modules/uview-plus/libs/function/index.js:238", `uView提示：${err}`);
-  }
-}
-function randomArray(array2 = []) {
-  return array2.sort(() => Math.random() - 0.5);
-}
-if (!String.prototype.padStart) {
-  String.prototype.padStart = function(maxLength, fillString = " ") {
-    if (Object.prototype.toString.call(fillString) !== "[object String]") {
-      throw new TypeError(
-        "fillString must be String"
-      );
-    }
-    const str = this;
-    if (str.length >= maxLength)
-      return String(str);
-    const fillLength = maxLength - str.length;
-    let times2 = Math.ceil(fillLength / fillString.length);
-    while (times2 >>= 1) {
-      fillString += fillString;
-      if (times2 === 1) {
-        fillString += fillString;
-      }
-    }
-    return fillString.slice(0, fillLength) + str;
-  };
-}
-function timeFormat(dateTime = null, formatStr = "yyyy-mm-dd") {
-  let date2;
-  if (!dateTime) {
-    date2 = /* @__PURE__ */ new Date();
-  } else if (/^\d{10}$/.test(dateTime.toString().trim())) {
-    date2 = new Date(dateTime * 1e3);
-  } else if (typeof dateTime === "string" && /^\d+$/.test(dateTime.trim())) {
-    date2 = new Date(Number(dateTime));
-  } else {
-    date2 = new Date(
-      typeof dateTime === "string" ? dateTime.replace(/-/g, "/") : dateTime
-    );
-  }
-  const timeSource = {
-    "y": date2.getFullYear().toString(),
-    // 年
-    "m": (date2.getMonth() + 1).toString().padStart(2, "0"),
-    // 月
-    "d": date2.getDate().toString().padStart(2, "0"),
-    // 日
-    "h": date2.getHours().toString().padStart(2, "0"),
-    // 时
-    "M": date2.getMinutes().toString().padStart(2, "0"),
-    // 分
-    "s": date2.getSeconds().toString().padStart(2, "0")
-    // 秒
-    // 有其他格式化字符需求可以继续添加，必须转化成字符串
-  };
-  for (const key in timeSource) {
-    const [ret] = new RegExp(`${key}+`).exec(formatStr) || [];
-    if (ret) {
-      const beginIndex = key === "y" && ret.length === 2 ? 2 : 0;
-      formatStr = formatStr.replace(ret, timeSource[key].slice(beginIndex));
-    }
-  }
-  return formatStr;
-}
-function timeFrom(timestamp = null, format = "yyyy-mm-dd") {
-  if (timestamp == null)
-    timestamp = Number(/* @__PURE__ */ new Date());
-  timestamp = parseInt(timestamp);
-  if (timestamp.toString().length == 10)
-    timestamp *= 1e3;
-  let timer = (/* @__PURE__ */ new Date()).getTime() - timestamp;
-  timer = parseInt(timer / 1e3);
-  let tips = "";
-  switch (true) {
-    case timer < 300:
-      tips = "刚刚";
-      break;
-    case (timer >= 300 && timer < 3600):
-      tips = `${parseInt(timer / 60)}分钟前`;
-      break;
-    case (timer >= 3600 && timer < 86400):
-      tips = `${parseInt(timer / 3600)}小时前`;
-      break;
-    case (timer >= 86400 && timer < 2592e3):
-      tips = `${parseInt(timer / 86400)}天前`;
-      break;
-    default:
-      if (format === false) {
-        if (timer >= 2592e3 && timer < 365 * 86400) {
-          tips = `${parseInt(timer / (86400 * 30))}个月前`;
-        } else {
-          tips = `${parseInt(timer / (86400 * 365))}年前`;
-        }
-      } else {
-        tips = timeFormat(timestamp, format);
-      }
-  }
-  return tips;
-}
-function trim(str, pos = "both") {
-  str = String(str);
-  if (pos == "both") {
-    return str.replace(/^\s+|\s+$/g, "");
-  }
-  if (pos == "left") {
-    return str.replace(/^\s*/, "");
-  }
-  if (pos == "right") {
-    return str.replace(/(\s*$)/g, "");
-  }
-  if (pos == "all") {
-    return str.replace(/\s+/g, "");
-  }
-  return str;
-}
-function queryParams(data = {}, isPrefix = true, arrayFormat = "brackets") {
-  const prefix = isPrefix ? "?" : "";
-  const _result = [];
-  if (["indices", "brackets", "repeat", "comma"].indexOf(arrayFormat) == -1)
-    arrayFormat = "brackets";
-  for (const key in data) {
-    const value = data[key];
-    if (["", void 0, null].indexOf(value) >= 0) {
-      continue;
-    }
-    if (value.constructor === Array) {
-      switch (arrayFormat) {
-        case "indices":
-          for (let i = 0; i < value.length; i++) {
-            _result.push(`${key}[${i}]=${value[i]}`);
-          }
-          break;
-        case "brackets":
-          value.forEach((_value) => {
-            _result.push(`${key}[]=${_value}`);
-          });
-          break;
-        case "repeat":
-          value.forEach((_value) => {
-            _result.push(`${key}=${_value}`);
-          });
-          break;
-        case "comma":
-          let commaStr = "";
-          value.forEach((_value) => {
-            commaStr += (commaStr ? "," : "") + _value;
-          });
-          _result.push(`${key}=${commaStr}`);
-          break;
-        default:
-          value.forEach((_value) => {
-            _result.push(`${key}[]=${_value}`);
-          });
-      }
-    } else {
-      _result.push(`${key}=${value}`);
-    }
-  }
-  return _result.length ? prefix + _result.join("&") : "";
-}
-function toast(title, duration = 2e3) {
-  index$1.showToast({
-    title: String(title),
-    icon: "none",
-    duration
-  });
-}
-function type2icon(type = "success", fill = false) {
-  if (["primary", "info", "error", "warning", "success"].indexOf(type) == -1)
-    type = "success";
-  let iconName = "";
-  switch (type) {
-    case "primary":
-      iconName = "info-circle";
-      break;
-    case "info":
-      iconName = "info-circle";
-      break;
-    case "error":
-      iconName = "close-circle";
-      break;
-    case "warning":
-      iconName = "error-circle";
-      break;
-    case "success":
-      iconName = "checkmark-circle";
-      break;
-    default:
-      iconName = "checkmark-circle";
-  }
-  if (fill)
-    iconName += "-fill";
-  return iconName;
-}
-function priceFormat(number2, decimals = 0, decimalPoint = ".", thousandsSeparator = ",") {
-  number2 = `${number2}`.replace(/[^0-9+-Ee.]/g, "");
-  const n2 = !isFinite(+number2) ? 0 : +number2;
-  const prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
-  const sep = typeof thousandsSeparator === "undefined" ? "," : thousandsSeparator;
-  const dec = typeof decimalPoint === "undefined" ? "." : decimalPoint;
-  let s2 = "";
-  s2 = (prec ? round(n2, prec) + "" : `${Math.round(n2)}`).split(".");
-  const re = /(-?\d+)(\d{3})/;
-  while (re.test(s2[0])) {
-    s2[0] = s2[0].replace(re, `$1${sep}$2`);
-  }
-  if ((s2[1] || "").length < prec) {
-    s2[1] = s2[1] || "";
-    s2[1] += new Array(prec - s2[1].length + 1).join("0");
-  }
-  return s2.join(dec);
-}
-function getDuration(value, unit = true) {
-  const valueNum = parseInt(value);
-  if (unit) {
-    if (/s$/.test(value))
-      return value;
-    return value > 30 ? `${value}ms` : `${value}s`;
-  }
-  if (/ms$/.test(value))
-    return valueNum;
-  if (/s$/.test(value))
-    return valueNum > 30 ? valueNum : valueNum * 1e3;
-  return valueNum;
-}
-function padZero(value) {
-  return `00${value}`.slice(-2);
-}
-function formValidate(instance, event) {
-  const formItem = index$1.$u.$parent.call(instance, "u-form-item");
-  const form = index$1.$u.$parent.call(instance, "u-form");
-  if (formItem && form) {
-    form.validateField(formItem.prop, () => {
-    }, event);
-  }
-}
-function getProperty(obj, key) {
-  if (!obj) {
-    return;
-  }
-  if (typeof key !== "string" || key === "") {
-    return "";
-  }
-  if (key.indexOf(".") !== -1) {
-    const keys = key.split(".");
-    let firstObj = obj[keys[0]] || {};
-    for (let i = 1; i < keys.length; i++) {
-      if (firstObj) {
-        firstObj = firstObj[keys[i]];
-      }
-    }
-    return firstObj;
-  }
-  return obj[key];
-}
-function setProperty(obj, key, value) {
-  if (!obj) {
-    return;
-  }
-  const inFn = function(_obj, keys, v) {
-    if (keys.length === 1) {
-      _obj[keys[0]] = v;
-      return;
-    }
-    while (keys.length > 1) {
-      const k = keys[0];
-      if (!_obj[k] || typeof _obj[k] !== "object") {
-        _obj[k] = {};
-      }
-      keys.shift();
-      inFn(_obj[k], keys, v);
-    }
-  };
-  if (typeof key !== "string" || key === "")
-    ;
-  else if (key.indexOf(".") !== -1) {
-    const keys = key.split(".");
-    inFn(obj, keys, value);
-  } else {
-    obj[key] = value;
-  }
-}
-function page() {
-  const pages2 = getCurrentPages();
-  return `/${pages2[pages2.length - 1].route || ""}`;
-}
-function pages() {
-  const pages2 = getCurrentPages();
-  return pages2;
-}
-function setConfig({
-  props: props2 = {},
-  config: config2 = {},
-  color: color2 = {},
-  zIndex: zIndex2 = {}
-}) {
-  const {
-    deepMerge: deepMerge2
-  } = index$1.$u;
-  index$1.$u.config = deepMerge2(index$1.$u.config, config2);
-  index$1.$u.props = deepMerge2(index$1.$u.props, props2);
-  index$1.$u.color = deepMerge2(index$1.$u.color, color2);
-  index$1.$u.zIndex = deepMerge2(index$1.$u.zIndex, zIndex2);
-}
-const index = {
-  range,
-  getPx,
-  sleep,
-  os,
-  sys,
-  random,
-  guid,
-  $parent,
-  addStyle,
-  addUnit,
-  deepClone,
-  deepMerge,
-  error,
-  randomArray,
-  timeFormat,
-  timeFrom,
-  trim,
-  queryParams,
-  toast,
-  type2icon,
-  priceFormat,
-  getDuration,
-  padZero,
-  formValidate,
-  getProperty,
-  setProperty,
-  page,
-  pages,
-  setConfig
-};
-const version = "3";
-{
-  index$1.__f__("log", "at node_modules/uview-plus/libs/config/config.js:5", `
- %c uview-plus V${version} %c https://ijry.github.io/uview-plus/ 
-
-`, "color: #ffffff; background: #3c9cff; padding:5px 0;", "color: #3c9cff;background: #ffffff; padding:5px 0;");
-}
-const config = {
-  v: version,
-  version,
-  // 主题名称
-  type: [
-    "primary",
-    "success",
-    "info",
-    "error",
-    "warning"
-  ],
-  // 颜色部分，本来可以通过scss的:export导出供js使用，但是奈何nvue不支持
-  color: {
-    "u-primary": "#2979ff",
-    "u-warning": "#ff9900",
-    "u-success": "#19be6b",
-    "u-error": "#fa3534",
-    "u-info": "#909399",
-    "u-main-color": "#303133",
-    "u-content-color": "#606266",
-    "u-tips-color": "#909399",
-    "u-light-color": "#c0c4cc"
-  },
-  // 默认单位，可以通过配置为rpx，那么在用于传入组件大小参数为数值时，就默认为rpx
-  unit: "px"
-};
 const ActionSheet = {
   // action-sheet组件
   actionSheet: {
     show: false,
     title: "",
     description: "",
-    actions: () => [],
+    actions: [],
     index: "",
     cancelText: "",
     closeOnClickAction: true,
     safeAreaInsetBottom: true,
     openType: "",
     closeOnClickOverlay: true,
-    round: 0
+    round: 0,
+    wrapMaxHeight: "600px"
   }
 };
 const Album = {
   // album 组件
   album: {
-    urls: () => [],
+    urls: [],
     keyName: "",
     singleSize: 180,
     multipleSize: 70,
@@ -9656,7 +9729,10 @@ const Album = {
     maxCount: 9,
     previewFullImage: true,
     rowCount: 3,
-    showMore: true
+    showMore: true,
+    autoWrap: false,
+    unit: "px",
+    stop: true
   }
 };
 const Alert = {
@@ -9694,7 +9770,7 @@ const Avatar = {
 const AvatarGroup = {
   // avatarGroup 组件
   avatarGroup: {
-    urls: () => [],
+    urls: [],
     maxCount: 5,
     shape: "circle",
     mode: "scaleToFill",
@@ -9717,10 +9793,10 @@ const Backtop = {
     bottom: 100,
     right: 20,
     zIndex: 9,
-    iconStyle: () => ({
+    iconStyle: {
       color: "#909399",
       fontSize: "19px"
-    })
+    }
   }
 };
 const Badge = {
@@ -9736,7 +9812,7 @@ const Badge = {
     color: null,
     shape: "circle",
     numberType: "overflow",
-    offset: () => [],
+    offset: [],
     inverted: false,
     absolute: false
   }
@@ -9771,7 +9847,8 @@ const Button = {
     text: "",
     icon: "",
     iconColor: "",
-    color: ""
+    color: "",
+    stop: true
   }
 };
 const Calendar = {
@@ -9783,7 +9860,7 @@ const Calendar = {
     mode: "single",
     startText: "开始",
     endText: "结束",
-    customList: () => [],
+    customList: [],
     color: "#3c9cff",
     minDate: 0,
     maxDate: 0,
@@ -9806,7 +9883,10 @@ const Calendar = {
     showRangePrompt: true,
     allowSameDay: false,
     round: 0,
-    monthNum: 3
+    monthNum: 3,
+    weekText: ["一", "二", "三", "四", "五", "六", "日"],
+    forbidDays: [],
+    forbidDaysToast: "该日期已禁用"
   }
 };
 const CarKeyboard = {
@@ -9871,7 +9951,7 @@ const CheckboxGroup = {
   // checkbox-group组件
   checkboxGroup: {
     name: "",
-    value: () => [],
+    value: [],
     shape: "square",
     disabled: false,
     activeColor: "#2979ff",
@@ -9955,7 +10035,8 @@ const CollapseItem = {
     align: "left",
     name: "",
     icon: "",
-    duration: 300
+    duration: 300,
+    showRight: true
   }
 };
 const ColumnNotice = {
@@ -9970,7 +10051,8 @@ const ColumnNotice = {
     speed: 80,
     step: false,
     duration: 1500,
-    disableTouch: true
+    disableTouch: true,
+    justifyContent: "flex-start"
   }
 };
 const CountDown = {
@@ -10002,6 +10084,7 @@ const DatetimePicker = {
   // datetimePicker 组件
   datetimePicker: {
     show: false,
+    popupMode: "bottom",
     showToolbar: true,
     value: "",
     title: "",
@@ -10022,7 +10105,7 @@ const DatetimePicker = {
     confirmColor: "#3c9cff",
     visibleItemCount: 5,
     closeOnClickOverlay: false,
-    defaultIndex: () => []
+    defaultIndex: []
   }
 };
 const Divider = {
@@ -10057,14 +10140,14 @@ const Empty = {
 const Form = {
   // form 组件
   form: {
-    model: () => ({}),
-    rules: () => ({}),
+    model: {},
+    rules: {},
     errorType: "message",
     borderBottom: true,
     labelPosition: "left",
     labelWidth: 45,
     labelAlign: "left",
-    labelStyle: () => ({})
+    labelStyle: {}
   }
 };
 const GormItem = {
@@ -10072,7 +10155,9 @@ const GormItem = {
   formItem: {
     label: "",
     prop: "",
+    rules: [],
     borderBottom: "",
+    labelPosition: "",
     labelWidth: "",
     rightIcon: "",
     leftIcon: "",
@@ -10166,9 +10251,10 @@ const IndexList = {
   indexList: {
     inactiveColor: "#606266",
     activeColor: "#5677fc",
-    indexList: () => [],
+    indexList: [],
     sticky: true,
-    customNavHeight: 0
+    customNavHeight: 0,
+    safeBottomFix: false
   }
 };
 const Input = {
@@ -10181,7 +10267,7 @@ const Input = {
     disabledColor: "#f5f7fa",
     clearable: false,
     password: false,
-    maxlength: -1,
+    maxlength: 140,
     placeholder: null,
     placeholderClass: "input-placeholder",
     placeholderStyle: "color: #c0c4cc",
@@ -10322,7 +10408,8 @@ const LoadingPage = {
     color: "#C8C8C8",
     fontSize: 19,
     iconSize: 28,
-    loadingColor: "#C8C8C8"
+    loadingColor: "#C8C8C8",
+    zIndex: 10
   }
 };
 const Loadmore = {
@@ -10366,7 +10453,8 @@ const Modal = {
     closeOnClickOverlay: false,
     negativeTop: 0,
     width: "650rpx",
-    confirmButtonShape: ""
+    confirmButtonShape: "",
+    contentTextAlign: "left"
   }
 };
 const color = {
@@ -10394,6 +10482,7 @@ const Navbar = {
     rightText: "",
     rightIcon: "",
     title: "",
+    titleColor: "",
     bgColor: "#ffffff",
     titleWidth: "400rpx",
     height: "44px",
@@ -10414,7 +10503,7 @@ const NoNetwork = {
 const NoticeBar = {
   // noticeBar
   noticeBar: {
-    text: () => [],
+    text: [],
     direction: "row",
     step: false,
     icon: "volume",
@@ -10426,7 +10515,8 @@ const NoticeBar = {
     duration: 2e3,
     disableTouch: true,
     url: "",
-    linkType: "navigateTo"
+    linkType: "navigateTo",
+    justifyContent: "flex-start"
   }
 };
 const Notify = {
@@ -10460,12 +10550,16 @@ const NumberBox = {
     decimalLength: null,
     longPress: true,
     color: "#323233",
+    buttonWidth: 30,
     buttonSize: 30,
+    buttonRadius: "0px",
     bgColor: "#EBECEE",
+    inputBgColor: "#EBECEE",
     cursorSpacing: 100,
     disableMinus: false,
     disablePlus: false,
-    iconStyle: ""
+    iconStyle: "",
+    miniMode: false
   }
 };
 const NumberKeyboard = {
@@ -10502,9 +10596,10 @@ const Picker = {
   // picker
   picker: {
     show: false,
+    popupMode: "bottom",
     showToolbar: true,
     title: "",
-    columns: () => [],
+    columns: [],
     loading: false,
     itemHeight: 44,
     cancelText: "取消",
@@ -10514,8 +10609,9 @@ const Picker = {
     visibleItemCount: 5,
     keyName: "text",
     closeOnClickOverlay: false,
-    defaultIndex: () => [],
-    immediateChange: false
+    defaultIndex: [],
+    immediateChange: true,
+    zIndex: 10076
   }
 };
 const Popup = {
@@ -10526,8 +10622,7 @@ const Popup = {
     mode: "bottom",
     duration: 300,
     closeable: false,
-    overlayStyle: () => {
-    },
+    overlayStyle: {},
     closeOnClickOverlay: true,
     zIndex: 10075,
     safeAreaInsetBottom: true,
@@ -10575,7 +10670,8 @@ const RadioGroup = {
     iconColor: "#ffffff",
     iconSize: 12,
     borderBottom: false,
-    iconPlacement: "left"
+    iconPlacement: "left",
+    gap: "10px"
   }
 };
 const Rate = {
@@ -10648,10 +10744,10 @@ const Search = {
     clearabled: true,
     focus: false,
     showAction: true,
-    actionStyle: () => ({}),
+    actionStyle: {},
     actionText: "搜索",
     inputAlign: "left",
-    inputStyle: () => ({}),
+    inputStyle: {},
     disabled: false,
     borderColor: "transparent",
     searchIconColor: "#909399",
@@ -10711,8 +10807,9 @@ const Slider = {
     blockColor: "#ffffff",
     showValue: false,
     disabled: false,
-    blockStyle: () => {
-    }
+    blockStyle: {},
+    useNative: false,
+    height: "2px"
   }
 };
 const StatusBar = {
@@ -10777,6 +10874,7 @@ const SwipeActionItem = {
   // swipeActionItem 组件
   swipeActionItem: {
     show: false,
+    closeOnClick: true,
     name: "",
     disabled: false,
     threshold: 20,
@@ -10788,7 +10886,7 @@ const SwipeActionItem = {
 const Swiper = {
   // swiper 组件
   swiper: {
-    list: () => [],
+    list: [],
     indicator: false,
     indicatorActiveColor: "#FFFFFF",
     indicatorInactiveColor: "rgba(255, 255, 255, 0.35)",
@@ -10867,20 +10965,20 @@ const Tabs = {
   //
   tabs: {
     duration: 300,
-    list: () => [],
+    list: [],
     lineColor: "#3c9cff",
-    activeStyle: () => ({
+    activeStyle: {
       color: "#303133"
-    }),
-    inactiveStyle: () => ({
+    },
+    inactiveStyle: {
       color: "#606266"
-    }),
+    },
     lineWidth: 20,
     lineHeight: 3,
     lineBgSize: "cover",
-    itemStyle: () => ({
+    itemStyle: {
       height: "44px"
-    }),
+    },
     scrollable: true,
     current: 0,
     keyName: "name"
@@ -10903,7 +11001,8 @@ const Tag = {
     plain: false,
     closable: false,
     show: true,
-    icon: ""
+    icon: "",
+    iconColor: ""
   }
 };
 const Text = {
@@ -10924,14 +11023,15 @@ const Text = {
     lines: "",
     color: "#303133",
     size: 15,
-    iconStyle: () => ({
+    iconStyle: {
       fontSize: "15px"
-    }),
+    },
     decoration: "none",
     margin: 0,
     lineHeight: "",
     align: "left",
-    wordWrap: "normal"
+    wordWrap: "normal",
+    flex1: true
   }
 };
 const Textarea = {
@@ -10973,8 +11073,7 @@ const Toast = {
     show: "",
     overlay: false,
     position: "center",
-    params: () => {
-    },
+    params: {},
     duration: 2e3,
     isTab: false,
     url: "",
@@ -11004,7 +11103,7 @@ const Tooltip = {
     direction: "top",
     zIndex: 10071,
     showCopy: true,
-    buttons: () => [],
+    buttons: [],
     overlay: true,
     showToast: true
   }
@@ -11022,7 +11121,8 @@ const Upload = {
   // upload组件
   upload: {
     accept: "image",
-    capture: () => ["album", "camera"],
+    extension: [],
+    capture: ["album", "camera"],
     compressed: true,
     camera: "back",
     maxDuration: 60,
@@ -11034,11 +11134,11 @@ const Upload = {
     disabled: false,
     imageMode: "aspectFill",
     name: "",
-    sizeType: () => ["original", "compressed"],
+    sizeType: ["original", "compressed"],
     multiple: false,
     deletable: true,
     maxSize: Number.MAX_VALUE,
-    fileList: () => [],
+    fileList: [],
     uploadText: "",
     width: 80,
     height: 80,
@@ -11148,9 +11248,18 @@ const zIndex = {
 };
 let platform = "none";
 platform = "vue3";
-platform = "weixin";
 platform = "mp";
+platform = "weixin";
 const platform$1 = platform;
+const http = new Request();
+let themeType = ["primary", "success", "error", "warning", "info"];
+function setConfig(configs) {
+  index.shallowMerge(config, configs.config || {});
+  index.shallowMerge(props, configs.props || {});
+  index.shallowMerge(color, configs.color || {});
+  index.shallowMerge(zIndex, configs.zIndex || {});
+}
+index.setConfig = setConfig;
 const $u = {
   route,
   date: index.timeFormat,
@@ -11160,10 +11269,10 @@ const $u = {
   rgbToHex: colorGradient$1.rgbToHex,
   colorToRgba: colorGradient$1.colorToRgba,
   test,
-  type: ["primary", "success", "error", "warning", "info"],
-  http: new Request(),
+  type: themeType,
+  http,
   config,
-  // uView配置信息相关，比如版本号
+  // uview-plus配置信息相关，比如版本号
   zIndex,
   debounce,
   throttle,
@@ -11174,12 +11283,9 @@ const $u = {
   color,
   platform: platform$1
 };
-index$1.$u = $u;
 const install = (Vue) => {
+  index$1.$u = $u;
   Vue.config.globalProperties.$u = $u;
-  Vue.config.globalProperties.$nextTick = (cb) => {
-    cb();
-  };
   Vue.mixin(mixin);
 };
 const uviewPlus = {

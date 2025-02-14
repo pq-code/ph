@@ -24,7 +24,19 @@ const props = defineProps({
 		default() {
 		    return '';
 		},
-	}
+    },
+    rButtonDisabled: {
+        type: Boolean,
+        default() {
+            return false;
+        },
+    },
+    lButtonDisabled: {
+        type: Boolean,
+        default() {
+            return false;
+        },
+    },
 });
 const emits = defineEmits(['lButton','rButton'])
 const leftClick = () => {
@@ -60,8 +72,8 @@ const bottomBUtton = (type) => {
         </view>
 		
 		<view v-if="lButton || rButton" class="page-bottom-button">
-			<u-button v-if="lButton" type="primary" shape="circle" @click="bottomBUtton(1)">批量录入</u-button>
-			<u-button v-if="rButton" type="success" shape="circle" @click="bottomBUtton(2)">生成照片</u-button>
+			<u-button v-if="lButton" :disabled="lButtonDisabled" type="primary" shape="circle" @click="bottomBUtton(1)">{{ lButton|| '批量录入' }}</u-button>
+			<u-button v-if="rButton" :disabled="rButtonDisabled" type="success" shape="circle" @click="bottomBUtton(2)">{{ rButton|| '生成照片' }}</u-button>
 			<slot name="pageBottom"></slot>
 		</view>
     </view>

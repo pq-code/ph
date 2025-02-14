@@ -1,10 +1,13 @@
 import { ref } from 'vue'
 
 export const useImageHandler = () => {
-  const imageInfo = ref(null)
+  const imageInfo = ref({
+    canvasWidth: 0,
+    canvasHeight: 0,
+    url: ''
+  })
   const originalImage = ref(null)
   const isProcessing = ref(false)
-
   // 计算图片在容器中的绘制尺寸
   const calculateDrawSize = (containerWidth, containerHeight, imageWidth, imageHeight) => {
     const containerRatio = containerWidth / containerHeight
@@ -44,7 +47,7 @@ export const useImageHandler = () => {
       // 获取容器尺寸
       const container = await new Promise(resolve => {
         const query = uni.createSelectorQuery()
-        query.select('.content-main')
+        query.select('.preview-wrapper')
           .boundingClientRect(data => {
             resolve(data)
           }).exec()

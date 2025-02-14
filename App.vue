@@ -2,13 +2,7 @@
 export default {
   onLaunch: function () {
     console.log("App Launch");
-	const systemInfo = uni.getSystemInfoSync();
-	if(true) {
-		wx.cloud.init({
-		  "env": "prod-8gqm1nbtf8eae76e", // 云环境id
-		  traceUser: true,
-		});
-	} 
+	console.log(uni.$u.config.v);
   },
   onShow: function () {
     console.log("App Show");

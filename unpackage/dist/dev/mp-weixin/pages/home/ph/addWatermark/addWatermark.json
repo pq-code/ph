@@ -3,7 +3,9 @@
   "enablePullDownRefresh": false,
   "navigationStyle": "custom",
   "usingComponents": {
+    "u-image": "../../../../uni_modules/uview-plus/components/u-image/u-image",
     "u-icon": "../../../../uni_modules/uview-plus/components/u-icon/u-icon",
+    "u-popup": "../../../../uni_modules/uview-plus/components/u-popup/u-popup",
     "page": "../../../../components/pages/page",
     "watermark-type-selector": "./components/WatermarkTypeSelector",
     "watermark-form": "./components/WatermarkForm"

@@ -4,7 +4,7 @@ const WATERMARK_TYPES = [
     id: 1,
     name: "现场拍照",
     description: "包含完整位置信息",
-    preview: "/static/assets/images/watermark/xcpz.jpg",
+    preview: "/static/images/xcpz.jpg",
     style: {
       showLocation: true,
       showTime: true,
