@@ -14,14 +14,32 @@
         :key="field.field"
         :label="field.label"
         :required="field.required"
-        
       >
+       <!-- 定位输入框 -->
+        <template v-if="field.type === 'dinwei'">
+        <u-input
+          v-model="modelValue[field.field]"
+          :placeholder="field.placeholder"
+          @input="onInputChange"
+          :suffixIcon="field.suffixIcon"
+          :suffixIconStyle="field.suffixIconStyle"
+           :customStyle="{zIndex: '0'}"
+        >
+          <template #suffix>
+            <view style="color: #007AFF;" @click.stop="showMap = true">
+              定位
+            </view>
+          </template>
+        </u-input>
+        </template>
+      
         <!-- 输入框 -->
         <template v-if="field.type === 'input'">
           <u-input 
             v-model="modelValue[field.field]"
             :placeholder="field.placeholder"
             @input="onInputChange"
+            :customStyle="{zIndex: '0'}"
           />
         </template>
         
@@ -34,6 +52,7 @@
             @focus="showPicker = true"
             :clearable="false"
             right-icon="calendar"
+             :customStyle="{zIndex: '0'}"
           />
           <u-datetime-picker
             :show="showPicker"
@@ -58,12 +77,23 @@
             @input="onInputChange"
           />
         </template>
+
+         <!-- 按钮 -->
+         <template v-if="field.type === 'button'">
+          <u-button
+            :placeholder="field.placeholder"
+            @click="onInputChange"
+          />
+        </template>
       </u-form-item>
     </u-form>
+
     <MapDisplay 
+      v-if="showMap"
       :latitude="latitude"
       :longitude="longitude"
       :markers="covers"
+      @closeMap="closeMap"
     />
   </view>
 </template>
@@ -88,6 +118,7 @@ const props = defineProps({
   }
 })
 
+const showMap = ref(false)
 const emit = defineEmits(['dataChanged', 'update:modelValue']); // 添加缺失的事件声明
 
 const showPicker = ref(false)
@@ -115,6 +146,16 @@ const onInputChange = () => {
   console.log('modelValue',props.modelValue)
   emit('update:modelValue', props.modelValue);
 };
+
+const closeMap = (item) => {
+  showMap.value = false
+  emit('update:modelValue',{
+    ...props.modelValue,
+    longitude : Number(item.longitude).toFixed(4),
+    latitude : Number(item.latitude).toFixed(4),
+    address : item.address
+  });
+}
 
 </script>
 

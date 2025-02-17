@@ -6183,7 +6183,7 @@ function populateParameters(fromRes, toRes) {
   const hostLanguage = (language || "").replace(/_/g, "-");
   const parameters = {
     appId: "__UNI__C0A37B1",
-    appName: "car",
+    appName: "ph",
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
@@ -6332,7 +6332,7 @@ const getAppBaseInfo = {
       hostSDKVersion: SDKVersion,
       hostTheme: theme,
       appId: "__UNI__C0A37B1",
-      appName: "car",
+      appName: "ph",
       appVersion: "1.0.0",
       appVersionCode: "100",
       appLanguage: getAppLanguage(hostLanguage),
@@ -6995,9 +6995,9 @@ function initOnError() {
   };
 }
 function initRuntimeSocketService() {
-  const hosts = "127.0.0.1,192.168.9.21";
+  const hosts = "127.0.0.1,192.168.9.141";
   const port = "8090";
-  const id = "mp-weixin_r-JGtU";
+  const id = "mp-weixin_NInPcc";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -12376,6 +12376,7 @@ exports.isRef = isRef;
 exports.n = n;
 exports.nextTick$1 = nextTick$1;
 exports.o = o;
+exports.onBeforeUnmount = onBeforeUnmount;
 exports.onLoad = onLoad;
 exports.onMounted = onMounted;
 exports.onPullDownRefresh = onPullDownRefresh;

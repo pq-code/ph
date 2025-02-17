@@ -1,3 +1,4 @@
+const path = require('path')
 
 module.exports = {
     // transpileDependencies: ['uview-ui'],
@@ -18,5 +19,12 @@ module.exports = {
                 }
             },
         },
+    },
+    configureWebpack: {
+        resolve: {
+            alias: {
+                '@': path.resolve(__dirname, 'src') // 根据实际项目结构调整路径
+            }
+        }
     }
 }

@@ -1,17 +1,17 @@
 {
-    "name" : "car",
+    "name" : "ph",
     "appid" : "__UNI__C0A37B1",
-    "description" : "",
+    "description" : "工具类应用",
     "versionName" : "1.0.0",
     "versionCode" : "100",
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
-        "maps": {
-            "qqmap": {
-            "key": "TINBZ-DRE6I-H7XGE-UG7XQ-UGPHH-4ZBR6"
+        "maps" : {
+            "qqmap" : {
+                "key" : "TINBZ-DRE6I-H7XGE-UG7XQ-UGPHH-4ZBR6"
             }
-        }
+        },
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
@@ -118,10 +118,15 @@
             "minified" : true
         },
         "usingComponents" : true,
-        "permission" : {},
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "用于用户自定义给图片添加水印"
+            }
+        },
         "unipush" : {
             "enable" : false
-        }
+        },
+        "requiredPrivateInfos" : [ "getLocation", "chooseLocation" ]
     },
     "mp-alipay" : {
         "usingComponents" : true
@@ -137,5 +142,14 @@
     },
     "vueVersion" : "3",
     "locale" : "zh-Hans",
-    "fallbackLocale" : "zh-Hans"
+    "fallbackLocale" : "zh-Hans",
+    "h5" : {
+        "sdkConfigs" : {
+            "maps" : {
+                "tencent" : {
+                    "key" : "TINBZ-DRE6I-H7XGE-UG7XQ-UGPHH-4ZBR6"
+                }
+            }
+        }
+    }
 }

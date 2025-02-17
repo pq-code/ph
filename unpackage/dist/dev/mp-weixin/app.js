@@ -11,13 +11,12 @@ if (!Math) {
 const _sfc_main = {
   onLaunch: function() {
     common_vendor.index.__f__("log", "at App.vue:4", "App Launch");
-    common_vendor.index.__f__("log", "at App.vue:5", common_vendor.index.$u.config.v);
   },
   onShow: function() {
-    common_vendor.index.__f__("log", "at App.vue:8", "App Show");
+    common_vendor.index.__f__("log", "at App.vue:7", "App Show");
   },
   onHide: function() {
-    common_vendor.index.__f__("log", "at App.vue:11", "App Hide");
+    common_vendor.index.__f__("log", "at App.vue:10", "App Hide");
   }
 };
 function createApp() {

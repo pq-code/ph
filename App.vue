@@ -2,7 +2,6 @@
 export default {
   onLaunch: function () {
     console.log("App Launch");
-	console.log(uni.$u.config.v);
   },
   onShow: function () {
     console.log("App Show");

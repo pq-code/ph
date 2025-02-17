@@ -11,14 +11,14 @@ const useWatermarkForm = () => {
       {
         field: "longitude",
         label: "经度",
-        type: "input",
+        type: "dinwei",
         required: false,
         placeholder: "请输入经度"
       },
       {
         field: "latitude",
         label: "纬度",
-        type: "input",
+        type: "dinwei",
         required: false,
         placeholder: "请输入纬度"
       },

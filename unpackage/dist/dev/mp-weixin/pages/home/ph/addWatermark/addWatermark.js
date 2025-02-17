@@ -7,14 +7,16 @@ const pages_home_ph_addWatermark_components_watermarkConfig = require("./compone
 if (!Array) {
   const _easycom_u_image2 = common_vendor.resolveComponent("u-image");
   const _easycom_u_icon2 = common_vendor.resolveComponent("u-icon");
+  const _easycom_u_button2 = common_vendor.resolveComponent("u-button");
   const _easycom_u_popup2 = common_vendor.resolveComponent("u-popup");
-  (_easycom_u_image2 + _easycom_u_icon2 + _easycom_u_popup2)();
+  (_easycom_u_image2 + _easycom_u_icon2 + _easycom_u_button2 + _easycom_u_popup2)();
 }
 const _easycom_u_image = () => "../../../../uni_modules/uview-plus/components/u-image/u-image.js";
 const _easycom_u_icon = () => "../../../../uni_modules/uview-plus/components/u-icon/u-icon.js";
+const _easycom_u_button = () => "../../../../uni_modules/uview-plus/components/u-button/u-button.js";
 const _easycom_u_popup = () => "../../../../uni_modules/uview-plus/components/u-popup/u-popup.js";
 if (!Math) {
-  (_easycom_u_image + _easycom_u_icon + WatermarkTypeSelector + WatermarkForm + _easycom_u_popup + page)();
+  (_easycom_u_image + _easycom_u_icon + WatermarkTypeSelector + _easycom_u_button + WatermarkForm + _easycom_u_popup + page)();
 }
 const page = () => "../../../../components/pages/page.js";
 const WatermarkTypeSelector = () => "./components/WatermarkTypeSelector.js";
@@ -202,28 +204,29 @@ const _sfc_main = {
         i: common_vendor.p({
           modelValue: watermarkType.value
         }),
-        j: currentStyle.value
+        j: common_vendor.o(closePopup),
+        k: currentStyle.value
       }, currentStyle.value ? {
-        k: common_vendor.o(($event) => common_vendor.isRef(formData) ? formData.value = $event : null),
-        l: common_vendor.p({
+        l: common_vendor.o(($event) => common_vendor.isRef(formData) ? formData.value = $event : null),
+        m: common_vendor.p({
           fields: common_vendor.unref(getFormFields)(currentStyle.value),
           disabled: common_vendor.unref(isProcessing),
           modelValue: common_vendor.unref(formData)
         })
       } : {}, {
-        m: common_vendor.o(closePopup),
-        n: common_vendor.o(open),
-        o: common_vendor.p({
+        n: common_vendor.o(closePopup),
+        o: common_vendor.o(open),
+        p: common_vendor.p({
           show: show.value,
           mode: "bottom",
-          closeable: true,
+          closeable: false,
           overlay: true,
           safeAreaInsetBottom: true,
-          round: 10
+          round: 7
         }),
-        p: common_vendor.o(generateImage),
-        q: common_vendor.o(($event) => show.value = true),
-        r: common_vendor.p({
+        q: common_vendor.o(generateImage),
+        r: common_vendor.o(($event) => show.value = true),
+        s: common_vendor.p({
           title: "添加水印",
           rButton: "生成图片",
           lButton: "编辑",

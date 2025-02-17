@@ -255,11 +255,12 @@ function closePopup() {
       mode="bottom"  
       @close="closePopup"
       @open="open"
-      :closeable="true"
+      :closeable="false"
       :overlay="true"
       :safeAreaInsetBottom="true"
-      :round="10">
+      :round="7">
       <view class="popup-content">
+        <u-button @click="closePopup">确定</u-button>
         <!-- 表单区域 -->
         <WatermarkForm
           v-if="currentStyle"
