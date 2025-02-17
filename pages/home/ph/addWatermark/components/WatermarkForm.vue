@@ -10,7 +10,7 @@
     >
 
       <u-form-item 
-        v-for="field in fields" 
+        v-for="field in fields"
         :key="field.field"
         :label="field.label"
         :required="field.required"
@@ -31,6 +31,11 @@
             </view>
           </template>
         </u-input>
+        </template>
+
+        <!-- 定位 -->
+        <template v-if="field.type === 'switch'">
+          <up-switch v-model="modelValue[field.field]" @change="onInputChange"></up-switch>
         </template>
       
         <!-- 输入框 -->
@@ -151,8 +156,8 @@ const closeMap = (item) => {
   showMap.value = false
   emit('update:modelValue',{
     ...props.modelValue,
-    longitude : Number(item.longitude).toFixed(4),
-    latitude : Number(item.latitude).toFixed(4),
+    longitude : Number(item.longitude).toFixed(6),
+    latitude : Number(item.latitude).toFixed(6),
     address : item.address
   });
 }
@@ -164,8 +169,8 @@ const getLocation = () => {
       console.log('chooseLocation', res)
        emit('update:modelValue',{
         ...props.modelValue,
-        longitude : Number(res.longitude).toFixed(4),
-        latitude : Number(res.latitude).toFixed(4),
+        longitude : Number(res.longitude).toFixed(6),
+        latitude : Number(res.latitude).toFixed(6),
         address : res.address
       });
     }

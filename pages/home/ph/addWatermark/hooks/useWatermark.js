@@ -73,8 +73,46 @@ export const useWatermark = (canvasId) => {
       currentY += lineHeight
     })
   }
+  // 绘制标准水印
+  const drawStandardWatermark = (ctx, imageRect, info) => {
+    const { x: imageX, y: imageY, drawWidth: imageWidth, drawHeight: imageHeight } = imageRect
+    
+    // 设置文字样式（比底部水印稍大的字体）
+    const fontSize = 18
+    ctx.save()  // 增加保存绘图状态
+    ctx.setFontSize(fontSize)
+    ctx.setTextAlign('center')  // 修改对齐方式为居中
+    ctx.setTextBaseline('middle')
+    ctx.font = `bold ${fontSize}px sans-serif`
+    
+    // 新增斜体重复水印实现
+    ctx.translate(imageX + imageWidth/2, imageY + imageHeight/2)
+    ctx.rotate(-15 * Math.PI / 180)
+    ctx.setGlobalAlpha(0.3)  // 提高透明度值
+    
+    // 创建重复水印图案
+    const watermarkText = info.company || '保密'
+    const spacing = 100  // 增大水印间距
+    const repeatX = Math.ceil(imageWidth / spacing) + 2  // 根据图片尺寸动态计算重复次数
+    const repeatY = Math.ceil(imageHeight / spacing) + 2
+    
+    // 设置文字描边
+    ctx.strokeStyle = '#FFFFFF'
+    ctx.lineWidth = 2
+    
+    // 平铺绘制水印
+    for(let x = -repeatX; x <= repeatX; x++) {
+      for(let y = -repeatY; y <= repeatY; y++) {
+        ctx.strokeText(watermarkText, x * spacing, y * spacing)  // 先描边
+        ctx.fillText(watermarkText, x * spacing, y * spacing)     // 再填充
+      }
+    }
+    
+    ctx.restore()
+  }
 
   const addWatermark = async ({ image, style, info }) => {
+    
     if (!image?.path) {
       console.error('无效的图片路径')
       return
@@ -101,12 +139,18 @@ export const useWatermark = (canvasId) => {
         drawWidth: image.drawWidth,
         drawHeight: image.drawHeight
       }
-      
-      // 绘制中间水印
-      drawCenterWatermark(ctx, imageRect)
-      
-      // 绘制底部信息水印
-      drawBottomWatermark(ctx, imageRect, info)
+	  
+      if (style.id === 1) {
+        // 绘制中间水印
+        if (info.isOnSitePhotography) {
+          drawCenterWatermark(ctx, imageRect)
+        }
+        // 绘制底部信息水印
+        drawBottomWatermark(ctx, imageRect, info)
+      } else if (style.id === 2) {
+        // 基础水印
+        drawStandardWatermark(ctx, imageRect, info)
+      }
       
       // 应用绘制
       await new Promise(resolve => ctx.draw(false, resolve))
