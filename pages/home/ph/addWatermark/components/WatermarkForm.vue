@@ -26,7 +26,7 @@
            :customStyle="{zIndex: '0'}"
         >
           <template #suffix>
-            <view style="color: #007AFF;" @click.stop="showMap = true">
+            <view style="color: #007AFF;" @click.stop="getLocation">
               定位
             </view>
           </template>
@@ -88,7 +88,7 @@
       </u-form-item>
     </u-form>
 
-    <MapDisplay 
+    <MapDisplay
       v-if="showMap"
       :latitude="latitude"
       :longitude="longitude"
@@ -157,6 +157,20 @@ const closeMap = (item) => {
   });
 }
 
+// 获取经纬度
+const getLocation = () => {
+  uni.chooseLocation({
+    success: (res) => {
+      console.log('chooseLocation', res)
+       emit('update:modelValue',{
+        ...props.modelValue,
+        longitude : Number(res.longitude).toFixed(4),
+        latitude : Number(res.latitude).toFixed(4),
+        address : res.address
+      });
+    }
+  })
+}
 </script>
 
 <style lang="less" scoped>
