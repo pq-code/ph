@@ -545,7 +545,6 @@
 	}
 	// 间距调节
 	const spacingSize = (e) => {
-		console.log(e)
 		spacing.value = e
 		
 		const typeFunctions = {

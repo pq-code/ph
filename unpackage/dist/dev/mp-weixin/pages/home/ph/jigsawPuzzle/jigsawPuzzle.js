@@ -488,7 +488,6 @@ const _sfc_main = {
       };
     };
     const spacingSize = (e) => {
-      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:548", e);
       spacing.value = e;
       const typeFunctions = {
         1: nineSquareGrid,

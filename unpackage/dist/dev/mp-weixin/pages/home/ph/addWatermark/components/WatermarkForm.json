@@ -2,6 +2,8 @@
   "component": true,
   "usingComponents": {
     "u-input": "../../../../../uni_modules/uview-plus/components/u-input/u-input",
+    "u-switch": "../../../../../uni_modules/uview-plus/components/u-switch/u-switch",
+    "u-slider": "../../../../../uni_modules/uview-plus/components/u-slider/u-slider",
     "u-datetime-picker": "../../../../../uni_modules/uview-plus/components/u-datetime-picker/u-datetime-picker",
     "u-textarea": "../../../../../uni_modules/uview-plus/components/u-textarea/u-textarea",
     "u-button": "../../../../../uni_modules/uview-plus/components/u-button/u-button",

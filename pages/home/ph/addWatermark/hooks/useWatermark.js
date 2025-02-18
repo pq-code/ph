@@ -77,29 +77,30 @@ export const useWatermark = (canvasId) => {
   const drawStandardWatermark = (ctx, imageRect, info) => {
     const { x: imageX, y: imageY, drawWidth: imageWidth, drawHeight: imageHeight } = imageRect
     
-    // 设置文字样式（比底部水印稍大的字体）
-    const fontSize = 18
-    ctx.save()  // 增加保存绘图状态
+    // 设置文字样式（从info获取参数）
+    const fontSize = info.fontSize || 18
+    ctx.save()
     ctx.setFontSize(fontSize)
-    ctx.setTextAlign('center')  // 修改对齐方式为居中
+    ctx.setTextAlign('center')
     ctx.setTextBaseline('middle')
     ctx.font = `bold ${fontSize}px sans-serif`
     
-    // 新增斜体重复水印实现
+    // 动态参数配置
     ctx.translate(imageX + imageWidth/2, imageY + imageHeight/2)
-    ctx.rotate(-15 * Math.PI / 180)
-    ctx.setGlobalAlpha(0.3)  // 提高透明度值
-    
+    ctx.rotate((info.angle || -15) * Math.PI / 180)
+    ctx.setGlobalAlpha((info.opacity ?? 30) / 100)
+
     // 创建重复水印图案
-    const watermarkText = info.company || '保密'
-    const spacing = 100  // 增大水印间距
-    const repeatX = Math.ceil(imageWidth / spacing) + 2  // 根据图片尺寸动态计算重复次数
+    const watermarkText = info.watermarkContent || '保密'
+    const spacing = info.density || 100
+    const repeatX = Math.ceil(imageWidth / spacing) + 2
     const repeatY = Math.ceil(imageHeight / spacing) + 2
-    
-    // 设置文字描边
-    ctx.strokeStyle = '#FFFFFF'
-    ctx.lineWidth = 2
-    
+
+    // 动态样式配置
+    ctx.strokeStyle = info.strokeColor || '#FFFFFF' // 描边颜色控制
+    ctx.lineWidth = info.strokeWidth || 2 // 描边粗细控制
+    ctx.setFillStyle(info.fillColor || '#666666') // 填充颜色控制
+
     // 平铺绘制水印
     for(let x = -repeatX; x <= repeatX; x++) {
       for(let y = -repeatY; y <= repeatY; y++) {
@@ -139,7 +140,7 @@ export const useWatermark = (canvasId) => {
         drawWidth: image.drawWidth,
         drawHeight: image.drawHeight
       }
-	  
+      
       if (style.id === 1) {
         // 绘制中间水印
         if (info.isOnSitePhotography) {

@@ -25,7 +25,7 @@ const _sfc_main = {
   __name: "addWatermark",
   setup(__props) {
     const watermarkType = common_vendor.ref(1);
-    const currentStyle = common_vendor.ref(pages_home_ph_addWatermark_components_watermarkConfig.WATERMARK_TYPES[0].style);
+    const currentStyle = common_vendor.ref(pages_home_ph_addWatermark_components_watermarkConfig.WATERMARK_TYPES[0]);
     const { imageInfo, isProcessing, handleImageSelect } = pages_home_ph_addWatermark_hooks_useImageHandler.useImageHandler();
     const { addWatermark } = pages_home_ph_addWatermark_hooks_useWatermark.useWatermark("watermark");
     const { formData, getFormFields, validateForm, resetForm } = pages_home_ph_addWatermark_hooks_useWatermarkForm.useWatermarkForm();
@@ -56,15 +56,15 @@ const _sfc_main = {
       }
     });
     const handleTypeChange = (item) => {
-      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:53", "style", item);
-      currentStyle.value = item.style;
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:55", "style", item);
+      currentStyle.value = item;
       watermarkType.value = item.id;
       if (imageInfo.value) {
         updateWatermark();
       }
     };
     const updateWatermark = async () => {
-      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:62", "formData", formData.value);
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:64", "formData", formData.value);
       if (!imageInfo.value || !imageInfo.value.path || !currentStyle.value)
         return;
       try {
@@ -92,13 +92,13 @@ const _sfc_main = {
           height: drawHeight - SIZE_ADJUSTMENT
           // 高度调整
         });
-        common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:93", "生成图片成功", tempFilePath);
+        common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:95", "生成图片成功", tempFilePath);
         info.url = tempFilePath;
         const canvasContext = common_vendor.index.createCanvasContext("watermark");
         canvasContext.clearRect(0, 0, info.canvasWidth, info.canvasHeight);
         canvasContext.draw();
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/addWatermark.vue:102", "更新水印出错", error);
+        common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/addWatermark.vue:104", "更新水印出错", error);
         common_vendor.index.showToast({
           title: "更新水印出错",
           icon: "none"
@@ -123,9 +123,9 @@ const _sfc_main = {
       }
       try {
         const { x, y, drawWidth, drawHeight } = imageInfo.value;
-        common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:129", imageInfo.value.url);
+        common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:131", imageInfo.value.url);
         const tempFilePath = imageInfo.value.url;
-        common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:141", "生成图片成功", tempFilePath);
+        common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/addWatermark.vue:143", "生成图片成功", tempFilePath);
         common_vendor.index.showToast({
           title: "生成图片成功",
           icon: "success"
@@ -145,7 +145,7 @@ const _sfc_main = {
                     });
                   },
                   fail: function(err) {
-                    common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/addWatermark.vue:164", "保存失败", err);
+                    common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/addWatermark.vue:166", "保存失败", err);
                     common_vendor.index.showToast({
                       title: "保存失败",
                       icon: "none"
@@ -155,12 +155,12 @@ const _sfc_main = {
               }
             },
             fail: function(err) {
-              common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/addWatermark.vue:174", "长按操作失败", err);
+              common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/addWatermark.vue:176", "长按操作失败", err);
             }
           }
         });
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/addWatermark.vue:179", "生成图片出错", error);
+        common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/addWatermark.vue:181", "生成图片出错", error);
         common_vendor.index.showToast({
           title: "生成图片出错",
           icon: "none"
@@ -209,7 +209,7 @@ const _sfc_main = {
       }, currentStyle.value ? {
         l: common_vendor.o(($event) => common_vendor.isRef(formData) ? formData.value = $event : null),
         m: common_vendor.p({
-          fields: common_vendor.unref(getFormFields)(currentStyle.value),
+          fields: common_vendor.unref(pages_home_ph_addWatermark_components_watermarkConfig.WATERMARK_FORM_LIST)[currentStyle.value.id],
           disabled: common_vendor.unref(isProcessing),
           modelValue: common_vendor.unref(formData)
         })

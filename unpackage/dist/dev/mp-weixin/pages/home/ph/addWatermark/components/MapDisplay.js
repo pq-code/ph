@@ -56,7 +56,7 @@ const _sfc_main = {
           address_format: "short",
           filter: "category=地址",
           success: function(res) {
-            common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/MapDisplay.vue:101", "res", res);
+            common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/MapDisplay.vue:103", "res", res);
             if (res.status === 0 && res.data) {
               const uniqueResults = /* @__PURE__ */ new Map();
               results.value = res.data.filter((item) => {
@@ -77,7 +77,7 @@ const _sfc_main = {
           }
         });
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/components/MapDisplay.vue:124", "搜索失败:", error);
+        common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/components/MapDisplay.vue:126", "搜索失败:", error);
         common_vendor.index.showToast({ title: "搜索失败：" + error.message, icon: "none" });
       }
     };
@@ -120,7 +120,7 @@ const _sfc_main = {
               });
             },
             fail: function(err) {
-              common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/MapDisplay.vue:170", err, "err");
+              common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/MapDisplay.vue:172", err, "err");
               qqmapsdk.geocoder({
                 geocoder: 1,
                 // 1表示IP定位
@@ -175,7 +175,7 @@ const _sfc_main = {
     const selectLocation = (item) => {
       latitude.value = item.lat;
       longitude.value = item.lng;
-      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/MapDisplay.vue:230", "item", item);
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/MapDisplay.vue:232", "item", item);
       updateMarker(item.lat, item.lng);
       qqmapsdk.reverseGeocoder({
         location: { latitude: item.lat, longitude: item.lng },
@@ -231,7 +231,7 @@ const _sfc_main = {
           });
         },
         fail: function(err) {
-          common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/components/MapDisplay.vue:295", "逆地理编码失败:", err);
+          common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/components/MapDisplay.vue:297", "逆地理编码失败:", err);
         }
       });
     };

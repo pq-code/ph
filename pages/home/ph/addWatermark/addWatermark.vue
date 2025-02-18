@@ -4,12 +4,12 @@ import { ref,onMounted } from 'vue'
 import { useImageHandler } from './hooks/useImageHandler'
 import { useWatermark } from './hooks/useWatermark'
 import { useWatermarkForm } from './hooks/useWatermarkForm'
-import { WATERMARK_TYPES } from './components/watermarkConfig'
+import { WATERMARK_TYPES, WATERMARK_FORM_LIST } from './components/watermarkConfig'
 import WatermarkTypeSelector from './components/WatermarkTypeSelector.vue'
 import WatermarkForm from './components/WatermarkForm.vue'
 
 const watermarkType = ref(1)
-const currentStyle = ref(WATERMARK_TYPES[0].style)
+const currentStyle = ref(WATERMARK_TYPES[0])
 
 const { imageInfo, isProcessing, handleImageSelect } = useImageHandler()
 const { addWatermark } = useWatermark('watermark')
@@ -48,21 +48,23 @@ onMounted(async () => {
   }
 })
 
+
+
 // 处理水印类型变化
 const handleTypeChange = (item) => {
 	console.log('style',item)
-	currentStyle.value = item.style
+	currentStyle.value = item
 	watermarkType.value = item.id
-  if (imageInfo.value) {
-    updateWatermark()
-  }
+	if (imageInfo.value) {
+		updateWatermark()
+	}
 }
 // 更新水印
 const updateWatermark = async () => {
   console.log('formData', formData.value);
   
   if (!imageInfo.value || !imageInfo.value.path || !currentStyle.value) return;
-
+ 
   try {
     // 缓存 image 信息
     const info = imageInfo.value;
@@ -265,7 +267,7 @@ function closePopup() {
         <WatermarkForm
           v-if="currentStyle"
           v-model="formData"
-          :fields="getFormFields(currentStyle)"
+          :fields="WATERMARK_FORM_LIST[currentStyle.id]"
           :disabled="isProcessing"
         />
      </view>

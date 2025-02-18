@@ -6,3 +6,9 @@
 .u-form-item__body__right__content__slot .u-popup.data-v-8883b4bf {
   flex: 0;
 }
+.slider-value.data-v-8883b4bf {
+  text-align: right;
+  color: #666;
+  font-size: 14px;
+  margin-top: 8px;
+}

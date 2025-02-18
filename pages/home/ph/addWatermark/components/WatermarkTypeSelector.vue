@@ -8,12 +8,14 @@
         :class="{ active: modelValue === item.id }"
         @click="onImageSelect(item)"
       >
-      <up-image 
+      <u-image 
+        width="120px"
+        height="80px"
         :show-loading="true" 
         :src="item.preview"
         mode="aspectFit"
         class="preview-image">
-      </up-image>
+      </u-image>
         <!-- <image
           :src="item.preview"
           mode="aspectFit"
@@ -29,14 +31,14 @@
 import { WATERMARK_TYPES } from './watermarkConfig'
 const emits = defineEmits(['update:modelValue','handleTypeChange'])
 const onImageSelect = (item) => {
-  emits('handleTypeChange', item)
+	emits('handleTypeChange', item)
 }
 
 defineProps({
-  modelValue: {
-    type: Number,
-    default: 1
-  }
+	modelValue: {
+		type: Number,
+		default: 1
+	}
 })
 
 </script>

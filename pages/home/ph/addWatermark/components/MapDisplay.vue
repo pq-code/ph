@@ -5,7 +5,7 @@
 		<view class="search-container">
 			<u-input v-model="searchKeyword" placeholder="输入地址进行搜索" @confirm="handleSearch" />
 			<u-button @click="handleSearch">搜索</u-button>
-      <u-button @click="closeMap">确认</u-button>
+			<u-button @click="closeMap">确认</u-button>
 		</view>
 		<!-- 新增地址显示和搜索结果 -->
 		<view class="info-box" v-if="selectedAddress">
@@ -21,13 +21,13 @@
 		</view>
 		<view class="wrapperBox">
 			<!-- <view id="wrapper"></view> -->
-      <map style="width:100%;height:100%;" 
-        :latitude="latitude" 
-        :longitude="longitude" 
-        :scale="scale"
-        @tap="handleMapTap" 
-        :markers="marker" 
-        @markertap="toMap()"/>
+			<map style="width:100%;height:100%;" 
+				:latitude="latitude" 
+				:longitude="longitude" 
+				:scale="scale"
+				@tap="handleMapTap" 
+				:markers="marker" 
+				@markertap="toMap()"/>
 		</view>
 	</view>
 </template>
@@ -53,10 +53,12 @@ const results = ref([])
 const selectedAddress = ref('')
 const currentMarker = ref(null) // 新增标记实例
 const marker = ref([]) // 新增标记数组
+
 // 关闭地图
 const closeMap = (item) => {
   emits('closeMap',item || location.value)
 }
+
 // 生命周期钩子
 onMounted(() => {
   qqmapsdk = new QQMapWX({

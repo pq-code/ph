@@ -47,9 +47,35 @@ const useWatermark = (canvasId) => {
       currentY += lineHeight;
     });
   };
+  const drawStandardWatermark = (ctx, imageRect, info) => {
+    const { x: imageX, y: imageY, drawWidth: imageWidth, drawHeight: imageHeight } = imageRect;
+    const fontSize = info.fontSize || 18;
+    ctx.save();
+    ctx.setFontSize(fontSize);
+    ctx.setTextAlign("center");
+    ctx.setTextBaseline("middle");
+    ctx.font = `bold ${fontSize}px sans-serif`;
+    ctx.translate(imageX + imageWidth / 2, imageY + imageHeight / 2);
+    ctx.rotate((info.angle || -15) * Math.PI / 180);
+    ctx.setGlobalAlpha((info.opacity ?? 30) / 100);
+    const watermarkText = info.watermarkContent || "保密";
+    const spacing = info.density || 100;
+    const repeatX = Math.ceil(imageWidth / spacing) + 2;
+    const repeatY = Math.ceil(imageHeight / spacing) + 2;
+    ctx.strokeStyle = info.strokeColor || "#FFFFFF";
+    ctx.lineWidth = info.strokeWidth || 2;
+    ctx.setFillStyle(info.fillColor || "#666666");
+    for (let x = -repeatX; x <= repeatX; x++) {
+      for (let y = -repeatY; y <= repeatY; y++) {
+        ctx.strokeText(watermarkText, x * spacing, y * spacing);
+        ctx.fillText(watermarkText, x * spacing, y * spacing);
+      }
+    }
+    ctx.restore();
+  };
   const addWatermark = async ({ image, style, info }) => {
     if (!(image == null ? void 0 : image.path)) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:79", "无效的图片路径");
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:118", "无效的图片路径");
       return;
     }
     try {
@@ -68,11 +94,17 @@ const useWatermark = (canvasId) => {
         drawWidth: image.drawWidth,
         drawHeight: image.drawHeight
       };
-      drawCenterWatermark(ctx, imageRect);
-      drawBottomWatermark(ctx, imageRect, info);
+      if (style.id === 1) {
+        if (info.isOnSitePhotography) {
+          drawCenterWatermark(ctx, imageRect);
+        }
+        drawBottomWatermark(ctx, imageRect, info);
+      } else if (style.id === 2) {
+        drawStandardWatermark(ctx, imageRect, info);
+      }
       await new Promise((resolve) => ctx.draw(false, resolve));
     } catch (error) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:115", "绘制失败:", error);
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:160", "绘制失败:", error);
       common_vendor.index.showToast({
         title: "绘制失败",
         icon: "none"

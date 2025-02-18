@@ -33,11 +33,30 @@
         </u-input>
         </template>
 
-        <!-- 定位 -->
+        <!-- 开关 -->
         <template v-if="field.type === 'switch'">
-          <up-switch v-model="modelValue[field.field]" @change="onInputChange"></up-switch>
+          <u-switch v-model="modelValue[field.field]" @change="onInputChange"></u-switch>
         </template>
       
+        <!-- 滑块 -->
+        <template v-if="field.type === 'slider'">
+          <view style="display: flex; align-items: center">
+            <view style="width: 83%">
+              <u-slider 
+                v-model="modelValue[field.field]" 
+                :min="field.min" 
+                :max="field.max"
+                :step="field.step || 1"
+                activeColor="#007AFF"
+                @changing="(e)=>spacingSize(e,field.field)"
+              ></u-slider>
+            </view>
+            <view>
+              {{ `${modelValue[field.field] || 0}${field.unit}` }}
+            </view>
+          </view>
+        </template>
+
         <!-- 输入框 -->
         <template v-if="field.type === 'input'">
           <u-input 
@@ -162,6 +181,13 @@ const closeMap = (item) => {
   });
 }
 
+const spacingSize = (value,field) => {
+  emit('update:modelValue',{
+    ...props.modelValue,
+    [field] : value
+  });
+}
+
 // 获取经纬度
 const getLocation = () => {
   uni.chooseLocation({
@@ -188,6 +214,13 @@ const getLocation = () => {
   .u-popup {
     flex: 0;
   }
+}
+
+.slider-value {
+  text-align: right;
+  color: #666;
+  font-size: 14px;
+  margin-top: 8px;
 }
 
 </style> 

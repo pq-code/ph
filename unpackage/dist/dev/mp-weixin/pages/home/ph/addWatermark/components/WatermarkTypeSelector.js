@@ -2,8 +2,12 @@
 const common_vendor = require("../../../../../common/vendor.js");
 const pages_home_ph_addWatermark_components_watermarkConfig = require("./watermarkConfig.js");
 if (!Array) {
-  const _component_up_image = common_vendor.resolveComponent("up-image");
-  _component_up_image();
+  const _easycom_u_image2 = common_vendor.resolveComponent("u-image");
+  _easycom_u_image2();
+}
+const _easycom_u_image = () => "../../../../../uni_modules/uview-plus/components/u-image/u-image.js";
+if (!Math) {
+  _easycom_u_image();
 }
 const _sfc_main = {
   __name: "WatermarkTypeSelector",
@@ -25,6 +29,8 @@ const _sfc_main = {
           return {
             a: "d87ad2f0-0-" + i0,
             b: common_vendor.p({
+              width: "120px",
+              height: "80px",
               ["show-loading"]: true,
               src: item.preview,
               mode: "aspectFit"
