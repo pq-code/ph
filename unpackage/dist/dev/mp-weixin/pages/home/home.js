@@ -117,7 +117,7 @@ const _sfc_main = {
         d: common_vendor.t(weather.value.title || ""),
         e: common_vendor.o(($event) => pageJump("ph/jigsawPuzzle/jigsawPuzzle")),
         f: common_vendor.o(($event) => pageJump("ph/addWatermark/addWatermark")),
-        g: common_vendor.o(($event) => pageJump("")),
+        g: common_vendor.o(($event) => pageJump("ph/customize/customize")),
         h: common_vendor.f(common_vendor.unref(sizeType), (item, k0, i0) => {
           return {
             a: common_vendor.t(item.name),

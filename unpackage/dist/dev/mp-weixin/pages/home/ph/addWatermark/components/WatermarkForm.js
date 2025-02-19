@@ -42,6 +42,7 @@ const _sfc_main = {
   emits: ["dataChanged", "update:modelValue"],
   setup(__props, { emit: __emit }) {
     const props = __props;
+    common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:144", "props=====", props);
     const showMap = common_vendor.ref(false);
     const emit = __emit;
     const showPicker = common_vendor.ref(false);
@@ -62,7 +63,7 @@ const _sfc_main = {
       showPicker.value = false;
     };
     const onInputChange = () => {
-      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:170", "modelValue", props.modelValue);
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:171", "modelValue", props.modelValue);
       emit("update:modelValue", props.modelValue);
     };
     const closeMap = (item) => {
@@ -83,7 +84,7 @@ const _sfc_main = {
     const getLocation = () => {
       common_vendor.index.chooseLocation({
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:195", "chooseLocation", res);
+          common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:196", "chooseLocation", res);
           emit("update:modelValue", {
             ...props.modelValue,
             longitude: Number(res.longitude).toFixed(6),

@@ -168,7 +168,7 @@
 					</view>
 				</view>
 
-				<view class="content-main-customize" @click="pageJump('')">
+				<view class="content-main-customize" @click="pageJump('ph/customize/customize')">
 					自定义修改
 				</view>
 			</view>
@@ -186,7 +186,6 @@
 				<view class="content-sizeType-tips"> {{ item.tips }}</view>
 			  </view>
 		</view>
-		
 		<tabbar></tabbar>
 	</view>
 </template>

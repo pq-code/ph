@@ -141,6 +141,7 @@ const props = defineProps({
     default: false
   }
 })
+console.log('props=====', props)
 
 const showMap = ref(false)
 const emit = defineEmits(['dataChanged', 'update:modelValue']); // 添加缺失的事件声明

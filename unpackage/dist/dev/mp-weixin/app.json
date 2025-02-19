@@ -2,6 +2,7 @@
   "pages": [
     "pages/home/home",
     "pages/home/ph/jigsawPuzzle/jigsawPuzzle",
+    "pages/home/ph/customize/customize",
     "pages/home/ph/addWatermark/addWatermark",
     "pages/home/components/imageCropper/imageCropper",
     "pages/user/home"

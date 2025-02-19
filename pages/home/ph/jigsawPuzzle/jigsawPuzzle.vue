@@ -16,7 +16,8 @@
 	import page from "@/components/pages/page.vue";
 	import {
 		getCurrentInstance
-	} from "vue";
+} from "vue";
+
 	const instance = getCurrentInstance();
 
 	const previewMain = ref({

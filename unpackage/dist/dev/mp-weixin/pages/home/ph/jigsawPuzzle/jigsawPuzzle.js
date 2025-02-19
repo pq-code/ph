@@ -55,8 +55,8 @@ const _sfc_main = {
       const query = common_vendor.index.createSelectorQuery().in(instance.proxy);
       query.select("#contentMain").boundingClientRect((data) => {
         if (data) {
-          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:58", "元素的宽：" + data.width);
-          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:59", "元素的高：" + data.height);
+          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:59", "元素的宽：" + data.width);
+          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:60", "元素的高：" + data.height);
           previewMain.value = {
             width: data.width,
             height: data.height
@@ -229,7 +229,7 @@ const _sfc_main = {
       ]
     ]);
     common_vendor.onPullDownRefresh(() => {
-      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:241", "下拉刷新");
+      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:242", "下拉刷新");
     });
     common_vendor.onShow(() => {
     });
@@ -273,12 +273,12 @@ const _sfc_main = {
             success: function(data) {
               common_vendor.index.__f__(
                 "log",
-                "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:286",
+                "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:287",
                 "选中了第" + (data.tapIndex + 1) + "个按钮,第" + (data.index + 1) + "张图片"
               );
             },
             fail: function(err) {
-              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:295", err.errMsg);
+              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:296", err.errMsg);
             }
           }
         });
@@ -345,7 +345,7 @@ const _sfc_main = {
             });
           },
           fail: (err) => {
-            common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:378", "合并图片失败:", err);
+            common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:379", "合并图片失败:", err);
             common_vendor.index.showToast({
               title: "合并图片失败",
               icon: "none"
@@ -411,7 +411,7 @@ const _sfc_main = {
               })).tempFilePath;
               await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
               await ctx.draw();
-              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:452", "cropImage", cropImage2);
+              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:453", "cropImage", cropImage2);
               fileList.value[index] = {
                 ...fileList.value[index],
                 url: cropImage2,
@@ -419,7 +419,7 @@ const _sfc_main = {
                 message: `${index}`
               };
             } catch (error) {
-              common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:462", "处理图片失败: ", error);
+              common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:463", "处理图片失败: ", error);
               fileListBackups.value[index] = {
                 ...fileListBackups.value[index],
                 status: "error",
@@ -429,7 +429,7 @@ const _sfc_main = {
           }
         },
         fail: function(error) {
-          common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:472", "选择图片失败: ", error);
+          common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:473", "选择图片失败: ", error);
         }
       });
     };

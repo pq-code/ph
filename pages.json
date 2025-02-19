@@ -38,6 +38,15 @@
         	    "navigationStyle": "custom"
         	}
         },
+				{
+        	"path" : "pages/home/ph/customize/customize",
+        	"name": "home.customize",
+        	"style": {
+        	    "navigationBarTitleText": "",
+        	    "enablePullDownRefresh": false,
+        	    "navigationStyle": "custom"
+        	}
+        },
 		{
 			"path" : "pages/home/ph/addWatermark/addWatermark",
 			"name": "home.addWatermark",

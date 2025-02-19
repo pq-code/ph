@@ -1,6 +1,6 @@
 "use strict";
 const common_vendor = require("../../../../../common/vendor.js");
-const useImageHandler = () => {
+const useImageHandler = (canvasId) => {
   const imageInfo = common_vendor.ref({
     canvasWidth: 0,
     canvasHeight: 0,
@@ -56,19 +56,30 @@ const useImageHandler = () => {
       originalImage.value = tempFile;
       imageInfo.value = {
         path: tempFile.path,
+        // 图片临时文件路径
         width: imgInfo.width,
+        // 图片原始宽度（单位：px）
         height: imgInfo.height,
+        // 图片原始高度（单位：px）
+        fileSize: (tempFile.size / 1024).toFixed(0),
+        // 文件体积（单位：KB，四舍五入取整）
         x,
+        // 图片在画布中的水平起始位置（单位：px）
         y,
+        // 图片在画布中的垂直起始位置（单位：px）
         drawWidth,
+        // 图片在画布中的绘制宽度（适配容器后的尺寸）
         drawHeight,
+        // 图片在画布中的绘制高度（适配容器后的尺寸）
         canvasWidth: container.width,
+        // 画布容器实际宽度（预览区域宽度）
         canvasHeight: container.height
+        // 画布容器实际高度（预览区域高度）
       };
-      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:87", "图片信息:", imageInfo.value);
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:88", "图片信息:", imageInfo.value);
       return imageInfo.value;
     } catch (error) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:91", "选择图片失败:", error);
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:92", "选择图片失败:", error);
       common_vendor.index.showToast({
         title: "选择图片失败",
         icon: "none"
@@ -77,10 +88,31 @@ const useImageHandler = () => {
       isProcessing.value = false;
     }
   };
+  const drawImage = async () => {
+    try {
+      const ctx = common_vendor.index.createCanvasContext(canvasId);
+      ctx.clearRect(0, 0, imageInfo.canvasWidth, imageInfo.canvasHeight);
+      ctx.drawImage(
+        imageInfo.path,
+        imageInfo.x,
+        imageInfo.y,
+        imageInfo.drawWidth,
+        imageInfo.drawHeight
+      );
+      await new Promise((resolve) => ctx.draw(false, resolve));
+    } catch (error) {
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:123", "绘制失败:", error);
+      common_vendor.index.showToast({
+        title: "绘制失败",
+        icon: "none"
+      });
+    }
+  };
   return {
     imageInfo,
     isProcessing,
-    handleImageSelect
+    handleImageSelect,
+    drawImage
   };
 };
 exports.useImageHandler = useImageHandler;
