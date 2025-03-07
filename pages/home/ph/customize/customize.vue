@@ -164,43 +164,78 @@ async function editImage() {
   if (!imageInfo.value?.url) return;
   
   try {
-    // 获取画布上下文
+    // 获取画布上下文并清空
     const ctx = uni.createCanvasContext('customize');
-    ctx.clearRect(0, 0, imageInfo.value.canvasWidth, imageInfo.value.canvasHeight);
     
     // 获取原始图片信息
-    const { width: width, height: height } = imageInfo.value;
-    
-    // 计算新尺寸（保持比例）
-    const scale = formData.value.scale / 100 || 1;
-    const newWidth = width * scale;
-    const newHeight = height * scale;
-    
-    // 绘制调整后的图片
-    ctx.drawImage(imageInfo.value.url, 0, 0, newWidth, newHeight);
-    
-    // 生成新图片（带压缩）
-    const { tempFilePath } = await new Promise(resolve => {
+    const { width: originWidth, height: originHeight } = imageInfo.value;
+    let targetWidth = originWidth;
+    let targetHeight = originHeight;
+
+    // 尺寸处理逻辑（精确计算）
+    if (formData.value.selectedSize) {
+      const dpi = 300; // 标准300dpi
+      const mmToInch = 0.0393701;
+      const sizePresets = {
+        '1inch': { 
+          width: Math.round(25 * mmToInch * dpi),  // 25mm → 295px
+          height: Math.round(35 * mmToInch * dpi) // 35mm → 413px
+        },
+        '2inch': {
+          width: Math.round(35 * mmToInch * dpi),  // 35mm → 413px
+          height: Math.round(49 * mmToInch * dpi)  // 49mm → 578px
+        }
+      };
+      const preset = sizePresets[formData.value.selectedSize];
+      if (preset) {
+        targetWidth = preset.width;
+        targetHeight = preset.height;
+      }
+    } else if (formData.value.scale) {
+      const scale = Math.min(Math.max(formData.value.scale, 1), 100) / 100; // 强制限制1-100%
+      targetWidth = originWidth * scale;
+      targetHeight = originHeight * scale;
+    }
+
+    // 设置实际画布尺寸（关键修复）
+    const systemInfo = uni.getSystemInfoSync();
+    const pixelRatio = systemInfo.pixelRatio || 1;
+    ctx.canvas.width = targetWidth * pixelRatio;
+    ctx.canvas.height = targetHeight * pixelRatio;
+    ctx.scale(pixelRatio, pixelRatio);
+
+    // 清空并绘制图片
+    ctx.clearRect(0, 0, targetWidth, targetHeight);
+    ctx.drawImage(imageInfo.value.url, 0, 0, targetWidth, targetHeight);
+
+    // 压缩参数处理
+    const quality = formData.value.quality 
+      ? Math.min(Math.max(formData.value.quality, 10), 100) / 100
+      : 0.8;
+
+    // 生成新图片（使用destWidth/destHeight）
+    const { tempFilePath } = await new Promise((resolve, reject) => {
       ctx.draw(false, () => {
         uni.canvasToTempFilePath({
           canvasId: 'customize',
-          quality: formData.value.quality / 100 || 0.8, // 压缩质量 0-1
-          width: newWidth,
-          height: newHeight,
+          destWidth: targetWidth * pixelRatio, // 适配高清屏
+          destHeight: targetHeight * pixelRatio,
+          quality,
+          fileType: 'jpg',
           success: resolve,
-          fail: err => Promise.reject(err)
-        });
+          fail: reject
+        }, this);
       });
     });
 
-    // 更新图片信息
+    // 更新图片信息（保持显示尺寸为逻辑像素）
     imageInfo.value.url = tempFilePath;
-    imageInfo.value.width = Math.round(newWidth);
-    imageInfo.value.height = Math.round(newHeight);
+    imageInfo.value.width = targetWidth;
+    imageInfo.value.height = targetHeight;
     
   } catch (err) {
     console.error('图片编辑失败', err);
-    uni.showToast({ title: '编辑失败', icon: 'none' });
+    uni.showToast({ title: '编辑失败：' + err.message, icon: 'none' });
   }
 }
 
