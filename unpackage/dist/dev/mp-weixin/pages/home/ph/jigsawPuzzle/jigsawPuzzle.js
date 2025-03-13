@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../../../common/vendor.js");
+const pages_home_ph_addWatermark_hooks_useImageHandler = require("../addWatermark/hooks/useImageHandler.js");
 if (!Array) {
   const _easycom_u_picker2 = common_vendor.resolveComponent("u-picker");
   const _easycom_u_image2 = common_vendor.resolveComponent("u-image");
@@ -25,6 +26,7 @@ const page = () => "../../../../components/pages/page.js";
 const _sfc_main = {
   __name: "jigsawPuzzle",
   setup(__props) {
+    pages_home_ph_addWatermark_hooks_useImageHandler.useImageHandler();
     const instance = common_vendor.getCurrentInstance();
     const previewMain = common_vendor.ref({
       width: 0,
@@ -55,8 +57,8 @@ const _sfc_main = {
       const query = common_vendor.index.createSelectorQuery().in(instance.proxy);
       query.select("#contentMain").boundingClientRect((data) => {
         if (data) {
-          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:59", "元素的宽：" + data.width);
-          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:60", "元素的高：" + data.height);
+          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:64", "元素的宽：" + data.width);
+          common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:65", "元素的高：" + data.height);
           previewMain.value = {
             width: data.width,
             height: data.height
@@ -131,7 +133,7 @@ const _sfc_main = {
           height,
           x,
           y,
-          url: fileListBackups.value[index] ? (_a = fileListBackups.value[index]) == null ? void 0 : _a.url : ""
+          url: fileList.value[index] ? (_a = fileList.value[index]) == null ? void 0 : _a.url : ""
         };
       });
       fileListBackups.value = JSON.parse(JSON.stringify(list));
@@ -229,7 +231,7 @@ const _sfc_main = {
       ]
     ]);
     common_vendor.onPullDownRefresh(() => {
-      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:242", "下拉刷新");
+      common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:248", "下拉刷新");
     });
     common_vendor.onShow(() => {
     });
@@ -273,12 +275,12 @@ const _sfc_main = {
             success: function(data) {
               common_vendor.index.__f__(
                 "log",
-                "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:287",
+                "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:293",
                 "选中了第" + (data.tapIndex + 1) + "个按钮,第" + (data.index + 1) + "张图片"
               );
             },
             fail: function(err) {
-              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:296", err.errMsg);
+              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:302", err.errMsg);
             }
           }
         });
@@ -345,7 +347,7 @@ const _sfc_main = {
             });
           },
           fail: (err) => {
-            common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:379", "合并图片失败:", err);
+            common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:385", "合并图片失败:", err);
             common_vendor.index.showToast({
               title: "合并图片失败",
               icon: "none"
@@ -370,68 +372,71 @@ const _sfc_main = {
         // 从相册选择
         success: async function(res) {
           for (let index = 0; index < res.tempFilePaths.length; index++) {
-            try {
-              const ctx = common_vendor.index.createCanvasContext("myCanvas");
-              const { width, height } = fileList.value[index];
-              const proportion = width / height;
-              fileListBackups.value[index] = {
-                ...fileListBackups.value[index],
-                url: res.tempFilePaths[index],
-                // 原图
-                status: "success",
-                message: `${index}`
-              };
-              const imageInfo = await getImageInfo(res.tempFilePaths[index]);
-              let imageW = imageInfo.width;
-              let imageH = imageInfo.height;
-              let drawX = 0;
-              let drawY = 0;
-              if (imageW / imageH > proportion) {
-                imageW = imageH * proportion;
-                drawX = (imageInfo.width - imageW) / 2;
-              } else {
-                imageH = imageW / proportion;
-                drawY = (imageInfo.height - imageH) / 2;
-              }
-              ctx.imageSmoothingEnabled = false;
-              await ctx.drawImage(
-                res.tempFilePaths[index],
-                drawX,
-                drawY,
-                imageW,
-                imageH,
-                0,
-                0,
-                previewMain.value.width,
-                previewMain.value.height
-              );
-              await ctx.draw(true);
-              const cropImage2 = (await common_vendor.index.canvasToTempFilePath({
-                canvasId: "myCanvas"
-              })).tempFilePath;
-              await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
-              await ctx.draw();
-              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:453", "cropImage", cropImage2);
-              fileList.value[index] = {
-                ...fileList.value[index],
-                url: cropImage2,
-                status: "success",
-                message: `${index}`
-              };
-            } catch (error) {
-              common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:463", "处理图片失败: ", error);
-              fileListBackups.value[index] = {
-                ...fileListBackups.value[index],
-                status: "error",
-                message: error.message
-              };
-            }
+            datchProcessingDiagram(res.tempFilePaths[index], index);
           }
         },
         fail: function(error) {
-          common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:473", "选择图片失败: ", error);
+          common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:416", "选择图片失败: ", error);
         }
       });
+    };
+    const datchProcessingDiagram = async (path, index) => {
+      try {
+        const ctx = common_vendor.index.createCanvasContext("myCanvas");
+        const { width, height } = fileList.value[index];
+        const proportion = width / height;
+        fileListBackups.value[index] = {
+          ...fileListBackups.value[index],
+          url: path,
+          // 原图
+          status: "success",
+          message: `${index}`
+        };
+        const imageInfo = await getImageInfo(path);
+        let imageW = imageInfo.width;
+        let imageH = imageInfo.height;
+        let drawX = 0;
+        let drawY = 0;
+        if (imageW / imageH > proportion) {
+          imageW = imageH * proportion;
+          drawX = (imageInfo.width - imageW) / 2;
+        } else {
+          imageH = imageW / proportion;
+          drawY = (imageInfo.height - imageH) / 2;
+        }
+        ctx.imageSmoothingEnabled = false;
+        await ctx.drawImage(
+          path,
+          drawX,
+          drawY,
+          imageW,
+          imageH,
+          0,
+          0,
+          previewMain.value.width,
+          previewMain.value.height
+        );
+        await ctx.draw(true);
+        const cropImage2 = (await common_vendor.index.canvasToTempFilePath({
+          canvasId: "myCanvas"
+        })).tempFilePath;
+        await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
+        await ctx.draw();
+        common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:469", "cropImage", cropImage2);
+        fileList.value[index] = {
+          ...fileList.value[index],
+          url: cropImage2,
+          status: "success",
+          message: `${index}`
+        };
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:479", "处理图片失败: ", error);
+        fileListBackups.value[index] = {
+          ...fileListBackups.value[index],
+          status: "error",
+          message: error.message
+        };
+      }
     };
     const getImageInfo = (src) => {
       return new Promise((resolve, reject) => {
@@ -459,6 +464,9 @@ const _sfc_main = {
       const selectedFunction = typeFunctions[formData.imageType];
       if (selectedFunction) {
         selectedFunction();
+        fileListBackups.value.forEach((item2, index) => {
+          datchProcessingDiagram(item2.url, index);
+        });
       }
     };
     const formDataScale = (e) => {

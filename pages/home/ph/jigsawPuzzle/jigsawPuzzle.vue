@@ -18,12 +18,17 @@
 		getCurrentInstance
 } from "vue";
 
+	import { useImageHandler } from '../addWatermark/hooks/useImageHandler'
+
+	const {batchProcessingImages} = useImageHandler()
+
 	const instance = getCurrentInstance();
 
 	const previewMain = ref({
 		width: 0,
 		height: 0
 	}); // 容器
+
 	const spacing = ref(5); // 间隔
 	const cropImage = ref();
 	const seletIndex = ref(); // 当前下标
@@ -139,7 +144,7 @@
 				height,
 				x,
 				y,
-				url: fileListBackups.value[index] ? fileListBackups.value[index]?.url : '',
+				url: fileList.value[index] ? fileList.value[index]?.url : '',
 			};
 		});
 		
@@ -183,6 +188,7 @@
 		});
 		fileList.value = JSON.parse(JSON.stringify(fileListBackups.value));
 	}
+
 	const showImageType = ref();
 	const columns = reactive([
 		[	{
@@ -403,70 +409,7 @@
 			sourceType: ["album"], // 从相册选择
 			success: async function(res) {
 				for (let index = 0; index < res.tempFilePaths.length; index++) {
-					try {
-						const ctx = uni.createCanvasContext("myCanvas");
-						const { width, height } = fileList.value[index]; // 容器大小
-						const proportion = width / height; // 容器宽高比
-
-						// 保存原始数据
-						fileListBackups.value[index] = {
-							...fileListBackups.value[index],
-							url: res.tempFilePaths[index], // 原图
-							status: "success",
-							message: `${index}`,
-						};
-
-						// 获取图片宽高做裁切
-						const imageInfo = await getImageInfo(res.tempFilePaths[index]);
-
-						// 计算宽高比例最大限度不变形适配
-						let imageW = imageInfo.width;
-						let imageH = imageInfo.height;
-						let drawX = 0;
-						let drawY = 0;
-
-						// 计算绘制位置
-						if (imageW / imageH > proportion) {
-								imageW = imageH * proportion;
-								drawX = (imageInfo.width - imageW) / 2;
-						} else {
-								imageH = imageW / proportion;
-								drawY = (imageInfo.height - imageH) / 2;
-						}
-
-						// 禁用图像平滑处理以保持清晰度
-						ctx.imageSmoothingEnabled = false;
-
-						// 绘制图片
-						await ctx.drawImage(res.tempFilePaths[index], drawX, drawY, imageW, imageH, 0, 0,
-							previewMain.value.width, previewMain.value.height);
-
-						// 绘制完成后导出图片
-						await ctx.draw(true);
-						const cropImage = (await uni.canvasToTempFilePath({
-							canvasId: "myCanvas"
-						})).tempFilePath;
-						await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value
-						.height); // 清空整个画布
-						await ctx.draw(); // 清除
-
-						console.log('cropImage', cropImage);
-
-						// 预览生成的图片
-						fileList.value[index] = {
-							...fileList.value[index],
-							url: cropImage,
-							status: "success",
-							message: `${index}`,
-						};
-					} catch (error) {
-						console.error("处理图片失败: ", error);
-						fileListBackups.value[index] = {
-							...fileListBackups.value[index],
-							status: "error",
-							message: error.message,
-						};
-					}
+					datchProcessingDiagram(res.tempFilePaths[index],index)
 				}
 			},
 			fail: function(error) {
@@ -475,6 +418,72 @@
 		});
 	};
 
+	const datchProcessingDiagram = async (path,index) => {
+		try {
+			const ctx = uni.createCanvasContext("myCanvas");
+			const { width, height } = fileList.value[index]; // 容器大小
+			const proportion = width / height; // 容器宽高比
+
+			// 保存原始数据
+			fileListBackups.value[index] = {
+				...fileListBackups.value[index],
+				url: path, // 原图
+				status: "success",
+				message: `${index}`,
+			};
+
+			// 获取图片宽高做裁切
+			const imageInfo = await getImageInfo(path);
+
+			// 计算宽高比例最大限度不变形适配
+			let imageW = imageInfo.width;
+			let imageH = imageInfo.height;
+			let drawX = 0;
+			let drawY = 0;
+
+			// 计算绘制位置
+			if (imageW / imageH > proportion) {
+					imageW = imageH * proportion;
+					drawX = (imageInfo.width - imageW) / 2;
+			} else {
+					imageH = imageW / proportion;
+					drawY = (imageInfo.height - imageH) / 2;
+			}
+
+			// 禁用图像平滑处理以保持清晰度
+			ctx.imageSmoothingEnabled = false;
+
+			// 绘制图片
+			await ctx.drawImage(path, drawX, drawY, imageW, imageH, 0, 0,
+				previewMain.value.width, previewMain.value.height);
+
+			// 绘制完成后导出图片
+			await ctx.draw(true);
+			const cropImage = (await uni.canvasToTempFilePath({
+				canvasId: "myCanvas"
+			})).tempFilePath;
+			await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value
+			.height); // 清空整个画布
+			await ctx.draw(); // 清除
+
+			console.log('cropImage', cropImage);
+
+			// 预览生成的图片
+			fileList.value[index] = {
+				...fileList.value[index],
+				url: cropImage,
+				status: "success",
+				message: `${index}`,
+			};
+		} catch (error) {
+			console.error("处理图片失败: ", error);
+			fileListBackups.value[index] = {
+				...fileListBackups.value[index],
+				status: "error",
+				message: error.message,
+			};
+		}
+	}
 	const getImageInfo = (src) => {
 		return new Promise((resolve, reject) => {
 			uni.getImageInfo({
@@ -505,6 +514,9 @@
 		const selectedFunction = typeFunctions[formData.imageType];
 		if (selectedFunction) {
 			selectedFunction();
+			fileListBackups.value.forEach((item,index) => {
+				datchProcessingDiagram(item.url,index)
+			})
 		}
 	};
 
@@ -598,7 +610,6 @@
 			success: async function(res) {
 				const image = res.tempFilePaths[0];
 				try {
-					debugger
 					const ctx = uni.createCanvasContext("myCanvas");
 					const { width, height } = previewMain.value; // 容器大小
 					const proportion = width / height; // 容器宽高比

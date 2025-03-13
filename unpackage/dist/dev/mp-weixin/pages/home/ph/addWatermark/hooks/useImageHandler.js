@@ -25,6 +25,27 @@ const useImageHandler = (canvasId) => {
     }
     return { drawWidth, drawHeight, x, y };
   };
+  const maximumCentering = (containerWidth, containerHeight, imageWidth, imageHeight) => {
+    const containerRatio = containerWidth / containerHeight;
+    const imageRatio = imageWidth / imageHeight;
+    let drawWidth = imageWidth;
+    let drawHeight = imageHeight;
+    let x = 0;
+    let y = 0;
+    if (imageRatio > containerRatio) {
+      drawWidth = imageHeight * containerRatio;
+      x = (imageWidth - imageWidth) / 2;
+    } else {
+      drawHeight = drawWidth / containerRatio;
+      y = (imageHeight - drawHeight) / 2;
+    }
+    return {
+      drawWidth,
+      drawHeight,
+      x,
+      y
+    };
+  };
   const handleImageSelect = async () => {
     try {
       isProcessing.value = true;
@@ -76,10 +97,64 @@ const useImageHandler = (canvasId) => {
         canvasHeight: container.height
         // 画布容器实际高度（预览区域高度）
       };
-      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:88", "图片信息:", imageInfo.value);
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:122", "图片信息:", imageInfo.value);
       return imageInfo.value;
     } catch (error) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:92", "选择图片失败:", error);
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:126", "选择图片失败:", error);
+      common_vendor.index.showToast({
+        title: "选择图片失败",
+        icon: "none"
+      });
+    } finally {
+      isProcessing.value = false;
+    }
+  };
+  const batchProcessingImages = async (images) => {
+    try {
+      const tempFile = images.path;
+      let imgInfo;
+      if (!images.width || !images.height) {
+        imgInfo = await new Promise((resolve, reject) => {
+          common_vendor.index.getImageInfo({
+            src: tempFile,
+            success: resolve,
+            fail: reject
+          });
+        });
+      }
+      const { drawWidth, drawHeight, x, y } = maximumCentering(
+        images.canvasWidth,
+        images.canvasHeight,
+        imgInfo.width,
+        imgInfo.height
+      );
+      originalImage.value = tempFile;
+      imageInfo.value = {
+        path: tempFile,
+        // 图片临时文件路径
+        width: imgInfo.width,
+        // 图片原始宽度（单位：px）
+        height: imgInfo.height,
+        // 图片原始高度（单位：px）
+        fileSize: (tempFile.size / 1024).toFixed(0),
+        // 文件体积（单位：KB，四舍五入取整）
+        x,
+        // 图片在画布中的水平起始位置（单位：px）
+        y,
+        // 图片在画布中的垂直起始位置（单位：px）
+        drawWidth,
+        // 图片在画布中的绘制宽度（适配容器后的尺寸）
+        drawHeight,
+        // 图片在画布中的绘制高度（适配容器后的尺寸）
+        canvasWidth: images.canvasWidth,
+        // 画布容器实际宽度（预览区域宽度）
+        canvasHeight: images.canvasHeight
+        // 画布容器实际高度（预览区域高度）
+      };
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:176", "图片信息:", imageInfo.value);
+      return imageInfo.value;
+    } catch (error) {
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:180", "选择图片失败:", error);
       common_vendor.index.showToast({
         title: "选择图片失败",
         icon: "none"
@@ -101,7 +176,7 @@ const useImageHandler = (canvasId) => {
       );
       await new Promise((resolve) => ctx.draw(false, resolve));
     } catch (error) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:123", "绘制失败:", error);
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useImageHandler.js:209", "绘制失败:", error);
       common_vendor.index.showToast({
         title: "绘制失败",
         icon: "none"
@@ -112,7 +187,8 @@ const useImageHandler = (canvasId) => {
     imageInfo,
     isProcessing,
     handleImageSelect,
-    drawImage
+    drawImage,
+    batchProcessingImages
   };
 };
 exports.useImageHandler = useImageHandler;
