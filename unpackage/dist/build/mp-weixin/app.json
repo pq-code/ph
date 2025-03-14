@@ -1,6 +1,10 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/home/vehicleAccess/statistics",
+    "pages/home/vehicleAccess/records",
+    "pages/home/vehicleAccess/recordDetail",
+    "pages/home/vehicleAccess/vehicleAccess",
     "pages/home/ph/jigsawPuzzle/jigsawPuzzle",
     "pages/home/ph/customize/customize",
     "pages/home/ph/addWatermark/addWatermark",

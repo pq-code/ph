@@ -11,10 +11,16 @@ const _easycom_tabbar = () => "../../components/tabbar/tabbar.js";
 if (!Math) {
   (_easycom_u_image + _easycom_tabbar)();
 }
-const nowKey = "bf108d402c7e471b90e9f0323364ee3a";
+const WEATHER_API_KEY = "bf108d402c7e471b90e9f0323364ee3a";
+const WEATHER_STORAGE_KEY = "weather";
 const _sfc_main = {
   __name: "home",
   setup(__props) {
+    const WEATHER_ICONS = {
+      "晴": "https://a.hecdn.net/img/common/icon/202106d/100.png",
+      "多云": "icon-tianqi-duoyun",
+      "下雨": "icon-tianqi-xiayu"
+    };
     common_vendor.ref(0);
     common_vendor.ref("");
     const weather = common_vendor.ref({
@@ -30,65 +36,77 @@ const _sfc_main = {
     common_vendor.ref("flower");
     common_vendor.ref("暂无数据点击加载更多");
     common_vendor.ref([]);
-    let sizeType = [
-      // {name: '二寸',tips:'35*49mm | 413*579px', router: ''},
-      // {name: '小一寸',tips:'22*32mm | 260*378px', router: ''},
-      // {name: '国考（小二寸）',tips:'35*45mm | 413*531px', router: ''},
-      // {name: '国家公务员（小二寸）',tips:'35*45mm | 413*531px', router: ''},
-      // {name: '全国计算机等级考试',tips:'33*48mm | 390*567px', router: ''},
-      // {name: '测试1123',tips:'35*49mm | 413*579px', router: ''},
-      // {name: '测试1123',tips:'22*32mm | 260*378px', router: ''},
-      // {name: '测试1123',tips:'35*45mm | 413*531px', router: ''},
-    ];
-    const getWeather = () => {
-      let weatherS = {
-        "晴": "https://a.hecdn.net/img/common/icon/202106d/100.png",
-        "多云": "icon-tianqi-duoyun",
-        "下雨": "icon-tianqi-xiayu"
-      };
-      if (!common_vendor.index.getStorageSync("weather")) {
-        common_vendor.index.request({
-          url: `https://devapi.qweather.com/v7/weather/now?location=101210101&key=${nowKey}`,
-          method: "GET",
-          success: (res) => {
-            if (res.data.code == 200) {
-              const { now } = res.data;
-              weather.value = {
-                title: `${now.text} ${now.temp} ${now.windDir}`,
-                icon: weatherS[now.tex]
-              };
-              common_vendor.index.setStorageSync("weather", res);
-              common_vendor.index.__f__("log", "at pages/home/home.vue:69", "天气信息", weather.value);
-            }
-          },
-          fail: () => {
-          },
-          complete: () => {
-          }
-        });
-      } else {
-        let res = common_vendor.index.getStorageSync("weather");
-        const { now } = res.data;
-        weather.value = {
-          title: `${now.text} ${now.temp} ${now.windDir}`,
-          icon: weatherS[now.tex]
-        };
+    common_vendor.ref([
+      {
+        id: 1,
+        name: "拼图",
+        icon: "grid",
+        path: "ph/jigsawPuzzle/jigsawPuzzle",
+        description: "创建照片拼图"
+      },
+      {
+        id: 2,
+        name: "添加水印",
+        icon: "edit-pen",
+        path: "ph/addWatermark/addWatermark",
+        description: "为照片添加水印"
+      },
+      {
+        id: 3,
+        name: "自定义修改",
+        icon: "setting",
+        path: "ph/customize/customize",
+        description: "自定义照片编辑"
       }
+    ]);
+    const sizeTypeList = common_vendor.ref([
+      // 可以在这里添加尺寸类型
+      { name: "车辆通行", tips: "车匝", router: "vehicleAccess/vehicleAccess" }
+    ]);
+    const fetchWeather = async () => {
+      const cachedWeather = common_vendor.index.getStorageSync(WEATHER_STORAGE_KEY);
+      if (cachedWeather) {
+        updateWeatherDisplay(cachedWeather.data);
+        return;
+      }
+      try {
+        const res = await common_vendor.index.request({
+          url: `https://devapi.qweather.com/v7/weather/now?location=101210101&key=${WEATHER_API_KEY}`,
+          method: "GET"
+        });
+        if (res.data.code === 200) {
+          common_vendor.index.setStorageSync(WEATHER_STORAGE_KEY, res);
+          updateWeatherDisplay(res.data);
+        }
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/home/home.vue:100", "获取天气信息失败:", error);
+      }
+    };
+    const updateWeatherDisplay = (data) => {
+      const { now } = data;
+      weather.value = {
+        title: `${now.text} ${now.temp}° ${now.windDir}`,
+        icon: WEATHER_ICONS[now.text] || ""
+      };
     };
     const init = () => {
       var _a;
       common_vendor.index.getProvider({
         service: "oauth",
         success: function(res) {
-          common_vendor.index.__f__("log", "at pages/home/home.vue:92", "provider", res.provider);
+          common_vendor.index.__f__("log", "at pages/home/home.vue:117", "provider", res.provider);
         }
       });
       uerInfo.value = common_vendor.index.getStorageSync("userInfo");
       userProfilePhoto.value = (_a = uerInfo.value) == null ? void 0 : _a.userProfilePhoto;
-      getWeather();
+      fetchWeather();
     };
     common_vendor.onPullDownRefresh(() => {
-      common_vendor.index.__f__("log", "at pages/home/home.vue:109", "下拉刷新");
+      common_vendor.index.__f__("log", "at pages/home/home.vue:128", "下拉刷新");
+      init();
+      setTimeout(() => {
+        common_vendor.index.stopPullDownRefresh();
+      }, 1e3);
     });
     common_vendor.onLoad(() => {
       init();
@@ -118,7 +136,7 @@ const _sfc_main = {
         e: common_vendor.o(($event) => pageJump("ph/jigsawPuzzle/jigsawPuzzle")),
         f: common_vendor.o(($event) => pageJump("ph/addWatermark/addWatermark")),
         g: common_vendor.o(($event) => pageJump("ph/customize/customize")),
-        h: common_vendor.f(common_vendor.unref(sizeType), (item, k0, i0) => {
+        h: common_vendor.f(sizeTypeList.value, (item, k0, i0) => {
           return {
             a: common_vendor.t(item.name),
             b: common_vendor.t(item.tips),

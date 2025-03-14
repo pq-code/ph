@@ -29,6 +29,42 @@
                 // "navigationBarTextStyle": "white"
             }
         },
+		{
+        	"path" : "pages/home/vehicleAccess/statistics",
+        	"name": "home.statistics",
+        	"style": {
+        	    "navigationBarTitleText": "",
+        	    "enablePullDownRefresh": false,
+        	    "navigationStyle": "custom"
+        	}
+        },
+		{
+        	"path" : "pages/home/vehicleAccess/records",
+        	"name": "home.records",
+        	"style": {
+        	    "navigationBarTitleText": "",
+        	    "enablePullDownRefresh": false,
+        	    "navigationStyle": "custom"
+        	}
+        },
+		{
+        	"path" : "pages/home/vehicleAccess/recordDetail",
+        	"name": "home.recordDetail",
+        	"style": {
+        	    "navigationBarTitleText": "",
+        	    "enablePullDownRefresh": false,
+        	    "navigationStyle": "custom"
+        	}
+        },
+		{
+        	"path" : "pages/home/vehicleAccess/vehicleAccess",
+        	"name": "home.vehicleAccess",
+        	"style": {
+        	    "navigationBarTitleText": "",
+        	    "enablePullDownRefresh": false,
+        	    "navigationStyle": "custom"
+        	}
+        },
         {
         	"path" : "pages/home/ph/jigsawPuzzle/jigsawPuzzle",
         	"name": "home.jigsawPuzzle",
@@ -38,7 +74,7 @@
         	    "navigationStyle": "custom"
         	}
         },
-				{
+		{
         	"path" : "pages/home/ph/customize/customize",
         	"name": "home.customize",
         	"style": {

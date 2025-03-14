@@ -12438,6 +12438,7 @@ var dayjs_minExports = dayjs_min.exports;
 const dayjs = /* @__PURE__ */ getDefaultExportFromCjs(dayjs_minExports);
 exports.Pinia = Pinia;
 exports._export_sfc = _export_sfc;
+exports.computed = computed;
 exports.createPinia = createPinia;
 exports.createSSRApp = createSSRApp;
 exports.dayjs = dayjs;
