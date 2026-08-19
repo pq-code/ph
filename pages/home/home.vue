@@ -1,217 +1,204 @@
 <script setup>
-	import {
-		ref,
-		onMounted
-	} from "vue";
-	import {
-		onLoad,
-		onPullDownRefresh,
-		onShow
-	} from "@dcloudio/uni-app";
-	import {
-		getSetting,
-		getLoginFn
-	} from "@/utils/index.js";
-	import {
-		getUsedCarList
-	} from "@/api/apis/usedCar.js";
-	import dayjs from "dayjs";
-	
-	// 常量定义
-	const WEATHER_API_KEY = 'bf108d402c7e471b90e9f0323364ee3a';
-	const WEATHER_STORAGE_KEY = "weather";
-	const WEATHER_ICONS = {
-		'晴': 'https://a.hecdn.net/img/common/icon/202106d/100.png',
-		'多云': 'icon-tianqi-duoyun',
-		'下雨': 'icon-tianqi-xiayu',
-	};
+import { ref, onMounted } from "vue";
+import { onLoad, onPullDownRefresh, onShow } from "@dcloudio/uni-app";
+import { getSetting, getLoginFn } from "@/utils/index.js";
+import useUserStore from "@/store/user.js";
 
-	// 响应式状态
-	const value1 = ref(0);
-	const keyword = ref("");
-	const weather = ref({
-		title:'',
-		icon:''
-	}); // 天气信息
+const useStore = useUserStore();
 
-	const uerInfo = ref({
-		userNickname: ''
-	}); // 用户信息
-	const userProfilePhoto = ref(''); // 用户头像
-	const navbarHeight = ref();
+const uerInfo = ref({
+	userNickname: ''
+});
+const userProfilePhoto = ref('');
 
-	const status = ref("loadmore");
-	const iconType = ref("flower");
-	const loadText = ref("暂无数据点击加载更多");
-
-	const imageList = ref([]);
-
-	// 功能列表
-	const featureList = ref([
-		{
-			id: 1,
-			name: '拼图',
-			icon: 'grid',
-			path: 'ph/jigsawPuzzle/jigsawPuzzle',
-			description: '创建照片拼图'
-		},
-		{
-			id: 2,
-			name: '添加水印',
-			icon: 'edit-pen',
-			path: 'ph/addWatermark/addWatermark',
-			description: '为照片添加水印'
-		},
-		{
-			id: 3,
-			name: '自定义修改',
-			icon: 'setting',
-			path: 'ph/customize/customize',
-			description: '自定义照片编辑'
-		}
-	]);
-
-	// 尺寸类型列表
-	const sizeTypeList = ref([
-		// 可以在这里添加尺寸类型
-		{name: '车辆通行', tips:'车匝', router: 'vehicleAccess/vehicleAccess'},
-	]);
-
-	// 获取天气
-	const fetchWeather = async () => {
-		const cachedWeather = uni.getStorageSync(WEATHER_STORAGE_KEY);
-		
-		if (cachedWeather) {
-			updateWeatherDisplay(cachedWeather.data);
-			return;
-		}
-		
-		try {
-			const res = await uni.request({
-				url: `https://devapi.qweather.com/v7/weather/now?location=101210101&key=${WEATHER_API_KEY}`,
-				method: "GET"
-			});
-			
-			if (res.data.code === 200) {
-				uni.setStorageSync(WEATHER_STORAGE_KEY, res);
-				updateWeatherDisplay(res.data);
-			}
-		} catch (error) {
-			console.error('获取天气信息失败:', error);
-		}
-	};
-
-	// 更新天气显示
-	const updateWeatherDisplay = (data) => {
-		const { now } = data;
-		weather.value = {
-			title: `${now.text} ${now.temp}° ${now.windDir}`,
-			icon: WEATHER_ICONS[now.text] || ''
-		};
-	};
-
-	const init = () => {
-		uni.getProvider({
-		  service: 'oauth',
-		  success: function (res) {
-		    console.log('provider',res.provider)// ['qq', 'univerify']
-		  }
-		});
-		uerInfo.value = uni.getStorageSync("userInfo");
-		userProfilePhoto.value = uerInfo.value?.userProfilePhoto;
-
-		// getUserInfo() // 登录
-		fetchWeather(); // 获取天气
-	};
-
-	onPullDownRefresh(() => {
-		console.log("下拉刷新");
-		init();
-		setTimeout(() => {
-			uni.stopPullDownRefresh();
-		}, 1000);
-	});
-
-	onLoad(() => {
-		init()
-	});
-
-	const getUserInfo = async () => {
-		try {
-			await getLoginFn();
-			uerInfo.value = uni.getStorageSync("userInfo");
-			userProfilePhoto.value = uerInfo.value?.userProfilePhoto;
-			console.log(userProfilePhoto.value )
-		} catch (error) {
-			console.error('获取用户信息失败:', error);
-		}
+// 功能入口列表（合并为一行5个）
+const toolList = ref([
+	{
+		id: 1,
+		name: '拼图',
+		icon: 'grid',
+		path: 'ph/jigsawPuzzle/jigsawPuzzle',
+		color: '#487AFA'
+	},
+	{
+		id: 2,
+		name: '添加水印',
+		icon: 'edit-pen',
+		path: 'ph/addWatermark/addWatermark',
+		color: '#487AFA'
+	},
+	{
+		id: 3,
+		name: '自定义',
+		icon: 'setting',
+		path: 'ph/customize/customize',
+		color: '#487AFA'
+	},
+	{
+		id: 4,
+		name: '拼豆图纸',
+		icon: 'grid',
+		path: 'ph/perlerBead/perlerBead',
+		color: '#0aa671'
+	},
+	{
+		id: 5,
+		name: 'AI生成',
+		icon: 'star',
+		path: 'ph/aiGenerate/aiGenerate',
+		color: '#0aa671'
 	}
+]);
 
-	const onPageScroll = (e) => {};
-	const tabsClick = (item) => {
-		console.log("item", item);
-	};
+// 图纸广场Mock数据
+const galleryList = ref([
+	{ id: 1, title: '可爱猫咪拼豆', author: '小明', likes: 128, color: '#FF6B6B', height: 200 },
+	{ id: 2, title: '星空拼豆图案', author: '小红', likes: 256, color: '#4ECDC4', height: 260 },
+	{ id: 3, title: '像素风景画', author: '小刚', likes: 89, color: '#45B7D1', height: 180 },
+	{ id: 4, title: '卡通人物拼豆', author: '小美', likes: 312, color: '#96CEB4', height: 240 },
+	{ id: 5, title: '花卉图案设计', author: '小李', likes: 167, color: '#FFEAA7', height: 220 },
+	{ id: 6, title: '动漫角色拼豆', author: '小王', likes: 198, color: '#DDA0DD', height: 190 },
+]);
 
-	// 加载前值为loadmore，加载中为loading，没有数据为nomore
-	const onReachBottom = () => {
-		status.value = "loading";
-	};
+const init = () => {
+	uni.getProvider({
+		service: 'oauth',
+		success: function (res) {
+			console.log('provider', res.provider)
+		}
+	});
+	uerInfo.value = uni.getStorageSync("userInfo");
+	userProfilePhoto.value = uerInfo.value?.userProfilePhoto;
+};
 
-	// 页面跳转
-	const pageJump = (url) => {
-		uni.navigateTo({
-			url: url,
-		});
-	};
-	const handleTabbarItemClick = () => {
-		uni.switchTab({
-		  url: '/pages/user/home',
-		});
-	}
+onPullDownRefresh(() => {
+	console.log("下拉刷新");
+	init();
+	setTimeout(() => {
+		uni.stopPullDownRefresh();
+	}, 1000);
+});
+
+onLoad(() => {
+	init()
+});
+
+onShow(() => {
+	useStore.setActive(0);
+});
+
+// 页面跳转
+const pageJump = (url) => {
+	uni.navigateTo({
+		url: url,
+	});
+};
+
+// 跳转到图纸广场
+const goSquare = () => {
+	uni.switchTab({
+		url: '/pages/home/square/square',
+	});
+};
+
+// 跳转到图纸详情
+const goPatternDetail = (item) => {
+	uni.navigateTo({
+		url: `/pages/home/square/patternDetail?id=${item.id}`,
+	});
+};
 </script>
 
 <template>
 	<view class="content">
-		<view class="content-heard">
-			<view class="content-heard-profile" @click="handleTabbarItemClick">
-				<u-image width="30px" height="30px" :src="userProfilePhoto" mode="aspectFill" shape="circle"></u-image>
+		<scroll-view scroll-y="true" class="page-scroll">
+			<!-- 顶部背景图（纯展示，不参与布局） -->
+			<view class="banner">
+				<image class="banner-img" src="/static/home-bg.jpg" mode="widthFix" />
 			</view>
-			<view>{{uerInfo.userNickname}}</view>
-			<view style="font-size: 13px;margin:0 10px;display: flex;">
-				<view style="margin-right: 10px;">{{ weather.title || '' }}</view>
-			</view>
-		</view>
 
-		<view class="content-main">
-			<view class="content-main-heard">
-				<view class="content-main-heard-title"> 图片编辑 </view>
-				<view class="content-main-heard-top">
-					<view class="content-main-heard-left" @click="pageJump('ph/jigsawPuzzle/jigsawPuzzle')">
-						拼图
+			<!-- 功能入口卡片 -->
+			<view class="tool-grid-wrapper">
+				<view class="tool-grid">
+					<view
+						v-for="item in toolList"
+						:key="item.id"
+						class="tool-item"
+						@click="pageJump(item.path)"
+					>
+						<view class="tool-icon">
+							<u-icon :name="item.icon" size="22" :color="item.color"></u-icon>
+						</view>
+						<text class="tool-name">{{ item.name }}</text>
 					</view>
-					<view class="content-main-heard-right" @click="pageJump('ph/addWatermark/addWatermark')">
-						添加水印
-					</view>
-				</view>
-
-				<view class="content-main-customize" @click="pageJump('ph/customize/customize')">
-					自定义修改
 				</view>
 			</view>
 
-		<!-- 	<view class="content-main-center">
-			</view> -->
-		<view class="content-main-title"> 一些其他的功能 </view>
-			<view
-				v-for="item in sizeTypeList"
-				:key="item.name"
-				class="content-sizeType"
-				@click="pageJump(item.router)"
-			  >
-				<view> {{ item.name }}</view>
-				<view class="content-sizeType-tips"> {{ item.tips }}</view>
-			  </view>
-		</view>
+			<!-- 图纸广场 -->
+			<view class="section">
+				<view class="section-header">
+					<view class="section-title">
+						<view class="title-dot"></view>
+						<text>图纸广场</text>
+					</view>
+					<view class="section-more" @click="goSquare">
+						<text>查看更多</text>
+						<u-icon name="arrow-right" size="14" color="#999"></u-icon>
+					</view>
+				</view>
+				<view class="waterfall">
+					<view class="waterfall-column">
+						<view
+							v-for="item in galleryList.filter((_, i) => i % 2 === 0)"
+							:key="item.id"
+							class="waterfall-card"
+							@click="goPatternDetail(item)"
+						>
+							<view class="card-image" :style="{ height: item.height + 'px', background: item.color }">
+								<view class="card-image-placeholder">
+									<u-icon name="photo" size="32" color="rgba(255,255,255,0.6)"></u-icon>
+								</view>
+							</view>
+							<view class="card-info">
+								<text class="card-title">{{ item.title }}</text>
+								<view class="card-meta">
+									<text class="card-author">{{ item.author }}</text>
+									<view class="card-likes">
+										<u-icon name="thumb-up" size="12" color="#999"></u-icon>
+										<text>{{ item.likes }}</text>
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="waterfall-column">
+						<view
+							v-for="item in galleryList.filter((_, i) => i % 2 === 1)"
+							:key="item.id"
+							class="waterfall-card"
+							@click="goPatternDetail(item)"
+						>
+							<view class="card-image" :style="{ height: item.height + 'px', background: item.color }">
+								<view class="card-image-placeholder">
+									<u-icon name="photo" size="32" color="rgba(255,255,255,0.6)"></u-icon>
+								</view>
+							</view>
+							<view class="card-info">
+								<text class="card-title">{{ item.title }}</text>
+								<view class="card-meta">
+									<text class="card-author">{{ item.author }}</text>
+									<view class="card-likes">
+										<u-icon name="thumb-up" size="12" color="#999"></u-icon>
+										<text>{{ item.likes }}</text>
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</scroll-view>
+
 		<tabbar></tabbar>
 	</view>
 </template>
@@ -220,127 +207,178 @@
 	.content {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
 		height: 100vh;
-		flex-wrap: nowrap;
-		// background: #e8e8e8;
-		background: linear-gradient(to bottom, #82b9ff, #ddeafb, #dfe8f3);
+		background: linear-gradient(180deg, #d5cec6 0%, #f7dbe9ad 25%, #e7ebff 50%, #ffffff 100%);
 
-		.content-heard {
+		.page-scroll {
+			flex: 1;
+			height: 0;
+		}
+
+		// 背景图区域
+		.banner {
 			width: 100%;
-			height: 60px;
-			// background: linear-gradient(to bottom, #93c3ff, #98bcea);
-			padding-top: 40px;
+			overflow: hidden;
 
-			font-size: 20px;
-			font-weight: 600;
-
-			display: flex;
-			justify-content: flex-start;
-			align-items: center;
-			flex-direction: row;
-			.content-heard-profile {
-				 width: 30px;
-				 height: 30px;
-				 margin:0 10px;
-				 border-radius: 50%;
-				 background: #aaffc5;
+			.banner-img {
+				width: 100%;
+				display: block;
 			}
 		}
 
-		.content-main {
-			width: calc(100% - 20px);
-			height: 100%;
-			padding: 10px;
-			// border-radius: 6px;
-			display: flex;
-			flex-direction: column;
-			overflow: auto;
+		// 功能入口卡片（上移覆盖背景图底部）
+		.tool-grid-wrapper {
+			padding: 0 16px;
+			margin-top: -10px;
+			position: relative;
+			z-index: 2;
 
-			// background: linear-gradient(to bottom, #98bcea, #efefef);
-			// background: #faf6c8;
-			.content-main-heard {
+			.tool-grid {
 				display: flex;
-				flex-direction: column;
-				margin-bottom: 10px;
+				justify-content: space-between;
+				background: #ffffff;
+				border-radius: 16px;
+				padding: 16px 12px;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 
-				.content-main-heard-title {
-					font-size: 18px;
-					padding: 10px;
-					margin-bottom: 10px;
-					text-align: 10px;
-					line-height: 10px;
-					border-left: 4px solid #487AFA
-				}
-
-				.content-main-heard-top {
-					height: 100px;
+				.tool-item {
+					flex: 1;
 					display: flex;
-					justify-content: space-between;
-
-					.content-main-heard-left {
-						width: calc(50% - 2.5px);
-						height: 100%;
-						border-radius: 10px;
-						background: #ffffff;
-						display: flex;
-						flex-direction: row;
-						align-items: center;
-						justify-content: center;
-					}
-
-					.content-main-heard-right {
-						width: calc(50% - 2.5px);
-						height: 100%;
-						border-radius: 10px;
-						background: #ffffff;
-						display: flex;
-						flex-direction: row;
-						align-items: center;
-						justify-content: center;
-					}
-				}
-
-				.content-main-customize {
-					margin-top: 10px;
-					padding: 10px;
-					height: 40px;
-					border-radius: 6px;
-					background: #ffffff;
-					display: flex;
-					justify-content: center;
+					flex-direction: column;
 					align-items: center;
+
+					.tool-icon {
+						width: 48px;
+						height: 48px;
+						border-radius: 14px;
+						background: #f5f7fa;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						margin-bottom: 8px;
+					}
+
+					.tool-name {
+						font-size: 12px;
+						color: #333;
+						font-weight: 500;
+					}
+				}
+			}
+		}
+
+		// 图纸广场
+		.section {
+			padding: 20px 0 16px;
+
+			.section-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0 20px;
+				margin-bottom: 14px;
+
+				.section-title {
+					display: flex;
+					align-items: center;
+
+					.title-dot {
+						width: 6px;
+						height: 18px;
+						border-radius: 3px;
+						margin-right: 8px;
+						background: #764ba2;
+					}
+
+					text {
+						font-size: 17px;
+						font-weight: 600;
+						color: #333;
+					}
+				}
+
+				.section-more {
+					display: flex;
+					align-items: center;
+
+					text {
+						font-size: 13px;
+						color: #999;
+						margin-right: 2px;
+					}
 				}
 			}
 
-			.content-main-center {
-				flex: 1;
-				border-radius: 6px;
-				background: #ffffff;
-				margin-top: 10px;
-			}
-			.content-main-title {
-				font-size: 18px;
-				padding: 10px;
-				// margin-bottom: 10px;
-				text-align: 10px;
-				line-height: 10px;
-				border-left: 4px solid #487AFA;
-			}
-			.content-sizeType {
-				border-radius: 10px;
-				width: calc(100% - 40px);
-				height: 60px;
-				margin-top: 10px ;
-				background: #ffffff;
-				padding: 10px 20px;
+			// 瀑布流
+			.waterfall {
 				display: flex;
-				flex-direction: column;
-				justify-content: center;
+				padding: 0 12px;
+				gap: 10px;
 
-				.content-sizeType-tips {
-					color: #949292;
-					font-size: 12px;
+				.waterfall-column {
+					flex: 1;
+					display: flex;
+					flex-direction: column;
+					gap: 10px;
+
+					.waterfall-card {
+						background: #ffffff;
+						border-radius: 12px;
+						overflow: hidden;
+						box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+
+						&:active {
+							transform: scale(0.98);
+						}
+
+						.card-image {
+							width: 100%;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+
+							.card-image-placeholder {
+								opacity: 0.6;
+							}
+						}
+
+						.card-info {
+							padding: 10px 12px;
+
+							.card-title {
+								font-size: 14px;
+								font-weight: 600;
+								color: #333;
+								display: block;
+								margin-bottom: 6px;
+								overflow: hidden;
+								text-overflow: ellipsis;
+								white-space: nowrap;
+							}
+
+							.card-meta {
+								display: flex;
+								align-items: center;
+								justify-content: space-between;
+
+								.card-author {
+									font-size: 12px;
+									color: #999;
+								}
+
+								.card-likes {
+									display: flex;
+									align-items: center;
+
+									text {
+										font-size: 12px;
+										color: #999;
+										margin-left: 4px;
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}

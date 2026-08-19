@@ -4,10 +4,14 @@
     "dayjs": "^1.11.10",
     "echarts": "^5.6.0",
     "html2canvas": "^1.4.1",
+    "qrcode-generator": "^2.0.4",
     "uview-plus": "^3.3.68"
   },
   "settings": {
     "ignoreDevUnusedFiles": false,
     "ignoreUploadUnusedFiles": false
+  },
+  "devDependencies": {
+    "sass": "^1.86.0"
   }
 }

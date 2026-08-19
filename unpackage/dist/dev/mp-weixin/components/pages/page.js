@@ -50,16 +50,20 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       }
     }
   },
-  emits: ["lButton", "rButton"],
+  emits: ["lButton", "rButton", "back"],
   setup(__props, { emit: __emit }) {
     const props = __props;
     const emits = __emit;
     const leftClick = () => {
-      common_vendor.index.__f__("log", "at components/pages/page.vue:43", props.backUrl);
+      let defaultPrevented = false;
+      emits("back", { preventDefault: () => {
+        defaultPrevented = true;
+      } });
+      if (defaultPrevented)
+        return;
       if (props.backUrl == "") {
         common_vendor.index.navigateBack({});
       } else {
-        common_vendor.index.__f__("log", "at components/pages/page.vue:47", props.backUrl);
         common_vendor.index.navigateTo({
           url: props.backUrl
         });

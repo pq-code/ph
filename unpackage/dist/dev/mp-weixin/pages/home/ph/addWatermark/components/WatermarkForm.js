@@ -7,9 +7,10 @@ if (!Array) {
   const _easycom_u_datetime_picker2 = common_vendor.resolveComponent("u-datetime-picker");
   const _easycom_u_textarea2 = common_vendor.resolveComponent("u-textarea");
   const _easycom_u_button2 = common_vendor.resolveComponent("u-button");
+  const _easycom_u_picker2 = common_vendor.resolveComponent("u-picker");
   const _easycom_u_form_item2 = common_vendor.resolveComponent("u-form-item");
   const _easycom_u_form2 = common_vendor.resolveComponent("u-form");
-  (_easycom_u_input2 + _easycom_u_switch2 + _easycom_u_slider2 + _easycom_u_datetime_picker2 + _easycom_u_textarea2 + _easycom_u_button2 + _easycom_u_form_item2 + _easycom_u_form2)();
+  (_easycom_u_input2 + _easycom_u_switch2 + _easycom_u_slider2 + _easycom_u_datetime_picker2 + _easycom_u_textarea2 + _easycom_u_button2 + _easycom_u_picker2 + _easycom_u_form_item2 + _easycom_u_form2)();
 }
 const _easycom_u_input = () => "../../../../../uni_modules/uview-plus/components/u-input/u-input.js";
 const _easycom_u_switch = () => "../../../../../uni_modules/uview-plus/components/u-switch/u-switch.js";
@@ -17,10 +18,11 @@ const _easycom_u_slider = () => "../../../../../uni_modules/uview-plus/component
 const _easycom_u_datetime_picker = () => "../../../../../uni_modules/uview-plus/components/u-datetime-picker/u-datetime-picker.js";
 const _easycom_u_textarea = () => "../../../../../uni_modules/uview-plus/components/u-textarea/u-textarea.js";
 const _easycom_u_button = () => "../../../../../uni_modules/uview-plus/components/u-button/u-button.js";
+const _easycom_u_picker = () => "../../../../../uni_modules/uview-plus/components/u-picker/u-picker.js";
 const _easycom_u_form_item = () => "../../../../../uni_modules/uview-plus/components/u-form-item/u-form-item.js";
 const _easycom_u_form = () => "../../../../../uni_modules/uview-plus/components/u-form/u-form.js";
 if (!Math) {
-  (_easycom_u_input + _easycom_u_switch + _easycom_u_slider + _easycom_u_datetime_picker + _easycom_u_textarea + _easycom_u_button + _easycom_u_form_item + _easycom_u_form + MapDisplay)();
+  (_easycom_u_input + _easycom_u_switch + _easycom_u_slider + _easycom_u_datetime_picker + _easycom_u_textarea + _easycom_u_button + _easycom_u_picker + _easycom_u_form_item + _easycom_u_form + MapDisplay)();
 }
 const MapDisplay = () => "./MapDisplay.js";
 const _sfc_main = {
@@ -42,11 +44,12 @@ const _sfc_main = {
   emits: ["dataChanged", "update:modelValue"],
   setup(__props, { emit: __emit }) {
     const props = __props;
-    common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:144", "props=====", props);
+    common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:165", "props=====", props);
     const showMap = common_vendor.ref(false);
     const emit = __emit;
     const showPicker = common_vendor.ref(false);
     const tempDate = common_vendor.ref(common_vendor.dayjs().valueOf());
+    const showPickerMap = common_vendor.ref({});
     const covers = common_vendor.ref([{
       latitude: 39.90923,
       longitude: 116.397428,
@@ -63,7 +66,7 @@ const _sfc_main = {
       showPicker.value = false;
     };
     const onInputChange = () => {
-      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:171", "modelValue", props.modelValue);
+      common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:193", "modelValue", props.modelValue);
       emit("update:modelValue", props.modelValue);
     };
     const closeMap = (item) => {
@@ -84,7 +87,7 @@ const _sfc_main = {
     const getLocation = () => {
       common_vendor.index.chooseLocation({
         success: (res) => {
-          common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:196", "chooseLocation", res);
+          common_vendor.index.__f__("log", "at pages/home/ph/addWatermark/components/WatermarkForm.vue:218", "chooseLocation", res);
           emit("update:modelValue", {
             ...props.modelValue,
             longitude: Number(res.longitude).toFixed(6),
@@ -93,6 +96,24 @@ const _sfc_main = {
           });
         }
       });
+    };
+    const getSelectDisplayValue = (field) => {
+      var _a;
+      const currentValue = props.modelValue[field.field];
+      if (!currentValue)
+        return "";
+      const option = (_a = field.options) == null ? void 0 : _a.find((opt) => opt.value === currentValue || opt.label === currentValue);
+      return (option == null ? void 0 : option.label) || currentValue;
+    };
+    const handleSelectConfirm = (e, field) => {
+      const selectedItem = e.value[0];
+      const selectedValue = (selectedItem == null ? void 0 : selectedItem.value) || (selectedItem == null ? void 0 : selectedItem.label);
+      emit("update:modelValue", {
+        ...props.modelValue,
+        [field]: selectedValue
+      });
+      showPickerMap.value[field] = false;
+      onInputChange();
     };
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -196,9 +217,33 @@ const _sfc_main = {
               placeholder: field.placeholder
             })
           } : {}, {
-            Q: field.field,
-            R: "8883b4bf-1-" + i0 + ",8883b4bf-0",
-            S: common_vendor.p({
+            Q: field.type === "select"
+          }, field.type === "select" ? {
+            R: common_vendor.o((e) => handleSelectConfirm(e, field.field), field.field),
+            S: common_vendor.o(($event) => showPickerMap.value[field.field] = false, field.field),
+            T: "8883b4bf-10-" + i0 + "," + ("8883b4bf-1-" + i0),
+            U: common_vendor.p({
+              show: showPickerMap.value[field.field] || false,
+              columns: [field.options || []],
+              keyName: "label",
+              closeOnClickOverlay: true
+            }),
+            V: common_vendor.o(($event) => showPickerMap.value[field.field] = true, field.field),
+            W: "8883b4bf-11-" + i0 + "," + ("8883b4bf-1-" + i0),
+            X: common_vendor.p({
+              value: getSelectDisplayValue(field),
+              placeholder: field.placeholder || "请选择",
+              clearable: false,
+              ["right-icon"]: "arrow-down",
+              customStyle: {
+                zIndex: "0"
+              },
+              readonly: true
+            })
+          } : {}, {
+            Y: field.field,
+            Z: "8883b4bf-1-" + i0 + ",8883b4bf-0",
+            aa: common_vendor.p({
               label: field.label,
               required: field.required
             })

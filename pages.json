@@ -1,69 +1,31 @@
 {
     "easycom": {
-        // 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
         "custom": {
             "^u-(.*)": "uview-plus/components/u-$1/u-$1.vue"
         }
     },
-    "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    "pages": [ 
         {
             "path": "pages/home/home",
             "name": "home",
             "permission": {
                 "scope.userLocation": {
-                    "desc": "你的位置信息将用于小程序位置接口的效果展示" // 高速公路行驶持续后台定位
+                    "desc": "你的位置信息将用于小程序位置接口的效果展示"
                 },
 								"scope.userInfo": {
-										"desc": "昵称和头像展示" // 
+										"desc": "昵称和头像展示" 
 								},
 								"scope.writePhotosAlbum": {
-										"desc": "上传图片" // 
+										"desc": "上传图片" 
 								},
 								"scope.camera": {
-										"desc": "需要获取摄像头权限进行拍照" // 
+										"desc": "需要获取摄像头权限进行拍照" 
 								}
             },
             "style": {
                 "navigationBarTitleText": "uni-app",
                 "navigationStyle": "custom"
-                // "navigationBarTextStyle": "white"
             }
-        },
-		{
-        	"path" : "pages/home/vehicleAccess/statistics",
-        	"name": "home.statistics",
-        	"style": {
-        	    "navigationBarTitleText": "",
-        	    "enablePullDownRefresh": false,
-        	    "navigationStyle": "custom"
-        	}
-        },
-		{
-        	"path" : "pages/home/vehicleAccess/records",
-        	"name": "home.records",
-        	"style": {
-        	    "navigationBarTitleText": "",
-        	    "enablePullDownRefresh": false,
-        	    "navigationStyle": "custom"
-        	}
-        },
-		{
-        	"path" : "pages/home/vehicleAccess/recordDetail",
-        	"name": "home.recordDetail",
-        	"style": {
-        	    "navigationBarTitleText": "",
-        	    "enablePullDownRefresh": false,
-        	    "navigationStyle": "custom"
-        	}
-        },
-		{
-        	"path" : "pages/home/vehicleAccess/vehicleAccess",
-        	"name": "home.vehicleAccess",
-        	"style": {
-        	    "navigationBarTitleText": "",
-        	    "enablePullDownRefresh": false,
-        	    "navigationStyle": "custom"
-        	}
         },
         {
         	"path" : "pages/home/ph/jigsawPuzzle/jigsawPuzzle",
@@ -84,10 +46,71 @@
         	}
         },
 		{
+			"path" : "pages/home/ph/perlerBead/perlerBead",
+			"name": "home.perlerBead",
+			"style": {
+			    "navigationBarTitleText": "",
+			    "enablePullDownRefresh": false,
+			    "navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/home/ph/perlerBead/patternEditor",
+			"name": "home.patternEditor",
+			"style": {
+			    "navigationBarTitleText": "",
+			    "enablePullDownRefresh": false,
+			    "navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/home/ph/perlerBead/exportSettings",
+			"name": "home.exportSettings",
+			"style": {
+			    "navigationBarTitleText": "导出图片",
+			    "navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/home/ph/perlerBead/printExport",
+			"name": "home.printExport",
+			"style": {
+			    "navigationBarTitleText": "打印导出",
+			    "navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/home/ph/aiGenerate/aiGenerate",
+			"name": "home.aiGenerate",
+			"style": {
+			    "navigationBarTitleText": "",
+			    "enablePullDownRefresh": false,
+			    "navigationStyle": "custom"
+			}
+		},
+		{
 			"path" : "pages/home/ph/addWatermark/addWatermark",
 			"name": "home.addWatermark",
 			"style": {
 			    "navigationBarTitleText": "",
+			    "enablePullDownRefresh": false,
+			    "navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/home/square/square",
+			"name": "home.square",
+			"style": {
+			    "navigationBarTitleText": "图纸广场",
+			    "enablePullDownRefresh": false,
+			    "navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/home/square/patternDetail",
+			"name": "home.patternDetail",
+			"style": {
+			    "navigationBarTitleText": "图纸详情",
 			    "enablePullDownRefresh": false,
 			    "navigationStyle": "custom"
 			}
@@ -109,6 +132,15 @@
 		        "enablePullDownRefresh": false,
 		        "navigationStyle": "custom"
 		    }
+		},
+		{
+		    "path": "pages/user/settings",
+		    "name": "user.settings",
+		    "style": {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false,
+		        "navigationStyle": "custom"
+		    }
 		}
     ],
     "tabBar": {
@@ -121,6 +153,10 @@
                 "pagePath": "pages/home/home",
 				"text": "首页"
             },
+			{
+			    "pagePath": "pages/home/square/square",
+				"text": "广场"
+			},
 			{
 			    "pagePath": "pages/user/home",
 				"text": "我的"

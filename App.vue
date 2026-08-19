@@ -2,6 +2,14 @@
 export default {
   onLaunch: function () {
     console.log("App Launch");
+    // #ifdef MP-WEIXIN
+    if (wx.cloud) {
+      wx.cloud.init({
+        env: 'prod-8gqm1nbtf8eae76e',
+        traceUser: true
+      });
+    }
+    // #endif
   },
   onShow: function () {
     console.log("App Show");

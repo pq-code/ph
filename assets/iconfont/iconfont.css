@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3910586 */
-  src: url('iconfont.woff2?t=1736418059279') format('woff2'),
-       url('iconfont.woff?t=1736418059279') format('woff'),
-       url('iconfont.ttf?t=1736418059279') format('truetype');
+  src: url('iconfont.woff2?t=1787043301952') format('woff2'),
+       url('iconfont.woff?t=1787043301952') format('woff'),
+       url('iconfont.ttf?t=1787043301952') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,114 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-yidong:before {
+  content: "\e6c4";
+}
+
+.icon-icon_flex_direction_column_reverse:before {
+  content: "\e677";
+}
+
+.icon-justify-content-center-icon:before {
+  content: "\e600";
+}
+
+.icon-justify-content-flex-end-icon:before {
+  content: "\e601";
+}
+
+.icon-justify-content-space-evenly-icon:before {
+  content: "\e602";
+}
+
+.icon-justify-content-flex-start-icon:before {
+  content: "\e603";
+}
+
+.icon-justify-content-space-around-icon:before {
+  content: "\e604";
+}
+
+.icon-justify-content-space-between-icon:before {
+  content: "\e605";
+}
+
+.icon-align-content-stretch-icon:before {
+  content: "\e606";
+}
+
+.icon-justify-content-space-around-icon1:before {
+  content: "\e607";
+}
+
+.icon-align-items-center:before {
+  content: "\e608";
+}
+
+.icon-align-items-flex-start:before {
+  content: "\e609";
+}
+
+.icon-align-items-flex-end:before {
+  content: "\e60a";
+}
+
+.icon-flex_direction_row_reverse:before {
+  content: "\eee1";
+}
+
+.icon-flex_direction_row:before {
+  content: "\eee2";
+}
+
+.icon-flex_direction_column:before {
+  content: "\eee3";
+}
+
+.icon-flex-wrap-nowrap:before {
+  content: "\eeef";
+}
+
+.icon-flex-wrap-wrap:before {
+  content: "\eef0";
+}
+
+.icon-arrow_chuizhituodong_sliding-vertical:before {
+  content: "\e699";
+}
+
+.icon-arrow_shuipingtuodong_sliding-horizontal:before {
+  content: "\e69a";
+}
+
+.icon-CSS:before {
+  content: "\e613";
+}
+
+.icon-Vue:before {
+  content: "\e799";
+}
+
+.icon-js:before {
+  content: "\e63b";
+}
+
+.icon-jsx:before {
+  content: "\e63c";
+}
+
+.icon-ts:before {
+  content: "\e66d";
+}
+
+.icon-md:before {
+  content: "\e639";
+}
+
+.icon-JSON_1:before {
+  content: "\e8f0";
 }
 
 .icon-tianqi-xiayu:before {

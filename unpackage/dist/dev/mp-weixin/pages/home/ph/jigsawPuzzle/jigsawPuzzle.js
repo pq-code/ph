@@ -4,22 +4,22 @@ const pages_home_ph_addWatermark_hooks_useImageHandler = require("../addWatermar
 if (!Array) {
   const _easycom_u_picker2 = common_vendor.resolveComponent("u-picker");
   const _easycom_u_image2 = common_vendor.resolveComponent("u-image");
-  const _easycom_u_input2 = common_vendor.resolveComponent("u-input");
   const _easycom_u_icon2 = common_vendor.resolveComponent("u-icon");
+  const _easycom_u_input2 = common_vendor.resolveComponent("u-input");
   const _easycom_u_form_item2 = common_vendor.resolveComponent("u-form-item");
   const _easycom_u_slider2 = common_vendor.resolveComponent("u-slider");
   const _easycom_u_form2 = common_vendor.resolveComponent("u-form");
-  (_easycom_u_picker2 + _easycom_u_image2 + _easycom_u_input2 + _easycom_u_icon2 + _easycom_u_form_item2 + _easycom_u_slider2 + _easycom_u_form2)();
+  (_easycom_u_picker2 + _easycom_u_image2 + _easycom_u_icon2 + _easycom_u_input2 + _easycom_u_form_item2 + _easycom_u_slider2 + _easycom_u_form2)();
 }
 const _easycom_u_picker = () => "../../../../uni_modules/uview-plus/components/u-picker/u-picker.js";
 const _easycom_u_image = () => "../../../../uni_modules/uview-plus/components/u-image/u-image.js";
-const _easycom_u_input = () => "../../../../uni_modules/uview-plus/components/u-input/u-input.js";
 const _easycom_u_icon = () => "../../../../uni_modules/uview-plus/components/u-icon/u-icon.js";
+const _easycom_u_input = () => "../../../../uni_modules/uview-plus/components/u-input/u-input.js";
 const _easycom_u_form_item = () => "../../../../uni_modules/uview-plus/components/u-form-item/u-form-item.js";
 const _easycom_u_slider = () => "../../../../uni_modules/uview-plus/components/u-slider/u-slider.js";
 const _easycom_u_form = () => "../../../../uni_modules/uview-plus/components/u-form/u-form.js";
 if (!Math) {
-  (imageCropper + _easycom_u_picker + _easycom_u_image + _easycom_u_input + _easycom_u_icon + _easycom_u_form_item + _easycom_u_slider + _easycom_u_form + page)();
+  (imageCropper + _easycom_u_picker + _easycom_u_image + _easycom_u_icon + _easycom_u_input + _easycom_u_form_item + _easycom_u_slider + _easycom_u_form + page)();
 }
 const imageCropper = () => "../../components/imageCropper/imageCropper2.js";
 const page = () => "../../../../components/pages/page.js";
@@ -253,17 +253,11 @@ const _sfc_main = {
           success: function(res) {
             cropImage.value = res.tempFilePaths[0];
             isOpenCropper.value = true;
-            fileListBackups.value[seletIndex.value] = {
-              ...fileListBackups.value[seletIndex.value],
-              url: res.tempFilePaths[0],
-              status: "success",
-              message: `${seletIndex.value}`
-            };
           }
         });
       }
       if (item.value[0].value == 2) {
-        cropImage.value = fileListBackups.value[seletIndex.value];
+        cropImage.value = fileListBackups.value[seletIndex.value].url;
         isOpenCropper.value = true;
       }
       if (item.value[0].value == 3) {
@@ -275,12 +269,12 @@ const _sfc_main = {
             success: function(data) {
               common_vendor.index.__f__(
                 "log",
-                "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:293",
+                "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:287",
                 "选中了第" + (data.tapIndex + 1) + "个按钮,第" + (data.index + 1) + "张图片"
               );
             },
             fail: function(err) {
-              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:302", err.errMsg);
+              common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:296", err.errMsg);
             }
           }
         });
@@ -304,6 +298,12 @@ const _sfc_main = {
       isOpenCropper.value = false;
       fileList.value[seletIndex.value] = {
         ...fileList.value[seletIndex.value],
+        url,
+        status: "success",
+        message: `${seletIndex.value}`
+      };
+      fileListBackups.value[seletIndex.value] = {
+        ...fileListBackups.value[seletIndex.value],
         url,
         status: "success",
         message: `${seletIndex.value}`
@@ -381,6 +381,8 @@ const _sfc_main = {
       });
     };
     const datchProcessingDiagram = async (path, index) => {
+      if (!path)
+        return;
       try {
         const ctx = common_vendor.index.createCanvasContext("myCanvas");
         const { width, height } = fileList.value[index];
@@ -422,7 +424,7 @@ const _sfc_main = {
         })).tempFilePath;
         await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value.height);
         await ctx.draw();
-        common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:469", "cropImage", cropImage2);
+        common_vendor.index.__f__("log", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:470", "cropImage", cropImage2);
         fileList.value[index] = {
           ...fileList.value[index],
           url: cropImage2,
@@ -430,7 +432,7 @@ const _sfc_main = {
           message: `${index}`
         };
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:479", "处理图片失败: ", error);
+        common_vendor.index.__f__("error", "at pages/home/ph/jigsawPuzzle/jigsawPuzzle.vue:480", "处理图片失败: ", error);
         fileListBackups.value[index] = {
           ...fileListBackups.value[index],
           status: "error",
@@ -472,13 +474,13 @@ const _sfc_main = {
     const formDataScale = (e) => {
       formData.scale = e;
       let result = {
-        x: fileList.value[3].x + fileList.value[3].width + spacing.value,
-        y: fileList.value[3].y + fileList.value[3].height + spacing.value,
+        x: fileList.value[4].x,
+        y: fileList.value[4].y,
         width: 0,
         height: 0
       };
-      const originalWidth = fileList.value[3].width;
-      const originalHeight = fileList.value[3].height;
+      const originalWidth = fileList.value[4].width;
+      const originalHeight = fileList.value[4].height;
       const scaleRatio = e / 100 + 1;
       result.width = originalWidth * scaleRatio;
       result.height = originalHeight * scaleRatio;
@@ -489,7 +491,7 @@ const _sfc_main = {
       fileList.value[4] = {
         ...fileList.value[4],
         x: result.x,
-        y: result.x,
+        y: result.y,
         width: result.width,
         height: result.height,
         zIndex: 700
@@ -533,22 +535,32 @@ const _sfc_main = {
           closeOnClickOverlay: true
         }),
         j: common_vendor.f(fileList.value, (item, index, i0) => {
-          return {
-            a: "e8e9eaac-4-" + i0 + ",e8e9eaac-0",
-            b: common_vendor.p({
+          return common_vendor.e({
+            a: item.url
+          }, item.url ? {
+            b: "e8e9eaac-4-" + i0 + ",e8e9eaac-0",
+            c: common_vendor.p({
               height: `${item.height}px`,
               width: `${item.width}px`,
               mode: "aspectFill",
               src: item.url
-            }),
-            c: item.url || index,
-            d: `${item.width}px`,
-            e: `${item.height}px`,
-            f: `${item.y}px`,
-            g: `${item.x}px`,
-            h: `${item.zIndex || 666}`,
-            i: common_vendor.o(($event) => editPicture(item, index), item.url || index)
-          };
+            })
+          } : {
+            d: "e8e9eaac-5-" + i0 + ",e8e9eaac-0",
+            e: common_vendor.p({
+              name: "plus",
+              size: "20",
+              color: "#ccc"
+            })
+          }, {
+            f: item.url || index,
+            g: `${item.width}px`,
+            h: `${item.height}px`,
+            i: `${item.y}px`,
+            j: `${item.x}px`,
+            k: `${item.zIndex || 666}`,
+            l: common_vendor.o(($event) => editPicture(item, index), item.url || index)
+          });
         }),
         k: previewMain.value.width + "px",
         l: previewMain.value.height + "px",
@@ -563,7 +575,7 @@ const _sfc_main = {
         o: common_vendor.p({
           name: "arrow-right"
         }),
-        p: common_vendor.sr("imageType", "e8e9eaac-6,e8e9eaac-5"),
+        p: common_vendor.sr("imageType", "e8e9eaac-7,e8e9eaac-6"),
         q: common_vendor.o(($event) => showImageType.value = true),
         r: common_vendor.p({
           label: "选择拼图类型",
@@ -579,8 +591,8 @@ const _sfc_main = {
           max: "10",
           modelValue: spacing.value
         }),
-        w: common_vendor.t(`${spacing.value} %`),
-        x: common_vendor.sr("text", "e8e9eaac-9,e8e9eaac-5"),
+        w: common_vendor.t(`${spacing.value}px`),
+        x: common_vendor.sr("text", "e8e9eaac-10,e8e9eaac-6"),
         y: common_vendor.p({
           label: "间距",
           prop: "opacity",
@@ -596,14 +608,14 @@ const _sfc_main = {
           modelValue: formData.scale
         }),
         D: common_vendor.t(`${formData.scale} %`),
-        E: common_vendor.sr("text", "e8e9eaac-11,e8e9eaac-5"),
+        E: common_vendor.sr("text", "e8e9eaac-12,e8e9eaac-6"),
         F: common_vendor.p({
           label: "中间图片大小",
           prop: "opacity",
           borderBottom: true
         })
       } : {}, {
-        G: common_vendor.sr("form1", "e8e9eaac-5,e8e9eaac-0"),
+        G: common_vendor.sr("form1", "e8e9eaac-6,e8e9eaac-0"),
         H: common_vendor.p({
           labelWidth: "100px",
           labelPosition: "left",

@@ -7,6 +7,7 @@
     "u-datetime-picker": "../../../../../uni_modules/uview-plus/components/u-datetime-picker/u-datetime-picker",
     "u-textarea": "../../../../../uni_modules/uview-plus/components/u-textarea/u-textarea",
     "u-button": "../../../../../uni_modules/uview-plus/components/u-button/u-button",
+    "u-picker": "../../../../../uni_modules/uview-plus/components/u-picker/u-picker",
     "u-form-item": "../../../../../uni_modules/uview-plus/components/u-form-item/u-form-item",
     "u-form": "../../../../../uni_modules/uview-plus/components/u-form/u-form",
     "map-display": "./MapDisplay"

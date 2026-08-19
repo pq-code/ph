@@ -280,30 +280,30 @@ function closePopup() {
 .content {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 10px;
-  background: #e6e6e6;
+  gap: 12px;
+  padding: 12px;
+  background: #f0f2f5;
   height: 100%;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 /* 预览区域样式 */
 .preview-wrapper {
   position: relative;
   width: 100%;
-  height: 100%;
-  min-height: 450px;  // 降低最小高度
-  max-height: 70vh;   // 根据视口高度限制
+  min-height: 300px;
+  height: 55vh;
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;  // 隐藏溢出部分
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1); // 添加投影
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
 }
+
 /* 隐藏 canvas */
 .hidden-canvas {
   position: absolute;
@@ -311,9 +311,7 @@ function closePopup() {
   left: 10px;
   width: 100%;
   height: 100%;
-  // background: #904b4b;
   pointer-events: none;
-  // display: none;
 }
 
 /* 预览图片样式 */
@@ -322,17 +320,13 @@ function closePopup() {
   height: auto;
   max-width: 100%;
   max-height: 100%;
-  transition: transform 0.3s ease; // 添加缩放动画
+  transition: transform 0.3s ease;
   object-fit: contain;
   flex-shrink: 0;
 }
 
 /* 占位提示样式 */
 .placeholder {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -345,7 +339,7 @@ function closePopup() {
 }
 
 .popup-content {
+  padding: 20px;
   padding-top: 30px;
 }
-
 </style>

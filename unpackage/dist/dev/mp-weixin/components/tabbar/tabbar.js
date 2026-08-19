@@ -20,7 +20,12 @@ const _sfc_main = {
         pagePath: "/pages/home/home",
         text: "首页",
         iconPath: "/static/tab_icons/home.png",
-        // selectedIconPath: '/static/tab_icons/home-active.png'
+        selectedIconPath: "/static/tab_icons/home.png"
+      },
+      {
+        pagePath: "/pages/home/square/square",
+        text: "广场",
+        iconPath: "/static/tab_icons/home.png",
         selectedIconPath: "/static/tab_icons/home.png"
       },
       {
@@ -58,8 +63,8 @@ const _sfc_main = {
           placeholder: true,
           zIndex: "100",
           safeAreaInsetBottom: true,
-          activeColor: "#00d01f",
-          inactiveColor: "#192031"
+          activeColor: "#487AFA",
+          inactiveColor: "#999999"
         })
       };
     };

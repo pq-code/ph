@@ -1,19 +1,17 @@
 <script setup>
 import page from "@/components/pages/page.vue";
-import { ref,onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useImageHandler } from '../addWatermark/hooks/useImageHandler'
-import { useWatermark } from '../addWatermark/hooks/useWatermark'
 import { useWatermarkForm } from '../addWatermark/hooks/useWatermarkForm'
 import { CUSTOMIZE_FORM_LIST } from './components/customizeConfig.js'
 import WatermarkForm from '../addWatermark/components/WatermarkForm.vue'
+// 移除不需要的导入，专注于尺寸和质量调整
 
-const watermarkType = ref(1)
-
-const { imageInfo, isProcessing, handleImageSelect ,drawImage} = useImageHandler('customize')
-const { addWatermark } = useWatermark('customize')
-const { formData, getFormFields, validateForm, resetForm } = useWatermarkForm()
+const { imageInfo, isProcessing, handleImageSelect } = useImageHandler('customize')
+const { formData } = useWatermarkForm()
 // 创建响应式数据  
-const show = ref(false);  
+const show = ref(false);
+const originalImagePath = ref('') // 保存原始图片路径  
 
 onMounted(async () => {
   try {
@@ -38,6 +36,9 @@ onMounted(async () => {
     
     setCanvasDimensions(containerRect.width, containerRect.height)
     console.log('容器初始化完成，尺寸：', containerRect)
+    
+    // 初始化表单数据
+    resetFormData()
 
   } catch (error) {
     console.error('容器初始化失败:', error)
@@ -49,32 +50,26 @@ onMounted(async () => {
 
 })
 
-// 更新水印
-const updateWatermark = async () => {
-  console.log('formData', formData.value);
-  
-  if (!imageInfo.value || !imageInfo.value.path) return;
- 
-  try {
-    // 缓存 image 信息
-    const info = imageInfo.value;
-
-    console.log('生成图片成功', tempFilePath);
-    info.url = tempFilePath;
-
-    // 清空画布：先获取画布上下文，然后清空画布（可选：调用 draw() 来立即更新显示）
-    const canvasContext = uni.createCanvasContext('customize');
-    canvasContext.clearRect(0, 0, info.canvasWidth, info.canvasHeight);
-    canvasContext.draw();
-
-  } catch (error) {
-    console.error('修改图片失败', error);
-    uni.showToast({
-      title: '修改图片失败',
-      icon: 'none'
-    });
+// 监听表单数据变化，实时预览
+watch(() => formData.value, () => {
+  if (imageInfo.value?.url && originalImagePath.value) {
+    // 延迟执行，避免频繁触发
+    clearTimeout(updateTimer.value)
+    updateTimer.value = setTimeout(() => {
+      editImage()
+    }, 300)
   }
-};
+}, { deep: true })
+
+const updateTimer = ref(null)
+
+// 组件卸载前清理定时器
+onBeforeUnmount(() => {
+  if (updateTimer.value) {
+    clearTimeout(updateTimer.value)
+    updateTimer.value = null
+  }
+})
 
 // 处理图片选择
 const onImageSelect = async () => {
@@ -82,24 +77,44 @@ const onImageSelect = async () => {
   const image = await handleImageSelect()
   console.log('image', image)
   imageInfo.value.url = image.path
+  originalImagePath.value = image.path // 保存原始路径
   
+  // 重置表单数据
+  resetFormData()
+}
+
+// 重置表单数据
+const resetFormData = () => {
+  Object.assign(formData.value, {
+    scale: 100,
+    quality: 80,
+    presetSize: 'custom'
+  })
 }
 
 // 生成最终图片
 const generateImage = async () => {
-  if (!imageInfo.value) {
+  if (!imageInfo.value?.url) {
     uni.showToast({
       title: '请先选择图片',
       icon: 'none'
     })
     return
   }
+  
   try {
-    const { x, y, drawWidth, drawHeight } = imageInfo.value;
-    console.log(imageInfo.value.url)
+    // 先执行一次完整的编辑，确保图片是最新的
+    await editImage()
+    
+    // 等待一下确保图片已生成
+    await new Promise(resolve => setTimeout(resolve, 200))
+    
     const tempFilePath = imageInfo.value.url
 
-    console.log('生成图片成功', tempFilePath);
+    if (!tempFilePath) {
+      throw new Error('图片生成失败')
+    }
+
     uni.showToast({
       title: '生成图片成功',
       icon: 'success'
@@ -139,7 +154,7 @@ const generateImage = async () => {
   } catch (error) {
     console.error('生成图片出错', error);
     uni.showToast({
-      title: '生成图片出错',
+      title: '生成图片出错: ' + (error.message || '未知错误'),
       icon: 'none'
     });
   }
@@ -154,88 +169,168 @@ function open() {
   // console.log('open');  
 }  
   
-function closePopup() {  
+function closePopup() {
   show.value = false;
-  editImage();  // 关闭弹窗时执行编辑
+  // 关闭弹窗时执行编辑（延迟一下确保表单数据已更新）
+  if (updateTimer.value) {
+    clearTimeout(updateTimer.value)
+  }
+  updateTimer.value = setTimeout(() => {
+    editImage()
+    updateTimer.value = null
+  }, 100)
 }  
 
-// 新增图片编辑方法
+// 预设尺寸配置
+const PRESET_SIZES = {
+  '640x640': { width: 640, height: 640 },
+  '1080x1080': { width: 1080, height: 1080 },
+  '1080x566': { width: 1080, height: 566 },
+  '566x1080': { width: 566, height: 1080 },
+  '1080x1440': { width: 1080, height: 1440 },
+  '1080x1920': { width: 1080, height: 1920 },
+  '1200x675': { width: 1200, height: 675 }
+}
+
+// 新增图片编辑方法 - 专注于尺寸和质量调整
 async function editImage() {
-  if (!imageInfo.value?.url) return;
+  if (!imageInfo.value?.path && !originalImagePath.value) {
+    return
+  }
   
   try {
-    // 获取画布上下文并清空
-    const ctx = uni.createCanvasContext('customize');
+    // 使用原始图片路径或当前路径
+    const sourceImagePath = originalImagePath.value || imageInfo.value.path
     
     // 获取原始图片信息
-    const { width: originWidth, height: originHeight } = imageInfo.value;
-    let targetWidth = originWidth;
-    let targetHeight = originHeight;
-
-    // 尺寸处理逻辑（精确计算）
-    if (formData.value.selectedSize) {
-      const dpi = 300; // 标准300dpi
-      const mmToInch = 0.0393701;
-      const sizePresets = {
-        '1inch': { 
-          width: Math.round(25 * mmToInch * dpi),  // 25mm → 295px
-          height: Math.round(35 * mmToInch * dpi) // 35mm → 413px
-        },
-        '2inch': {
-          width: Math.round(35 * mmToInch * dpi),  // 35mm → 413px
-          height: Math.round(49 * mmToInch * dpi)  // 49mm → 578px
-        }
-      };
-      const preset = sizePresets[formData.value.selectedSize];
+    const imgInfo = await new Promise((resolve, reject) => {
+      uni.getImageInfo({
+        src: sourceImagePath,
+        success: resolve,
+        fail: reject
+      })
+    })
+    
+    const originWidth = imgInfo.width
+    const originHeight = imgInfo.height
+    const originRatio = originWidth / originHeight
+    
+    let targetWidth, targetHeight
+    let drawX = 0
+    let drawY = 0
+    let drawWidth, drawHeight
+    
+    // 处理预设尺寸
+    if (formData.value.presetSize && formData.value.presetSize !== 'custom') {
+      const preset = PRESET_SIZES[formData.value.presetSize]
       if (preset) {
-        targetWidth = preset.width;
-        targetHeight = preset.height;
+        // 画布使用预设尺寸
+        targetWidth = preset.width
+        targetHeight = preset.height
+        
+        // 计算图片在预设尺寸中的显示尺寸（保持原图比例）
+        const presetRatio = preset.width / preset.height
+        if (originRatio > presetRatio) {
+          // 原图更宽，以宽度为准，高度自适应
+          drawWidth = preset.width
+          drawHeight = Math.round(preset.width / originRatio)
+          drawY = Math.round((preset.height - drawHeight) / 2)
+        } else {
+          // 原图更高，以高度为准，宽度自适应
+          drawHeight = preset.height
+          drawWidth = Math.round(preset.height * originRatio)
+          drawX = Math.round((preset.width - drawWidth) / 2)
+        }
+      } else {
+        // 如果预设不存在，使用缩放
+        const scale = formData.value.scale 
+          ? Math.min(Math.max(formData.value.scale, 10), 200) / 100 
+          : 1
+        targetWidth = Math.round(originWidth * scale)
+        targetHeight = Math.round(originHeight * scale)
+        drawWidth = targetWidth
+        drawHeight = targetHeight
       }
-    } else if (formData.value.scale) {
-      const scale = Math.min(Math.max(formData.value.scale, 1), 100) / 100; // 强制限制1-100%
-      targetWidth = originWidth * scale;
-      targetHeight = originHeight * scale;
+    } else {
+      // 使用自定义缩放
+      const scale = formData.value.scale 
+        ? Math.min(Math.max(formData.value.scale, 10), 200) / 100 
+        : 1
+      targetWidth = Math.round(originWidth * scale)
+      targetHeight = Math.round(originHeight * scale)
+      drawWidth = targetWidth
+      drawHeight = targetHeight
     }
 
-    // 设置实际画布尺寸（关键修复）
-    const systemInfo = uni.getSystemInfoSync();
-    const pixelRatio = systemInfo.pixelRatio || 1;
-    ctx.canvas.width = targetWidth * pixelRatio;
-    ctx.canvas.height = targetHeight * pixelRatio;
-    ctx.scale(pixelRatio, pixelRatio);
-
-    // 清空并绘制图片
-    ctx.clearRect(0, 0, targetWidth, targetHeight);
-    ctx.drawImage(imageInfo.value.url, 0, 0, targetWidth, targetHeight);
-
+    // 获取画布上下文
+    const ctx = uni.createCanvasContext('customize')
+    
+    // 设置画布尺寸
+    const systemInfo = uni.getSystemInfoSync()
+    const pixelRatio = systemInfo.pixelRatio || 1
+    
+    // 清空画布
+    ctx.clearRect(0, 0, targetWidth, targetHeight)
+    
+    // 绘制白色背景（如果是预设尺寸）
+    if (formData.value.presetSize && formData.value.presetSize !== 'custom') {
+      ctx.setFillStyle('#ffffff')
+      ctx.fillRect(0, 0, targetWidth, targetHeight)
+    }
+    
+    // 绘制图片（居中显示）
+    ctx.drawImage(
+      sourceImagePath,
+      drawX,
+      drawY,
+      drawWidth,
+      drawHeight
+    )
+    
     // 压缩参数处理
     const quality = formData.value.quality 
       ? Math.min(Math.max(formData.value.quality, 10), 100) / 100
-      : 0.8;
+      : 0.8
 
-    // 生成新图片（使用destWidth/destHeight）
+    // 生成新图片
     const { tempFilePath } = await new Promise((resolve, reject) => {
       ctx.draw(false, () => {
-        uni.canvasToTempFilePath({
-          canvasId: 'customize',
-          destWidth: targetWidth * pixelRatio, // 适配高清屏
-          destHeight: targetHeight * pixelRatio,
-          quality,
-          fileType: 'jpg',
-          success: resolve,
-          fail: reject
-        }, this);
-      });
-    });
+        setTimeout(() => {
+          uni.canvasToTempFilePath({
+            canvasId: 'customize',
+            destWidth: targetWidth * pixelRatio,
+            destHeight: targetHeight * pixelRatio,
+            quality,
+            fileType: 'jpg',
+            success: resolve,
+            fail: reject
+          })
+        }, 100)
+      })
+    })
 
-    // 更新图片信息（保持显示尺寸为逻辑像素）
-    imageInfo.value.url = tempFilePath;
-    imageInfo.value.width = targetWidth;
-    imageInfo.value.height = targetHeight;
+    // 获取生成后的文件大小
+    const fileInfo = await new Promise((resolve, reject) => {
+      uni.getFileInfo({
+        filePath: tempFilePath,
+        success: resolve,
+        fail: reject
+      })
+    }).catch(() => ({ size: 0 }))
+
+    // 更新图片信息
+    imageInfo.value.url = tempFilePath
+    imageInfo.value.width = targetWidth
+    imageInfo.value.height = targetHeight
+    imageInfo.value.fileSize = Math.round(fileInfo.size / 1024) // 转换为KB
     
   } catch (err) {
-    console.error('图片编辑失败', err);
-    uni.showToast({ title: '编辑失败：' + err.message, icon: 'none' });
+    console.error('图片编辑失败', err)
+    uni.showToast({ 
+      title: '编辑失败：' + (err.message || '未知错误'), 
+      icon: 'none',
+      duration: 2000
+    })
   }
 }
 
@@ -256,7 +351,9 @@ async function editImage() {
         <!-- 移动信息框到预览容器内部 -->
         <view class="info-box" v-if="imageInfo.url">
           <text class="info-text">尺寸: {{ imageInfo.width }} × {{ imageInfo.height }}px</text>
-          <text v-if="imageInfo.fileSize" class="info-text" >文件大小: {{ imageInfo.fileSize }}kb</text>
+          <text v-if="imageInfo.fileSize" class="info-text">文件大小: {{ imageInfo.fileSize }}KB</text>
+          <text v-if="formData.scale" class="info-text">缩放: {{ formData.scale }}%</text>
+          <text v-if="formData.quality" class="info-text">质量: {{ formData.quality }}%</text>
         </view>
         
         <u-image 
@@ -267,8 +364,6 @@ async function editImage() {
           :lazy-load="true" 
           :fade="true" 
           :show-menu-by-longpress="true"
-          :width= "imageInfo?.canvasWidth + 'px'"
-          :height= "imageInfo?.canvasHeight + 'px'"
         >
         </u-image>
         <view v-else class="placeholder">
@@ -297,12 +392,24 @@ async function editImage() {
       :safeAreaInsetBottom="true"
       :round="7">
       <view class="popup-content">
-        <u-button @click="closePopup">确定</u-button>
-        <!-- 表单区域 -->
-        <WatermarkForm
-          v-model="formData"
-          :fields="CUSTOMIZE_FORM_LIST"
-        />
+        <view class="popup-header">
+          <text class="popup-title">图片编辑</text>
+          <u-button 
+            type="primary" 
+            size="small"
+            @click="closePopup"
+            :customStyle="{ marginRight: '10px' }"
+          >
+            确定
+          </u-button>
+        </view>
+        <view class="popup-body">
+          <!-- 表单区域 -->
+          <WatermarkForm
+            v-model="formData"
+            :fields="CUSTOMIZE_FORM_LIST"
+          />
+        </view>
      </view>
     </u-popup>
   </page>
@@ -313,9 +420,9 @@ async function editImage() {
 .content {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 10px;
-  background: #e6e6e6;
+  gap: 12px;
+  padding: 12px;
+  background: #f0f2f5;
   height: 100%;
   overflow-y: hidden;
 }
@@ -325,18 +432,17 @@ async function editImage() {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 450px;  // 降低最小高度
-  // max-height: 70vh;   // 根据视口高度限制
+  min-height: 400px;
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;  // 隐藏溢出部分
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1); // 添加投影
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
+
 /* 隐藏 canvas */
 .hidden-canvas {
   position: absolute;
@@ -344,28 +450,33 @@ async function editImage() {
   left: 10px;
   width: 100%;
   height: 100%;
-  // background: #904b4b;
   pointer-events: none;
-  // display: none;
 }
 
 /* 预览图片样式 */
 .preview-image {
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   max-width: 100%;
   max-height: 100%;
-  transition: transform 0.3s ease; // 添加缩放动画
+  transition: opacity 0.3s ease;
   object-fit: contain;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  :deep(image) {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+  }
 }
 
 /* 占位提示样式 */
 .placeholder {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -378,26 +489,46 @@ async function editImage() {
 }
 
 .popup-content {
-  padding-top: 30px;
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+}
+
+.popup-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.popup-body {
+  padding-top: 10px;
 }
 
 .info-box {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 6px 10px;
-  border-radius: 4px;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 8px 12px;
+  border-radius: 8px;
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .info-text {
   color: #fff;
   font-size: 11px;
-  line-height: 1.2;
+  line-height: 1.4;
 }
-
 </style>

@@ -73,6 +73,50 @@ export const useWatermark = (canvasId) => {
       currentY += lineHeight
     })
   }
+  // 绘制时间水印
+  const drawTimeWatermark = (ctx, imageRect, info) => {
+    const { x: imageX, y: imageY, drawWidth: imageWidth, drawHeight: imageHeight } = imageRect
+
+    ctx.save()
+
+    const fontSize = Math.min(imageWidth, imageHeight) * 0.06
+    ctx.setFontSize(fontSize)
+    ctx.setTextAlign('center')
+    ctx.setTextBaseline('middle')
+    ctx.font = `bold ${fontSize}px sans-serif`
+
+    // 获取时间
+    const timeText = info.datetime || dayjs().format('YYYY-MM-DD HH:mm:ss')
+
+    // 移动到中心
+    ctx.translate(imageX + imageWidth / 2, imageY + imageHeight / 2)
+
+    // 绘制白色描边
+    ctx.setGlobalAlpha(0.7)
+    ctx.setLineWidth(3)
+    ctx.setStrokeStyle('#FFFFFF')
+    ctx.strokeText(timeText, 0, 0)
+
+    // 绘制主体文字
+    ctx.setGlobalAlpha(0.8)
+    ctx.setFillStyle('#333333')
+    ctx.fillText(timeText, 0, 0)
+
+    // 如果有备注，在时间下方显示
+    if (info.remark) {
+      const remarkFontSize = fontSize * 0.6
+      ctx.setFontSize(remarkFontSize)
+      ctx.font = `normal ${remarkFontSize}px sans-serif`
+      ctx.setGlobalAlpha(0.6)
+      ctx.setStrokeStyle('#FFFFFF')
+      ctx.strokeText(info.remark, 0, fontSize * 1.2)
+      ctx.setFillStyle('#666666')
+      ctx.fillText(info.remark, 0, fontSize * 1.2)
+    }
+
+    ctx.restore()
+  }
+
   // 绘制标准水印
   const drawStandardWatermark = (ctx, imageRect, info) => {
     const { x: imageX, y: imageY, drawWidth: imageWidth, drawHeight: imageHeight } = imageRect
@@ -151,6 +195,9 @@ export const useWatermark = (canvasId) => {
       } else if (style.id === 2) {
         // 基础水印
         drawStandardWatermark(ctx, imageRect, info)
+      } else if (style.id === 3) {
+        // 时间水印
+        drawTimeWatermark(ctx, imageRect, info)
       }
       
       // 应用绘制

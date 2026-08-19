@@ -1,15 +1,19 @@
 {
   "pages": [
     "pages/home/home",
-    "pages/home/vehicleAccess/statistics",
-    "pages/home/vehicleAccess/records",
-    "pages/home/vehicleAccess/recordDetail",
-    "pages/home/vehicleAccess/vehicleAccess",
     "pages/home/ph/jigsawPuzzle/jigsawPuzzle",
     "pages/home/ph/customize/customize",
+    "pages/home/ph/perlerBead/perlerBead",
+    "pages/home/ph/perlerBead/patternEditor",
+    "pages/home/ph/perlerBead/exportSettings",
+    "pages/home/ph/perlerBead/printExport",
+    "pages/home/ph/aiGenerate/aiGenerate",
     "pages/home/ph/addWatermark/addWatermark",
+    "pages/home/square/square",
+    "pages/home/square/patternDetail",
     "pages/home/components/imageCropper/imageCropper",
-    "pages/user/home"
+    "pages/user/home",
+    "pages/user/settings"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -26,6 +30,10 @@
       {
         "pagePath": "pages/home/home",
         "text": "首页"
+      },
+      {
+        "pagePath": "pages/home/square/square",
+        "text": "广场"
       },
       {
         "pagePath": "pages/user/home",

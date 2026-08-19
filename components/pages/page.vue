@@ -38,13 +38,14 @@ const props = defineProps({
         },
     },
 });
-const emits = defineEmits(['lButton','rButton'])
+const emits = defineEmits(['lButton','rButton','back'])
 const leftClick = () => {
-    console.log(props.backUrl)
+    let defaultPrevented = false
+    emits('back', { preventDefault: () => { defaultPrevented = true } })
+    if (defaultPrevented) return
     if (props.backUrl == '') {
 		uni.navigateBack({});
     } else {
-        console.log(props.backUrl)
         uni.navigateTo({
             url: props.backUrl,
         });
@@ -80,39 +81,36 @@ const bottomBUtton = (type) => {
 </template>
 <style lang="less" scoped>
 .page {
-    width: 100vw;
-    height: 100vh;
-    background-color: rgb(219, 219, 219);
+	width: 100vw;
+	height: 100vh;
+	background-color: #f0f2f5;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
-    .page-navbar {
-        // float: top;
-        // height: 50px;
-        width: 100vw;
-    }
 
-    .page-center {
+	.page-navbar {
+		width: 100vw;
+	}
+
+	.page-center {
 		flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow: scroll;
-        // height: calc(100vh - 130px);
-        // // #ifdef MP-WEIXIN
-        // height: calc(100vh - 177px);
-        // // #endif
-        // height: 100%;
-        background-color: rgb(255, 255, 255);
-    }
+		display: flex;
+		flex-direction: column;
+		overflow: scroll;
+		background-color: #f0f2f5;
+	}
+
 	.page-bottom-button {
-        z-index: 660;
-		width: calc(100% - 20px);
-		height: 60px;
-		background-color: rgb(255, 255, 255);
+		z-index: 660;
+		width: calc(100% - 24px);
+		height: 56px;
+		background-color: #ffffff;
 		display: flex;
 		flex-direction: row;
-		gap: 10px;
-		padding: 10px;
+		gap: 12px;
+		padding: 12px;
+		padding-bottom: calc(12px + env(safe-area-inset-bottom));
+		box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
 	}
 }
 </style>

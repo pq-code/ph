@@ -1,7 +1,7 @@
 .page.data-v-e4f1132a {
   width: 100vw;
   height: 100vh;
-  background-color: #dbdbdb;
+  background-color: #f0f2f5;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -14,15 +14,17 @@
   display: flex;
   flex-direction: column;
   overflow: scroll;
-  background-color: #ffffff;
+  background-color: #f0f2f5;
 }
 .page .page-bottom-button.data-v-e4f1132a {
   z-index: 660;
-  width: calc(100% - 20px);
-  height: 60px;
+  width: calc(100% - 24px);
+  height: 56px;
   background-color: #ffffff;
   display: flex;
   flex-direction: row;
-  gap: 10px;
-  padding: 10px;
+  gap: 12px;
+  padding: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
 }

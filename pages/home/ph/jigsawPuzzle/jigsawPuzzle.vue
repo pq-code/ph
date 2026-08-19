@@ -257,7 +257,7 @@
 		cropImage.value = fileListBackups.value[index].url;
 	}
 
-	// 
+	//
 	const editImagePicker = (item) => {
 		editeImage.value = false
 		if (item.value[0].value == 1) {
@@ -268,18 +268,12 @@
 				success: function(res) {
 					cropImage.value = res.tempFilePaths[0];
 					isOpenCropper.value = true;
-					fileListBackups.value[seletIndex.value] = {
-						...fileListBackups.value[seletIndex.value],
-						url: res.tempFilePaths[0],
-						status: "success",
-						message: `${seletIndex.value}`,
-					};
 				},
 			});
 		}
 
 		if (item.value[0].value == 2) {
-			cropImage.value = fileListBackups.value[seletIndex.value]
+			cropImage.value = fileListBackups.value[seletIndex.value].url
 			isOpenCropper.value = true;
 		}
 
@@ -325,6 +319,12 @@
 		isOpenCropper.value = false;
 		fileList.value[seletIndex.value] = {
 			...fileList.value[seletIndex.value],
+			url: url,
+			status: "success",
+			message: `${seletIndex.value}`,
+		};
+		fileListBackups.value[seletIndex.value] = {
+			...fileListBackups.value[seletIndex.value],
 			url: url,
 			status: "success",
 			message: `${seletIndex.value}`,
@@ -419,6 +419,7 @@
 	};
 
 	const datchProcessingDiagram = async (path,index) => {
+		if (!path) return;
 		try {
 			const ctx = uni.createCanvasContext("myCanvas");
 			const { width, height } = fileList.value[index]; // 容器大小
@@ -524,14 +525,14 @@
 	const formDataScale = (e) => {
 		formData.scale = e;
 		let result = {
-			x: fileList.value[3].x + fileList.value[3].width + spacing.value,
-			y: fileList.value[3].y + fileList.value[3].height + spacing.value,
+			x: fileList.value[4].x,
+			y: fileList.value[4].y,
 			width: 0,
 			height: 0,
 		};
 
-		const originalWidth = fileList.value[3].width
-		const originalHeight = fileList.value[3].height
+		const originalWidth = fileList.value[4].width
+		const originalHeight = fileList.value[4].height
 
 		// 计算放大比例
 		const scaleRatio = e / 100 + 1;
@@ -550,7 +551,7 @@
 		fileList.value[4] = {
 			...fileList.value[4],
 			x: result.x,
-			y: result.x,
+			y: result.y,
 			width: result.width,
 			height: result.height,
 			zIndex: 700
@@ -573,102 +574,6 @@
 			selectedFunction();
 		}
 	}
-	// 图片缩放到容器合适大小
-	const imageAdaptation = async (container,image) => {
-		const { width, height } = container // 容器大小
-		const proportion = width / height; // 容器宽高比
-		let { imageW, imageH } = image // 图片大小
-		let drawX = 0;
-		let drawY = 0;
-		
-		if(image.width) {
-			imageW = image.width;
-			imageH = image.height;
-		} else {
-			// 获取图片宽高做裁切
-			const imageInfo = await getImageInfo(image);
-			// 计算宽高比例最大限度不变形适配
-			imageW = imageInfo.width;
-			imageH = imageInfo.height;
-		}
-		
-		// 计算绘制位置
-		if (imageW / imageH > proportion) {
-				imageW = imageH * proportion;
-				drawX = (imageInfo.width - imageW) / 2;
-		} else {
-				imageH = imageW / proportion;
-				drawY = (imageInfo.height - imageH) / 2;
-		}
-	}
-	// 图片裁切
-	const imageCropping = () => {
-		uni.chooseImage({
-			count: 1, //默认9
-			sizeType: ["original"], //可以指定是原图还是压缩图，默认二者都有
-			sourceType: ["album"], //从相册选择
-			success: async function(res) {
-				const image = res.tempFilePaths[0];
-				try {
-					const ctx = uni.createCanvasContext("myCanvas");
-					const { width, height } = previewMain.value; // 容器大小
-					const proportion = width / height; // 容器宽高比
-					
-					// 获取图片宽高做裁切
-					const imageInfo = await getImageInfo(image);
-				
-					// 计算宽高比例最大限度不变形适配
-					let imageW = imageInfo.width;
-					let imageH = imageInfo.height;
-					let drawX = 0;
-					let drawY = 0;
-				
-					// 计算绘制位置
-					if (imageW / imageH > proportion) {
-							imageW = imageH * proportion;
-							drawX = (imageInfo.width - imageW) / 2;
-					} else {
-							imageH = imageW / proportion;
-							drawY = (imageInfo.height - imageH) / 2;
-					}
-				
-					// 禁用图像平滑处理以保持清晰度
-					ctx.imageSmoothingEnabled = false;
-				
-					// 绘制图片
-					await ctx.drawImage(res.tempFilePaths[index], drawX, drawY, imageW, imageH, 0, 0,
-						previewMain.value.width, previewMain.value.height);
-				
-					// 绘制完成后导出图片
-					await ctx.draw(true);
-					const cropImage = (await uni.canvasToTempFilePath({
-						canvasId: "myCanvas"
-					})).tempFilePath;
-					await ctx.clearRect(0, 0, previewMain.value.width, previewMain.value
-					.height); // 清空整个画布
-					await ctx.draw(); // 清除
-				
-					console.log('cropImage', cropImage);
-				
-					// 预览生成的图片
-					fileList.value[index] = {
-						...fileList.value[index],
-						url: cropImage,
-						status: "success",
-						message: `${index}`,
-					};
-				} catch (error) {
-					console.error("处理图片失败: ", error);
-					fileListBackups.value[index] = {
-						...fileListBackups.value[index],
-						status: "error",
-						message: error.message,
-					};
-				}
-				
-			},
-		});
-	}
 	
 </script>
 
@@ -689,9 +594,12 @@
 					  left: `${item.x}px`,
 						'z-index': `${item.zIndex || 666}`
 					}" @click.stop="editPicture(item, index)">
-						<u-image :height="`${item.height}px`" :width="`${item.width}px`" mode="aspectFill"
+						<u-image v-if="item.url" :height="`${item.height}px`" :width="`${item.width}px`" mode="aspectFill"
 							:src="item.url">
 						</u-image>
+						<view v-else class="empty-tip">
+							<u-icon name="plus" size="20" color="#ccc"></u-icon>
+						</view>
 					</view>
 				</view>
 
@@ -702,24 +610,6 @@
 			</view>
 
 			<view class="controlPanel">
-				<!-- <u-collapse
-					@change="change"
-					@close="close"
-					@open="open"
-				>
-					<u-collapse-item
-					  title="选择拼图类型"
-					  name="Docs guide"
-					>
-					 <view class="puzzleType">
-						 <view @click="typeConfirm(item)" class="puzzleType-list" v-for="(item, index) of columns[0]" :key="item.label || index">
-							  <u-image height="70px" width="70px" :src="item.url" mode=""></u-image>
-							{{item.label}}
-						</view>
-					 </view>
-					</u-collapse-item>
-				</u-collapse> -->
-		
 				<u-form labelWidth="100px" labelPosition="left" labelAlign="left" :model="formData" ref="form1">
 					<u-form-item label="选择拼图类型" prop="imageType" borderBottom ref="imageType" border="none"
 						placeholder="请选择" @click="showImageType = true">
@@ -735,7 +625,7 @@
 								<u-slider v-model="spacing" @changing="spacingSize" min="0"
 									max="10"></u-slider>
 							</view>
-							{{ `${spacing} %` }}
+							{{ `${spacing}px` }}
 						</view>
 					</u-form-item>
 					<u-form-item v-if="formData.imageType == 2" label="中间图片大小" prop="opacity" borderBottom ref="text">
@@ -748,15 +638,6 @@
 						</view>
 					</u-form-item>
 					
-					<!-- <u-form-item label="图片裁切" prop="opacity" borderBottom ref="text">
-						<view style="display: flex; align-items: center">
-							<view style="width: 83%">
-								<u-image height="30px" width="30px" mode="aspectFill"
-									:src="formData.image" @click="imageCropping">
-								</u-image>
-							</view>
-						</view>
-					</u-form-item> -->
 				</u-form>
 			</view>
 		</view>
@@ -768,136 +649,73 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 10px;
+		padding: 12px;
 		height: calc(100vh - 20px);
-		background: #e8e8e8;
+		background: #f0f2f5;
 		overflow-y: hidden;
-		
+
 		.content-main {
 			position: relative;
-			width: calc(100vw - 20px);
-			height: calc(100vw - 20px);
-			border-radius: 6px;
+			width: calc(100vw - 24px);
+			max-width: 400px;
+			aspect-ratio: 1;
+			border-radius: 12px;
 			background: #ffffff;
-			// overflow: auto;
-
-			.preview-main-top {
-				pointer-events: none;
-				position: absolute;
-				top: 0px;
-				padding: 10px;
-				width: calc(100vw - 40px);
-				height: calc(100vw - 40px);
-				display: grid;
-				grid-gap: 5px;
-				grid-template-rows: 1fr 1fr 1fr;
-				grid-template-columns: 1fr 1fr 1fr;
-				z-index: 300;
-
-				.preview-main-image {
-					padding: 5px;
-					width: calc(100% - 10px);
-					height: calc(100% - 10px);
-					position: relative;
-					display: flex;
-					justify-content: space-between;
-
-					.preview-main-image-icon {
-						pointer-events: auto;
-						width: 16px;
-					}
-				}
-			}
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
 			.preview-main-bottom {
 				z-index: 100;
 				pointer-events: none;
 				position: absolute;
-				top: 0px;
-				width: calc(100vw - 20px);
-				height: calc(100vw - 20px);
-				display: node;
-				padding: 10px;
-			}
-
-			.preview-main {
-				padding: 10px;
-				width: calc(100vw - 40px);
-				height: calc(100vw - 40px);
-				display: grid;
-				grid-gap: 5px;
-				z-index: 200;
-				grid-template-rows: 1fr 1fr 1fr;
-				grid-template-columns: 1fr 1fr 1fr;
-			}
-
-			.preview-main-lr {
-				padding: 10px;
-				width: calc(100vw - 40px);
-				height: calc(100vw - 40px);
-				display: grid;
-				grid-gap: 5px;
-				z-index: 200;
-				grid-template-columns: 1fr 1fr;
-			}
-
-			.preview-main-tb {
-				padding: 10px;
-				width: calc(100vw - 40px);
-				height: calc(100vw - 40px);
-				display: grid;
-				grid-gap: 5px;
-				z-index: 200;
-				grid-template-rows: 1fr 1fr;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
 			}
 		}
 
 		.controlPanel {
-			margin-top: 10px;
-			width: calc(100vw - 40px);
-			padding: 10px;
-			// overflow-y: auto;
-			border-radius: 6px;
+			margin-top: 12px;
+			width: calc(100vw - 24px);
+			max-width: 380px;
+			padding: 16px;
+			padding-bottom: calc(16px + env(safe-area-inset-bottom));
+			border-radius: 12px;
 			background: #ffffff;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 			overflow-y: auto;
-			.puzzleType {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 10px;
-				.puzzleType-list {
-					height: 100px;
-					background: #f3f4f6;
-					display: flex;
-					gap: 10px;
-					flex-direction: row;
-					align-items: center;
-					justify-content: center;
-				}
-			}
 		}
 	}
 
 	.image-container {
-		width: calc(100vw - 40px);
-		height: calc(100vw - 40px);
-		margin: 10px;
-		background-color: #e8e8e8;
+		width: 100%;
+		height: 100%;
+		padding: 10px;
+		box-sizing: border-box;
+		background-color: #f8f9fa;
+		border-radius: 12px;
 		position: relative;
 
 		.image-view {
-			background-color: #f3f3f3;
+			background-color: #f9f9f9;
 			position: absolute;
+			border: 1px dashed #d8d8d8;
+			border-radius: 6px;
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: background-color 0.2s;
 
-			.iamge-icon {
-				position: absolute;
-				top: 0;
+			&:active {
+				background-color: #f0f0f0;
+			}
+
+			.empty-tip {
 				display: flex;
-				justify-content: space-between;
-				pointer-events: auto;
+				align-items: center;
+				justify-content: center;
 			}
 		}
-	}
-	.u-cell__body {
-		padding: 10px 0 !important;
 	}
 </style>

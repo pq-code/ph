@@ -2725,21 +2725,21 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
     );
   }
 }
-const createHook$1 = (lifecycle) => (hook, target = currentInstance) => (
+const createHook = (lifecycle) => (hook, target = currentInstance) => (
   // post-create lifecycle registrations are noops during SSR (except for serverPrefetch)
   (!isInSSRComponentSetup || lifecycle === "sp") && injectHook(lifecycle, (...args) => hook(...args), target)
 );
-const onBeforeMount = createHook$1("bm");
-const onMounted = createHook$1("m");
-const onBeforeUpdate = createHook$1("bu");
-const onUpdated = createHook$1("u");
-const onBeforeUnmount = createHook$1("bum");
-const onUnmounted = createHook$1("um");
-const onServerPrefetch = createHook$1("sp");
-const onRenderTriggered = createHook$1(
+const onBeforeMount = createHook("bm");
+const onMounted = createHook("m");
+const onBeforeUpdate = createHook("bu");
+const onUpdated = createHook("u");
+const onBeforeUnmount = createHook("bum");
+const onUnmounted = createHook("um");
+const onServerPrefetch = createHook("sp");
+const onRenderTriggered = createHook(
   "rtg"
 );
-const onRenderTracked = createHook$1(
+const onRenderTracked = createHook(
   "rtc"
 );
 function onErrorCaptured(hook, target = currentInstance) {
@@ -2752,11 +2752,15 @@ const getPublicInstance = (i) => {
     return getExposeProxy(i) || i.proxy;
   return getPublicInstance(i.parent);
 };
+function getComponentInternalInstance(i) {
+  return i;
+}
 const publicPropertiesMap = (
   // Move PURE marker to new line to workaround compiler discarding it
   // due to type annotation
   /* @__PURE__ */ extend(/* @__PURE__ */ Object.create(null), {
-    $: (i) => i,
+    // fixed by xxxxxx
+    $: getComponentInternalInstance,
     // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
     // $el: i => i.vnode.el,
     $el: (i) => i.__$el || (i.__$el = {}),
@@ -4627,6 +4631,7 @@ function warnRef(ref2) {
 const queuePostRenderEffect = queuePostFlushCb;
 function mountComponent(initialVNode, options) {
   const instance = initialVNode.component = createComponentInstance(initialVNode, options.parentComponent, null);
+  instance.renderer = options.mpType ? options.mpType : "component";
   {
     instance.ctx.$onApplyOptions = onApplyOptions;
     instance.ctx.$children = [];
@@ -4965,7 +4970,8 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks$1(options, instance, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
@@ -5308,9 +5314,10 @@ function createApp$1(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp$1;
 function getLocaleLanguage$1() {
+  var _a;
   let localeLanguage = "";
   {
-    const appBaseInfo = wx.getAppBaseInfo();
+    const appBaseInfo = ((_a = wx.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
     const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
     localeLanguage = normalizeLocale(language) || LOCALE_EN;
   }
@@ -5620,10 +5627,10 @@ function handlePromise(promise2) {
 function promisify$1(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve2, reject) => {
-      invokeApi(name, fn, extend(args, { success: resolve2, fail: reject }), rest);
+      invokeApi(name, fn, extend({}, args, { success: resolve2, fail: reject }), rest);
     })));
   };
 }
@@ -5721,9 +5728,15 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-  const { windowWidth, pixelRatio, platform: platform2 } = Object.assign({}, wx.getWindowInfo(), {
-    platform: wx.getDeviceInfo().platform
-  });
+  var _a, _b;
+  let windowWidth, pixelRatio, platform2;
+  {
+    const windowInfo = ((_a = wx.getWindowInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
+    const deviceInfo = ((_b = wx.getDeviceInfo) === null || _b === void 0 ? void 0 : _b.call(wx)) || wx.getSystemInfoSync();
+    windowWidth = windowInfo.windowWidth;
+    pixelRatio = windowInfo.pixelRatio;
+    platform2 = deviceInfo.platform;
+  }
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
   isIOS = platform2 === "ios";
@@ -6014,7 +6027,7 @@ function promisify(name, api) {
   }
   return function promiseApi(options = {}, ...rest) {
     if (isFunction(options.success) || isFunction(options.fail) || isFunction(options.complete)) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, rest));
+      return wrapperReturnValue(name, invokeApi(name, api, extend({}, options), rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve2, reject) => {
       invokeApi(name, api, extend({}, options, {
@@ -6178,11 +6191,29 @@ function getOSInfo(system, platform2) {
     osName = platform2;
     osVersion = system;
   } else {
-    osName = system.split(" ")[0] || "";
+    osName = system.split(" ")[0] || platform2;
     osVersion = system.split(" ")[1] || "";
   }
+  osName = osName.toLowerCase();
+  switch (osName) {
+    case "harmony":
+    case "ohos":
+    case "openharmony":
+      osName = "harmonyos";
+      break;
+    case "iphone os":
+      osName = "ios";
+      break;
+    case "mac":
+    case "darwin":
+      osName = "macos";
+      break;
+    case "windows_nt":
+      osName = "windows";
+      break;
+  }
   return {
-    osName: osName.toLocaleLowerCase(),
+    osName,
     osVersion
   };
 }
@@ -6203,9 +6234,9 @@ function populateParameters(fromRes, toRes) {
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "4.55",
-    uniCompilerVersion: "4.55",
-    uniRuntimeVersion: "4.55",
+    uniCompileVersion: "4.76",
+    uniCompilerVersion: "4.76",
+    uniRuntimeVersion: "4.76",
     uniPlatform: "mp-weixin",
     deviceBrand,
     deviceModel: model,
@@ -6242,7 +6273,7 @@ function getGetDeviceType(fromRes, model) {
       mac: "pc"
     };
     const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
-    const _model = model.toLocaleLowerCase();
+    const _model = model.toLowerCase();
     for (let index2 = 0; index2 < deviceTypeMapsKeys.length; index2++) {
       const _m = deviceTypeMapsKeys[index2];
       if (_model.indexOf(_m) !== -1) {
@@ -6256,7 +6287,7 @@ function getGetDeviceType(fromRes, model) {
 function getDeviceBrand(brand) {
   let deviceBrand = brand;
   if (deviceBrand) {
-    deviceBrand = deviceBrand.toLocaleLowerCase();
+    deviceBrand = deviceBrand.toLowerCase();
   }
   return deviceBrand;
 }
@@ -6354,9 +6385,9 @@ const getAppBaseInfo = {
       appLanguage: getAppLanguage(hostLanguage),
       isUniAppX: false,
       uniPlatform: "mp-weixin",
-      uniCompileVersion: "4.55",
-      uniCompilerVersion: "4.55",
-      uniRuntimeVersion: "4.55"
+      uniCompileVersion: "4.76",
+      uniCompilerVersion: "4.76",
+      uniRuntimeVersion: "4.76"
     };
     extend(toRes, parameters);
   }
@@ -6637,6 +6668,91 @@ function tryConnectSocket(host2, port, id) {
     });
   });
 }
+const CONSOLE_TYPES = ["log", "warn", "error", "info", "debug"];
+const originalConsole = /* @__PURE__ */ CONSOLE_TYPES.reduce((methods, type) => {
+  methods[type] = console[type].bind(console);
+  return methods;
+}, {});
+let sendError = null;
+const errorQueue = /* @__PURE__ */ new Set();
+const errorExtra = {};
+function sendErrorMessages(errors) {
+  if (sendError == null) {
+    errors.forEach((error2) => {
+      errorQueue.add(error2);
+    });
+    return;
+  }
+  const data = errors.map((err) => {
+    if (typeof err === "string") {
+      return err;
+    }
+    const isPromiseRejection = err && "promise" in err && "reason" in err;
+    const prefix = isPromiseRejection ? "UnhandledPromiseRejection: " : "";
+    if (isPromiseRejection) {
+      err = err.reason;
+    }
+    if (err instanceof Error && err.stack) {
+      if (err.message && !err.stack.includes(err.message)) {
+        return `${prefix}${err.message}
+${err.stack}`;
+      }
+      return `${prefix}${err.stack}`;
+    }
+    if (typeof err === "object" && err !== null) {
+      try {
+        return prefix + JSON.stringify(err);
+      } catch (err2) {
+        return prefix + String(err2);
+      }
+    }
+    return prefix + String(err);
+  }).filter(Boolean);
+  if (data.length > 0) {
+    sendError(JSON.stringify(Object.assign({
+      type: "error",
+      data
+    }, errorExtra)));
+  }
+}
+function setSendError(value, extra = {}) {
+  sendError = value;
+  Object.assign(errorExtra, extra);
+  if (value != null && errorQueue.size > 0) {
+    const errors = Array.from(errorQueue);
+    errorQueue.clear();
+    sendErrorMessages(errors);
+  }
+}
+function initOnError() {
+  function onError2(error2) {
+    try {
+      if (typeof PromiseRejectionEvent !== "undefined" && error2 instanceof PromiseRejectionEvent && error2.reason instanceof Error && error2.reason.message && error2.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
+        return;
+      }
+      if (true) {
+        originalConsole.error(error2);
+      }
+      sendErrorMessages([error2]);
+    } catch (err) {
+      originalConsole.error(err);
+    }
+  }
+  if (typeof index$1.onError === "function") {
+    index$1.onError(onError2);
+  }
+  if (typeof index$1.onUnhandledRejection === "function") {
+    index$1.onUnhandledRejection(onError2);
+  }
+  return function offError2() {
+    if (typeof index$1.offError === "function") {
+      index$1.offError(onError2);
+    }
+    if (typeof index$1.offUnhandledRejection === "function") {
+      index$1.offUnhandledRejection(onError2);
+    }
+  };
+}
 function formatMessage(type, args) {
   try {
     return {
@@ -6669,7 +6785,16 @@ function formatArg(arg, depth = 0) {
     case "boolean":
       return formatBoolean(arg);
     case "object":
-      return formatObject(arg, depth);
+      try {
+        return formatObject(arg, depth);
+      } catch (e2) {
+        return {
+          type: "object",
+          value: {
+            properties: []
+          }
+        };
+      }
     case "undefined":
       return formatUndefined();
     case "function":
@@ -6815,13 +6940,20 @@ function formatObject(value, depth) {
       }
     }
   }
+  let entries = Object.entries(value);
+  if (isHarmonyBuilderParams(value)) {
+    entries = entries.filter(([key]) => key !== "modifier" && key !== "nodeContent");
+  }
   return {
     type: "object",
     className,
     value: {
-      properties: Object.entries(value).map((entry) => formatObjectProperty(entry[0], entry[1], depth + 1))
+      properties: entries.map((entry) => formatObjectProperty(entry[0], entry[1], depth + 1))
     }
   };
+}
+function isHarmonyBuilderParams(value) {
+  return value.modifier && value.modifier._attribute && value.nodeContent;
 }
 function isComponentPublicInstance(value) {
   return value.$ && isComponentInternalInstance(value.$);
@@ -6900,10 +7032,11 @@ function formatMapEntry(value, depth) {
     value: formatArg(value[1], depth)
   };
 }
-const CONSOLE_TYPES = ["log", "warn", "error", "info", "debug"];
 let sendConsole = null;
 const messageQueue = [];
 const messageExtra = {};
+const EXCEPTION_BEGIN_MARK = "---BEGIN:EXCEPTION---";
+const EXCEPTION_END_MARK = "---END:EXCEPTION---";
 function sendConsoleMessages(messages) {
   if (sendConsole == null) {
     messageQueue.push(...messages);
@@ -6923,23 +7056,31 @@ function setSendConsole(value, extra = {}) {
     sendConsoleMessages(messages);
   }
 }
-const originalConsole = /* @__PURE__ */ CONSOLE_TYPES.reduce((methods, type) => {
-  methods[type] = console[type].bind(console);
-  return methods;
-}, {});
 const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
 function rewriteConsole() {
   function wrapConsole(type) {
     return function(...args) {
-      const originalArgs = [...args];
-      if (originalArgs.length) {
-        const maybeAtFile = originalArgs[originalArgs.length - 1];
-        if (typeof maybeAtFile === "string" && atFileRegex.test(maybeAtFile)) {
-          originalArgs.pop();
-        }
-      }
       {
+        const originalArgs = [...args];
+        if (originalArgs.length) {
+          const maybeAtFile = originalArgs[originalArgs.length - 1];
+          if (typeof maybeAtFile === "string" && atFileRegex.test(maybeAtFile)) {
+            originalArgs.pop();
+          }
+        }
         originalConsole[type](...originalArgs);
+      }
+      if (type === "error" && args.length === 1) {
+        const arg = args[0];
+        if (typeof arg === "string" && arg.startsWith(EXCEPTION_BEGIN_MARK)) {
+          const startIndex = EXCEPTION_BEGIN_MARK.length;
+          const endIndex = arg.length - EXCEPTION_END_MARK.length;
+          sendErrorMessages([arg.slice(startIndex, endIndex)]);
+          return;
+        } else if (arg instanceof Error) {
+          sendErrorMessages([arg]);
+          return;
+        }
       }
       sendConsoleMessages([formatMessage(type, args)]);
     };
@@ -6985,87 +7126,10 @@ function isConsoleWritable() {
   console.log = value;
   return isWritable;
 }
-let sendError = null;
-const errorQueue = /* @__PURE__ */ new Set();
-const errorExtra = {};
-function sendErrorMessages(errors) {
-  if (sendError == null) {
-    errors.forEach((error2) => {
-      errorQueue.add(error2);
-    });
-    return;
-  }
-  const data = errors.map((err) => {
-    const isPromiseRejection = err && "promise" in err && "reason" in err;
-    const prefix = isPromiseRejection ? "UnhandledPromiseRejection: " : "";
-    if (isPromiseRejection) {
-      err = err.reason;
-    }
-    if (err instanceof Error && err.stack) {
-      if (err.message && !err.stack.includes(err.message)) {
-        return `${prefix}${err.message}
-${err.stack}`;
-      }
-      return `${prefix}${err.stack}`;
-    }
-    if (typeof err === "object" && err !== null) {
-      try {
-        return prefix + JSON.stringify(err);
-      } catch (err2) {
-        return prefix + String(err2);
-      }
-    }
-    return prefix + String(err);
-  }).filter(Boolean);
-  if (data.length > 0) {
-    sendError(JSON.stringify(Object.assign({
-      type: "error",
-      data
-    }, errorExtra)));
-  }
-}
-function setSendError(value, extra = {}) {
-  sendError = value;
-  Object.assign(errorExtra, extra);
-  if (value != null && errorQueue.size > 0) {
-    const errors = Array.from(errorQueue);
-    errorQueue.clear();
-    sendErrorMessages(errors);
-  }
-}
-function initOnError() {
-  function onError2(error2) {
-    try {
-      if (typeof PromiseRejectionEvent !== "undefined" && error2 instanceof PromiseRejectionEvent && error2.reason instanceof Error && error2.reason.message && error2.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
-        return;
-      }
-      if (true) {
-        originalConsole.error(error2);
-      }
-      sendErrorMessages([error2]);
-    } catch (err) {
-      originalConsole.error(err);
-    }
-  }
-  if (typeof index$1.onError === "function") {
-    index$1.onError(onError2);
-  }
-  if (typeof index$1.onUnhandledRejection === "function") {
-    index$1.onUnhandledRejection(onError2);
-  }
-  return function offError2() {
-    if (typeof index$1.offError === "function") {
-      index$1.offError(onError2);
-    }
-    if (typeof index$1.offUnhandledRejection === "function") {
-      index$1.offUnhandledRejection(onError2);
-    }
-  };
-}
 function initRuntimeSocketService() {
-  const hosts = "127.0.0.1,192.168.9.79";
+  const hosts = "127.0.0.1,192.168.2.168";
   const port = "8090";
-  const id = "mp-weixin_ozV_wx";
+  const id = "mp-weixin_mSnKGa";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -7081,13 +7145,19 @@ function initRuntimeSocketService() {
         restoreError();
         restoreConsole();
         originalConsole.error(wrapError("开发模式下日志通道建立 socket 连接失败。"));
-        originalConsole.error(wrapError("如果是小程序平台，请勾选不校验合法域名配置。"));
+        {
+          originalConsole.error(wrapError("小程序平台，请勾选不校验合法域名配置。"));
+        }
         originalConsole.error(wrapError("如果是运行到真机，请确认手机与电脑处于同一网络。"));
         return false;
       }
-      initMiniProgramGlobalFlag();
+      {
+        initMiniProgramGlobalFlag();
+      }
       socket.onClose(() => {
-        originalConsole.error(wrapError("开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。"));
+        {
+          originalConsole.error(wrapError("开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。"));
+        }
         restoreError();
         restoreConsole();
       });
@@ -7228,9 +7298,10 @@ function findVmByVueId(instance, vuePid) {
   }
 }
 function getLocaleLanguage() {
+  var _a;
   let localeLanguage = "";
   {
-    const appBaseInfo = wx.getAppBaseInfo();
+    const appBaseInfo = ((_a = wx.getAppBaseInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
     const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
     localeLanguage = normalizeLocale(language) || LOCALE_EN;
   }
@@ -12134,12 +12205,29 @@ const Pinia = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   skipHydrate,
   storeToRefs
 }, Symbol.toStringTag, { value: "Module" }));
-const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
+const createLifeCycleHook = (lifecycle, flag2 = 0) => (hook, target = getCurrentInstance()) => {
   !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
 };
-const onShow = /* @__PURE__ */ createHook(ON_SHOW);
-const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
-const onPullDownRefresh = /* @__PURE__ */ createHook(ON_PULL_DOWN_REFRESH);
+const onShow = /* @__PURE__ */ createLifeCycleHook(
+  ON_SHOW,
+  1 | 2
+  /* HookFlags.PAGE */
+);
+const onLoad = /* @__PURE__ */ createLifeCycleHook(
+  ON_LOAD,
+  2
+  /* HookFlags.PAGE */
+);
+const onReachBottom = /* @__PURE__ */ createLifeCycleHook(
+  ON_REACH_BOTTOM,
+  2
+  /* HookFlags.PAGE */
+);
+const onPullDownRefresh = /* @__PURE__ */ createLifeCycleHook(
+  ON_PULL_DOWN_REFRESH,
+  2
+  /* HookFlags.PAGE */
+);
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
@@ -12436,6 +12524,1642 @@ var dayjs_min = { exports: {} };
 })(dayjs_min);
 var dayjs_minExports = dayjs_min.exports;
 const dayjs = /* @__PURE__ */ getDefaultExportFromCjs(dayjs_minExports);
+const qrcode = function(typeNumber, errorCorrectionLevel) {
+  const PAD0 = 236;
+  const PAD1 = 17;
+  let _typeNumber = typeNumber;
+  const _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+  let _modules = null;
+  let _moduleCount = 0;
+  let _dataCache = null;
+  const _dataList = [];
+  const _this = {};
+  const makeImpl = function(test2, maskPattern) {
+    _moduleCount = _typeNumber * 4 + 17;
+    _modules = function(moduleCount) {
+      const modules = new Array(moduleCount);
+      for (let row = 0; row < moduleCount; row += 1) {
+        modules[row] = new Array(moduleCount);
+        for (let col = 0; col < moduleCount; col += 1) {
+          modules[row][col] = null;
+        }
+      }
+      return modules;
+    }(_moduleCount);
+    setupPositionProbePattern(0, 0);
+    setupPositionProbePattern(_moduleCount - 7, 0);
+    setupPositionProbePattern(0, _moduleCount - 7);
+    setupPositionAdjustPattern();
+    setupTimingPattern();
+    setupTypeInfo(test2, maskPattern);
+    if (_typeNumber >= 7) {
+      setupTypeNumber(test2);
+    }
+    if (_dataCache == null) {
+      _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+    }
+    mapData(_dataCache, maskPattern);
+  };
+  const setupPositionProbePattern = function(row, col) {
+    for (let r = -1; r <= 7; r += 1) {
+      if (row + r <= -1 || _moduleCount <= row + r)
+        continue;
+      for (let c = -1; c <= 7; c += 1) {
+        if (col + c <= -1 || _moduleCount <= col + c)
+          continue;
+        if (0 <= r && r <= 6 && (c == 0 || c == 6) || 0 <= c && c <= 6 && (r == 0 || r == 6) || 2 <= r && r <= 4 && 2 <= c && c <= 4) {
+          _modules[row + r][col + c] = true;
+        } else {
+          _modules[row + r][col + c] = false;
+        }
+      }
+    }
+  };
+  const getBestMaskPattern = function() {
+    let minLostPoint = 0;
+    let pattern = 0;
+    for (let i = 0; i < 8; i += 1) {
+      makeImpl(true, i);
+      const lostPoint = QRUtil.getLostPoint(_this);
+      if (i == 0 || minLostPoint > lostPoint) {
+        minLostPoint = lostPoint;
+        pattern = i;
+      }
+    }
+    return pattern;
+  };
+  const setupTimingPattern = function() {
+    for (let r = 8; r < _moduleCount - 8; r += 1) {
+      if (_modules[r][6] != null) {
+        continue;
+      }
+      _modules[r][6] = r % 2 == 0;
+    }
+    for (let c = 8; c < _moduleCount - 8; c += 1) {
+      if (_modules[6][c] != null) {
+        continue;
+      }
+      _modules[6][c] = c % 2 == 0;
+    }
+  };
+  const setupPositionAdjustPattern = function() {
+    const pos = QRUtil.getPatternPosition(_typeNumber);
+    for (let i = 0; i < pos.length; i += 1) {
+      for (let j = 0; j < pos.length; j += 1) {
+        const row = pos[i];
+        const col = pos[j];
+        if (_modules[row][col] != null) {
+          continue;
+        }
+        for (let r = -2; r <= 2; r += 1) {
+          for (let c = -2; c <= 2; c += 1) {
+            if (r == -2 || r == 2 || c == -2 || c == 2 || r == 0 && c == 0) {
+              _modules[row + r][col + c] = true;
+            } else {
+              _modules[row + r][col + c] = false;
+            }
+          }
+        }
+      }
+    }
+  };
+  const setupTypeNumber = function(test2) {
+    const bits = QRUtil.getBCHTypeNumber(_typeNumber);
+    for (let i = 0; i < 18; i += 1) {
+      const mod = !test2 && (bits >> i & 1) == 1;
+      _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+    }
+    for (let i = 0; i < 18; i += 1) {
+      const mod = !test2 && (bits >> i & 1) == 1;
+      _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+    }
+  };
+  const setupTypeInfo = function(test2, maskPattern) {
+    const data = _errorCorrectionLevel << 3 | maskPattern;
+    const bits = QRUtil.getBCHTypeInfo(data);
+    for (let i = 0; i < 15; i += 1) {
+      const mod = !test2 && (bits >> i & 1) == 1;
+      if (i < 6) {
+        _modules[i][8] = mod;
+      } else if (i < 8) {
+        _modules[i + 1][8] = mod;
+      } else {
+        _modules[_moduleCount - 15 + i][8] = mod;
+      }
+    }
+    for (let i = 0; i < 15; i += 1) {
+      const mod = !test2 && (bits >> i & 1) == 1;
+      if (i < 8) {
+        _modules[8][_moduleCount - i - 1] = mod;
+      } else if (i < 9) {
+        _modules[8][15 - i - 1 + 1] = mod;
+      } else {
+        _modules[8][15 - i - 1] = mod;
+      }
+    }
+    _modules[_moduleCount - 8][8] = !test2;
+  };
+  const mapData = function(data, maskPattern) {
+    let inc = -1;
+    let row = _moduleCount - 1;
+    let bitIndex = 7;
+    let byteIndex = 0;
+    const maskFunc = QRUtil.getMaskFunction(maskPattern);
+    for (let col = _moduleCount - 1; col > 0; col -= 2) {
+      if (col == 6)
+        col -= 1;
+      while (true) {
+        for (let c = 0; c < 2; c += 1) {
+          if (_modules[row][col - c] == null) {
+            let dark = false;
+            if (byteIndex < data.length) {
+              dark = (data[byteIndex] >>> bitIndex & 1) == 1;
+            }
+            const mask = maskFunc(row, col - c);
+            if (mask) {
+              dark = !dark;
+            }
+            _modules[row][col - c] = dark;
+            bitIndex -= 1;
+            if (bitIndex == -1) {
+              byteIndex += 1;
+              bitIndex = 7;
+            }
+          }
+        }
+        row += inc;
+        if (row < 0 || _moduleCount <= row) {
+          row -= inc;
+          inc = -inc;
+          break;
+        }
+      }
+    }
+  };
+  const createBytes = function(buffer2, rsBlocks) {
+    let offset = 0;
+    let maxDcCount = 0;
+    let maxEcCount = 0;
+    const dcdata = new Array(rsBlocks.length);
+    const ecdata = new Array(rsBlocks.length);
+    for (let r = 0; r < rsBlocks.length; r += 1) {
+      const dcCount = rsBlocks[r].dataCount;
+      const ecCount = rsBlocks[r].totalCount - dcCount;
+      maxDcCount = Math.max(maxDcCount, dcCount);
+      maxEcCount = Math.max(maxEcCount, ecCount);
+      dcdata[r] = new Array(dcCount);
+      for (let i = 0; i < dcdata[r].length; i += 1) {
+        dcdata[r][i] = 255 & buffer2.getBuffer()[i + offset];
+      }
+      offset += dcCount;
+      const rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+      const rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+      const modPoly = rawPoly.mod(rsPoly);
+      ecdata[r] = new Array(rsPoly.getLength() - 1);
+      for (let i = 0; i < ecdata[r].length; i += 1) {
+        const modIndex = i + modPoly.getLength() - ecdata[r].length;
+        ecdata[r][i] = modIndex >= 0 ? modPoly.getAt(modIndex) : 0;
+      }
+    }
+    let totalCodeCount = 0;
+    for (let i = 0; i < rsBlocks.length; i += 1) {
+      totalCodeCount += rsBlocks[i].totalCount;
+    }
+    const data = new Array(totalCodeCount);
+    let index2 = 0;
+    for (let i = 0; i < maxDcCount; i += 1) {
+      for (let r = 0; r < rsBlocks.length; r += 1) {
+        if (i < dcdata[r].length) {
+          data[index2] = dcdata[r][i];
+          index2 += 1;
+        }
+      }
+    }
+    for (let i = 0; i < maxEcCount; i += 1) {
+      for (let r = 0; r < rsBlocks.length; r += 1) {
+        if (i < ecdata[r].length) {
+          data[index2] = ecdata[r][i];
+          index2 += 1;
+        }
+      }
+    }
+    return data;
+  };
+  const createData = function(typeNumber2, errorCorrectionLevel2, dataList) {
+    const rsBlocks = QRRSBlock.getRSBlocks(typeNumber2, errorCorrectionLevel2);
+    const buffer2 = qrBitBuffer();
+    for (let i = 0; i < dataList.length; i += 1) {
+      const data = dataList[i];
+      buffer2.put(data.getMode(), 4);
+      buffer2.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber2));
+      data.write(buffer2);
+    }
+    let totalDataCount = 0;
+    for (let i = 0; i < rsBlocks.length; i += 1) {
+      totalDataCount += rsBlocks[i].dataCount;
+    }
+    if (buffer2.getLengthInBits() > totalDataCount * 8) {
+      throw "code length overflow. (" + buffer2.getLengthInBits() + ">" + totalDataCount * 8 + ")";
+    }
+    if (buffer2.getLengthInBits() + 4 <= totalDataCount * 8) {
+      buffer2.put(0, 4);
+    }
+    while (buffer2.getLengthInBits() % 8 != 0) {
+      buffer2.putBit(false);
+    }
+    while (true) {
+      if (buffer2.getLengthInBits() >= totalDataCount * 8) {
+        break;
+      }
+      buffer2.put(PAD0, 8);
+      if (buffer2.getLengthInBits() >= totalDataCount * 8) {
+        break;
+      }
+      buffer2.put(PAD1, 8);
+    }
+    return createBytes(buffer2, rsBlocks);
+  };
+  _this.addData = function(data, mode) {
+    mode = mode || "Byte";
+    let newData = null;
+    switch (mode) {
+      case "Numeric":
+        newData = qrNumber(data);
+        break;
+      case "Alphanumeric":
+        newData = qrAlphaNum(data);
+        break;
+      case "Byte":
+        newData = qr8BitByte(data);
+        break;
+      case "Kanji":
+        newData = qrKanji(data);
+        break;
+      default:
+        throw "mode:" + mode;
+    }
+    _dataList.push(newData);
+    _dataCache = null;
+  };
+  _this.isDark = function(row, col) {
+    if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+      throw row + "," + col;
+    }
+    return _modules[row][col];
+  };
+  _this.getModuleCount = function() {
+    return _moduleCount;
+  };
+  _this.make = function() {
+    if (_typeNumber < 1) {
+      let typeNumber2 = 1;
+      for (; typeNumber2 < 40; typeNumber2++) {
+        const rsBlocks = QRRSBlock.getRSBlocks(typeNumber2, _errorCorrectionLevel);
+        const buffer2 = qrBitBuffer();
+        for (let i = 0; i < _dataList.length; i++) {
+          const data = _dataList[i];
+          buffer2.put(data.getMode(), 4);
+          buffer2.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber2));
+          data.write(buffer2);
+        }
+        let totalDataCount = 0;
+        for (let i = 0; i < rsBlocks.length; i++) {
+          totalDataCount += rsBlocks[i].dataCount;
+        }
+        if (buffer2.getLengthInBits() <= totalDataCount * 8) {
+          break;
+        }
+      }
+      _typeNumber = typeNumber2;
+    }
+    makeImpl(false, getBestMaskPattern());
+  };
+  _this.createTableTag = function(cellSize, margin) {
+    cellSize = cellSize || 2;
+    margin = typeof margin == "undefined" ? cellSize * 4 : margin;
+    let qrHtml = "";
+    qrHtml += '<table style="';
+    qrHtml += " border-width: 0px; border-style: none;";
+    qrHtml += " border-collapse: collapse;";
+    qrHtml += " padding: 0px; margin: " + margin + "px;";
+    qrHtml += '">';
+    qrHtml += "<tbody>";
+    for (let r = 0; r < _this.getModuleCount(); r += 1) {
+      qrHtml += "<tr>";
+      for (let c = 0; c < _this.getModuleCount(); c += 1) {
+        qrHtml += '<td style="';
+        qrHtml += " border-width: 0px; border-style: none;";
+        qrHtml += " border-collapse: collapse;";
+        qrHtml += " padding: 0px; margin: 0px;";
+        qrHtml += " width: " + cellSize + "px;";
+        qrHtml += " height: " + cellSize + "px;";
+        qrHtml += " background-color: ";
+        qrHtml += _this.isDark(r, c) ? "#000000" : "#ffffff";
+        qrHtml += ";";
+        qrHtml += '"/>';
+      }
+      qrHtml += "</tr>";
+    }
+    qrHtml += "</tbody>";
+    qrHtml += "</table>";
+    return qrHtml;
+  };
+  _this.createSvgTag = function(cellSize, margin, alt, title) {
+    let opts = {};
+    if (typeof arguments[0] == "object") {
+      opts = arguments[0];
+      cellSize = opts.cellSize;
+      margin = opts.margin;
+      alt = opts.alt;
+      title = opts.title;
+    }
+    cellSize = cellSize || 2;
+    margin = typeof margin == "undefined" ? cellSize * 4 : margin;
+    alt = typeof alt === "string" ? { text: alt } : alt || {};
+    alt.text = alt.text || null;
+    alt.id = alt.text ? alt.id || "qrcode-description" : null;
+    title = typeof title === "string" ? { text: title } : title || {};
+    title.text = title.text || null;
+    title.id = title.text ? title.id || "qrcode-title" : null;
+    const size2 = _this.getModuleCount() * cellSize + margin * 2;
+    let c, mc, r, mr, qrSvg = "", rect;
+    rect = "l" + cellSize + ",0 0," + cellSize + " -" + cellSize + ",0 0,-" + cellSize + "z ";
+    qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+    qrSvg += !opts.scalable ? ' width="' + size2 + 'px" height="' + size2 + 'px"' : "";
+    qrSvg += ' viewBox="0 0 ' + size2 + " " + size2 + '" ';
+    qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+    qrSvg += title.text || alt.text ? ' role="img" aria-labelledby="' + escapeXml([title.id, alt.id].join(" ").trim()) + '"' : "";
+    qrSvg += ">";
+    qrSvg += title.text ? '<title id="' + escapeXml(title.id) + '">' + escapeXml(title.text) + "</title>" : "";
+    qrSvg += alt.text ? '<description id="' + escapeXml(alt.id) + '">' + escapeXml(alt.text) + "</description>" : "";
+    qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+    qrSvg += '<path d="';
+    for (r = 0; r < _this.getModuleCount(); r += 1) {
+      mr = r * cellSize + margin;
+      for (c = 0; c < _this.getModuleCount(); c += 1) {
+        if (_this.isDark(r, c)) {
+          mc = c * cellSize + margin;
+          qrSvg += "M" + mc + "," + mr + rect;
+        }
+      }
+    }
+    qrSvg += '" stroke="transparent" fill="black"/>';
+    qrSvg += "</svg>";
+    return qrSvg;
+  };
+  _this.createDataURL = function(cellSize, margin) {
+    cellSize = cellSize || 2;
+    margin = typeof margin == "undefined" ? cellSize * 4 : margin;
+    const size2 = _this.getModuleCount() * cellSize + margin * 2;
+    const min = margin;
+    const max = size2 - margin;
+    return createDataURL(size2, size2, function(x, y) {
+      if (min <= x && x < max && min <= y && y < max) {
+        const c = Math.floor((x - min) / cellSize);
+        const r = Math.floor((y - min) / cellSize);
+        return _this.isDark(r, c) ? 0 : 1;
+      } else {
+        return 1;
+      }
+    });
+  };
+  _this.createImgTag = function(cellSize, margin, alt) {
+    cellSize = cellSize || 2;
+    margin = typeof margin == "undefined" ? cellSize * 4 : margin;
+    const size2 = _this.getModuleCount() * cellSize + margin * 2;
+    let img = "";
+    img += "<img";
+    img += ' src="';
+    img += _this.createDataURL(cellSize, margin);
+    img += '"';
+    img += ' width="';
+    img += size2;
+    img += '"';
+    img += ' height="';
+    img += size2;
+    img += '"';
+    if (alt) {
+      img += ' alt="';
+      img += escapeXml(alt);
+      img += '"';
+    }
+    img += "/>";
+    return img;
+  };
+  const escapeXml = function(s2) {
+    let escaped = "";
+    for (let i = 0; i < s2.length; i += 1) {
+      const c = s2.charAt(i);
+      switch (c) {
+        case "<":
+          escaped += "&lt;";
+          break;
+        case ">":
+          escaped += "&gt;";
+          break;
+        case "&":
+          escaped += "&amp;";
+          break;
+        case '"':
+          escaped += "&quot;";
+          break;
+        default:
+          escaped += c;
+          break;
+      }
+    }
+    return escaped;
+  };
+  const _createHalfASCII = function(margin) {
+    const cellSize = 1;
+    margin = typeof margin == "undefined" ? cellSize * 2 : margin;
+    const size2 = _this.getModuleCount() * cellSize + margin * 2;
+    const min = margin;
+    const max = size2 - margin;
+    let y, x, r1, r2, p2;
+    const blocks = {
+      "██": "█",
+      "█ ": "▀",
+      " █": "▄",
+      "  ": " "
+    };
+    const blocksLastLineNoMargin = {
+      "██": "▀",
+      "█ ": "▀",
+      " █": " ",
+      "  ": " "
+    };
+    let ascii = "";
+    for (y = 0; y < size2; y += 2) {
+      r1 = Math.floor((y - min) / cellSize);
+      r2 = Math.floor((y + 1 - min) / cellSize);
+      for (x = 0; x < size2; x += 1) {
+        p2 = "█";
+        if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+          p2 = " ";
+        }
+        if (min <= x && x < max && min <= y + 1 && y + 1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+          p2 += " ";
+        } else {
+          p2 += "█";
+        }
+        ascii += margin < 1 && y + 1 >= max ? blocksLastLineNoMargin[p2] : blocks[p2];
+      }
+      ascii += "\n";
+    }
+    if (size2 % 2 && margin > 0) {
+      return ascii.substring(0, ascii.length - size2 - 1) + Array(size2 + 1).join("▀");
+    }
+    return ascii.substring(0, ascii.length - 1);
+  };
+  _this.createASCII = function(cellSize, margin) {
+    cellSize = cellSize || 1;
+    if (cellSize < 2) {
+      return _createHalfASCII(margin);
+    }
+    cellSize -= 1;
+    margin = typeof margin == "undefined" ? cellSize * 2 : margin;
+    const size2 = _this.getModuleCount() * cellSize + margin * 2;
+    const min = margin;
+    const max = size2 - margin;
+    let y, x, r, p2;
+    const white = Array(cellSize + 1).join("██");
+    const black = Array(cellSize + 1).join("  ");
+    let ascii = "";
+    let line = "";
+    for (y = 0; y < size2; y += 1) {
+      r = Math.floor((y - min) / cellSize);
+      line = "";
+      for (x = 0; x < size2; x += 1) {
+        p2 = 1;
+        if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+          p2 = 0;
+        }
+        line += p2 ? white : black;
+      }
+      for (r = 0; r < cellSize; r += 1) {
+        ascii += line + "\n";
+      }
+    }
+    return ascii.substring(0, ascii.length - 1);
+  };
+  _this.renderTo2dContext = function(context, cellSize) {
+    cellSize = cellSize || 2;
+    const length = _this.getModuleCount();
+    for (let row = 0; row < length; row++) {
+      for (let col = 0; col < length; col++) {
+        context.fillStyle = _this.isDark(row, col) ? "black" : "white";
+        context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+      }
+    }
+  };
+  return _this;
+};
+qrcode.stringToBytes = function(s2) {
+  const bytes = [];
+  for (let i = 0; i < s2.length; i += 1) {
+    const c = s2.charCodeAt(i);
+    bytes.push(c & 255);
+  }
+  return bytes;
+};
+qrcode.createStringToBytes = function(unicodeData, numChars) {
+  const unicodeMap = function() {
+    const bin = base64DecodeInputStream(unicodeData);
+    const read = function() {
+      const b = bin.read();
+      if (b == -1)
+        throw "eof";
+      return b;
+    };
+    let count = 0;
+    const unicodeMap2 = {};
+    while (true) {
+      const b0 = bin.read();
+      if (b0 == -1)
+        break;
+      const b1 = read();
+      const b2 = read();
+      const b3 = read();
+      const k = String.fromCharCode(b0 << 8 | b1);
+      const v = b2 << 8 | b3;
+      unicodeMap2[k] = v;
+      count += 1;
+    }
+    if (count != numChars) {
+      throw count + " != " + numChars;
+    }
+    return unicodeMap2;
+  }();
+  const unknownChar = "?".charCodeAt(0);
+  return function(s2) {
+    const bytes = [];
+    for (let i = 0; i < s2.length; i += 1) {
+      const c = s2.charCodeAt(i);
+      if (c < 128) {
+        bytes.push(c);
+      } else {
+        const b = unicodeMap[s2.charAt(i)];
+        if (typeof b == "number") {
+          if ((b & 255) == b) {
+            bytes.push(b);
+          } else {
+            bytes.push(b >>> 8);
+            bytes.push(b & 255);
+          }
+        } else {
+          bytes.push(unknownChar);
+        }
+      }
+    }
+    return bytes;
+  };
+};
+const QRMode = {
+  MODE_NUMBER: 1 << 0,
+  MODE_ALPHA_NUM: 1 << 1,
+  MODE_8BIT_BYTE: 1 << 2,
+  MODE_KANJI: 1 << 3
+};
+const QRErrorCorrectionLevel = {
+  L: 1,
+  M: 0,
+  Q: 3,
+  H: 2
+};
+const QRMaskPattern = {
+  PATTERN000: 0,
+  PATTERN001: 1,
+  PATTERN010: 2,
+  PATTERN011: 3,
+  PATTERN100: 4,
+  PATTERN101: 5,
+  PATTERN110: 6,
+  PATTERN111: 7
+};
+const QRUtil = function() {
+  const PATTERN_POSITION_TABLE = [
+    [],
+    [6, 18],
+    [6, 22],
+    [6, 26],
+    [6, 30],
+    [6, 34],
+    [6, 22, 38],
+    [6, 24, 42],
+    [6, 26, 46],
+    [6, 28, 50],
+    [6, 30, 54],
+    [6, 32, 58],
+    [6, 34, 62],
+    [6, 26, 46, 66],
+    [6, 26, 48, 70],
+    [6, 26, 50, 74],
+    [6, 30, 54, 78],
+    [6, 30, 56, 82],
+    [6, 30, 58, 86],
+    [6, 34, 62, 90],
+    [6, 28, 50, 72, 94],
+    [6, 26, 50, 74, 98],
+    [6, 30, 54, 78, 102],
+    [6, 28, 54, 80, 106],
+    [6, 32, 58, 84, 110],
+    [6, 30, 58, 86, 114],
+    [6, 34, 62, 90, 118],
+    [6, 26, 50, 74, 98, 122],
+    [6, 30, 54, 78, 102, 126],
+    [6, 26, 52, 78, 104, 130],
+    [6, 30, 56, 82, 108, 134],
+    [6, 34, 60, 86, 112, 138],
+    [6, 30, 58, 86, 114, 142],
+    [6, 34, 62, 90, 118, 146],
+    [6, 30, 54, 78, 102, 126, 150],
+    [6, 24, 50, 76, 102, 128, 154],
+    [6, 28, 54, 80, 106, 132, 158],
+    [6, 32, 58, 84, 110, 136, 162],
+    [6, 26, 54, 82, 110, 138, 166],
+    [6, 30, 58, 86, 114, 142, 170]
+  ];
+  const G15 = 1 << 10 | 1 << 8 | 1 << 5 | 1 << 4 | 1 << 2 | 1 << 1 | 1 << 0;
+  const G18 = 1 << 12 | 1 << 11 | 1 << 10 | 1 << 9 | 1 << 8 | 1 << 5 | 1 << 2 | 1 << 0;
+  const G15_MASK = 1 << 14 | 1 << 12 | 1 << 10 | 1 << 4 | 1 << 1;
+  const _this = {};
+  const getBCHDigit = function(data) {
+    let digit = 0;
+    while (data != 0) {
+      digit += 1;
+      data >>>= 1;
+    }
+    return digit;
+  };
+  _this.getBCHTypeInfo = function(data) {
+    let d = data << 10;
+    while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+      d ^= G15 << getBCHDigit(d) - getBCHDigit(G15);
+    }
+    return (data << 10 | d) ^ G15_MASK;
+  };
+  _this.getBCHTypeNumber = function(data) {
+    let d = data << 12;
+    while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+      d ^= G18 << getBCHDigit(d) - getBCHDigit(G18);
+    }
+    return data << 12 | d;
+  };
+  _this.getPatternPosition = function(typeNumber) {
+    return PATTERN_POSITION_TABLE[typeNumber - 1];
+  };
+  _this.getMaskFunction = function(maskPattern) {
+    switch (maskPattern) {
+      case QRMaskPattern.PATTERN000:
+        return function(i, j) {
+          return (i + j) % 2 == 0;
+        };
+      case QRMaskPattern.PATTERN001:
+        return function(i, j) {
+          return i % 2 == 0;
+        };
+      case QRMaskPattern.PATTERN010:
+        return function(i, j) {
+          return j % 3 == 0;
+        };
+      case QRMaskPattern.PATTERN011:
+        return function(i, j) {
+          return (i + j) % 3 == 0;
+        };
+      case QRMaskPattern.PATTERN100:
+        return function(i, j) {
+          return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0;
+        };
+      case QRMaskPattern.PATTERN101:
+        return function(i, j) {
+          return i * j % 2 + i * j % 3 == 0;
+        };
+      case QRMaskPattern.PATTERN110:
+        return function(i, j) {
+          return (i * j % 2 + i * j % 3) % 2 == 0;
+        };
+      case QRMaskPattern.PATTERN111:
+        return function(i, j) {
+          return (i * j % 3 + (i + j) % 2) % 2 == 0;
+        };
+      default:
+        throw "bad maskPattern:" + maskPattern;
+    }
+  };
+  _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+    let a = qrPolynomial([1], 0);
+    for (let i = 0; i < errorCorrectLength; i += 1) {
+      a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0));
+    }
+    return a;
+  };
+  _this.getLengthInBits = function(mode, type) {
+    if (1 <= type && type < 10) {
+      switch (mode) {
+        case QRMode.MODE_NUMBER:
+          return 10;
+        case QRMode.MODE_ALPHA_NUM:
+          return 9;
+        case QRMode.MODE_8BIT_BYTE:
+          return 8;
+        case QRMode.MODE_KANJI:
+          return 8;
+        default:
+          throw "mode:" + mode;
+      }
+    } else if (type < 27) {
+      switch (mode) {
+        case QRMode.MODE_NUMBER:
+          return 12;
+        case QRMode.MODE_ALPHA_NUM:
+          return 11;
+        case QRMode.MODE_8BIT_BYTE:
+          return 16;
+        case QRMode.MODE_KANJI:
+          return 10;
+        default:
+          throw "mode:" + mode;
+      }
+    } else if (type < 41) {
+      switch (mode) {
+        case QRMode.MODE_NUMBER:
+          return 14;
+        case QRMode.MODE_ALPHA_NUM:
+          return 13;
+        case QRMode.MODE_8BIT_BYTE:
+          return 16;
+        case QRMode.MODE_KANJI:
+          return 12;
+        default:
+          throw "mode:" + mode;
+      }
+    } else {
+      throw "type:" + type;
+    }
+  };
+  _this.getLostPoint = function(qrcode2) {
+    const moduleCount = qrcode2.getModuleCount();
+    let lostPoint = 0;
+    for (let row = 0; row < moduleCount; row += 1) {
+      for (let col = 0; col < moduleCount; col += 1) {
+        let sameCount = 0;
+        const dark = qrcode2.isDark(row, col);
+        for (let r = -1; r <= 1; r += 1) {
+          if (row + r < 0 || moduleCount <= row + r) {
+            continue;
+          }
+          for (let c = -1; c <= 1; c += 1) {
+            if (col + c < 0 || moduleCount <= col + c) {
+              continue;
+            }
+            if (r == 0 && c == 0) {
+              continue;
+            }
+            if (dark == qrcode2.isDark(row + r, col + c)) {
+              sameCount += 1;
+            }
+          }
+        }
+        if (sameCount > 5) {
+          lostPoint += 3 + sameCount - 5;
+        }
+      }
+    }
+    for (let row = 0; row < moduleCount - 1; row += 1) {
+      for (let col = 0; col < moduleCount - 1; col += 1) {
+        let count = 0;
+        if (qrcode2.isDark(row, col))
+          count += 1;
+        if (qrcode2.isDark(row + 1, col))
+          count += 1;
+        if (qrcode2.isDark(row, col + 1))
+          count += 1;
+        if (qrcode2.isDark(row + 1, col + 1))
+          count += 1;
+        if (count == 0 || count == 4) {
+          lostPoint += 3;
+        }
+      }
+    }
+    for (let row = 0; row < moduleCount; row += 1) {
+      for (let col = 0; col < moduleCount - 6; col += 1) {
+        if (qrcode2.isDark(row, col) && !qrcode2.isDark(row, col + 1) && qrcode2.isDark(row, col + 2) && qrcode2.isDark(row, col + 3) && qrcode2.isDark(row, col + 4) && !qrcode2.isDark(row, col + 5) && qrcode2.isDark(row, col + 6)) {
+          lostPoint += 40;
+        }
+      }
+    }
+    for (let col = 0; col < moduleCount; col += 1) {
+      for (let row = 0; row < moduleCount - 6; row += 1) {
+        if (qrcode2.isDark(row, col) && !qrcode2.isDark(row + 1, col) && qrcode2.isDark(row + 2, col) && qrcode2.isDark(row + 3, col) && qrcode2.isDark(row + 4, col) && !qrcode2.isDark(row + 5, col) && qrcode2.isDark(row + 6, col)) {
+          lostPoint += 40;
+        }
+      }
+    }
+    let darkCount = 0;
+    for (let col = 0; col < moduleCount; col += 1) {
+      for (let row = 0; row < moduleCount; row += 1) {
+        if (qrcode2.isDark(row, col)) {
+          darkCount += 1;
+        }
+      }
+    }
+    const ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+    lostPoint += ratio * 10;
+    return lostPoint;
+  };
+  return _this;
+}();
+const QRMath = function() {
+  const EXP_TABLE = new Array(256);
+  const LOG_TABLE = new Array(256);
+  for (let i = 0; i < 8; i += 1) {
+    EXP_TABLE[i] = 1 << i;
+  }
+  for (let i = 8; i < 256; i += 1) {
+    EXP_TABLE[i] = EXP_TABLE[i - 4] ^ EXP_TABLE[i - 5] ^ EXP_TABLE[i - 6] ^ EXP_TABLE[i - 8];
+  }
+  for (let i = 0; i < 255; i += 1) {
+    LOG_TABLE[EXP_TABLE[i]] = i;
+  }
+  const _this = {};
+  _this.glog = function(n2) {
+    if (n2 < 1) {
+      throw "glog(" + n2 + ")";
+    }
+    return LOG_TABLE[n2];
+  };
+  _this.gexp = function(n2) {
+    while (n2 < 0) {
+      n2 += 255;
+    }
+    while (n2 >= 256) {
+      n2 -= 255;
+    }
+    return EXP_TABLE[n2];
+  };
+  return _this;
+}();
+const qrPolynomial = function(num, shift) {
+  if (typeof num.length == "undefined") {
+    throw num.length + "/" + shift;
+  }
+  const _num = function() {
+    let offset = 0;
+    while (offset < num.length && num[offset] == 0) {
+      offset += 1;
+    }
+    const _num2 = new Array(num.length - offset + shift);
+    for (let i = 0; i < num.length - offset; i += 1) {
+      _num2[i] = num[i + offset];
+    }
+    return _num2;
+  }();
+  const _this = {};
+  _this.getAt = function(index2) {
+    return _num[index2];
+  };
+  _this.getLength = function() {
+    return _num.length;
+  };
+  _this.multiply = function(e2) {
+    const num2 = new Array(_this.getLength() + e2.getLength() - 1);
+    for (let i = 0; i < _this.getLength(); i += 1) {
+      for (let j = 0; j < e2.getLength(); j += 1) {
+        num2[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i)) + QRMath.glog(e2.getAt(j)));
+      }
+    }
+    return qrPolynomial(num2, 0);
+  };
+  _this.mod = function(e2) {
+    if (_this.getLength() - e2.getLength() < 0) {
+      return _this;
+    }
+    const ratio = QRMath.glog(_this.getAt(0)) - QRMath.glog(e2.getAt(0));
+    const num2 = new Array(_this.getLength());
+    for (let i = 0; i < _this.getLength(); i += 1) {
+      num2[i] = _this.getAt(i);
+    }
+    for (let i = 0; i < e2.getLength(); i += 1) {
+      num2[i] ^= QRMath.gexp(QRMath.glog(e2.getAt(i)) + ratio);
+    }
+    return qrPolynomial(num2, 0).mod(e2);
+  };
+  return _this;
+};
+const QRRSBlock = function() {
+  const RS_BLOCK_TABLE = [
+    // L
+    // M
+    // Q
+    // H
+    // 1
+    [1, 26, 19],
+    [1, 26, 16],
+    [1, 26, 13],
+    [1, 26, 9],
+    // 2
+    [1, 44, 34],
+    [1, 44, 28],
+    [1, 44, 22],
+    [1, 44, 16],
+    // 3
+    [1, 70, 55],
+    [1, 70, 44],
+    [2, 35, 17],
+    [2, 35, 13],
+    // 4
+    [1, 100, 80],
+    [2, 50, 32],
+    [2, 50, 24],
+    [4, 25, 9],
+    // 5
+    [1, 134, 108],
+    [2, 67, 43],
+    [2, 33, 15, 2, 34, 16],
+    [2, 33, 11, 2, 34, 12],
+    // 6
+    [2, 86, 68],
+    [4, 43, 27],
+    [4, 43, 19],
+    [4, 43, 15],
+    // 7
+    [2, 98, 78],
+    [4, 49, 31],
+    [2, 32, 14, 4, 33, 15],
+    [4, 39, 13, 1, 40, 14],
+    // 8
+    [2, 121, 97],
+    [2, 60, 38, 2, 61, 39],
+    [4, 40, 18, 2, 41, 19],
+    [4, 40, 14, 2, 41, 15],
+    // 9
+    [2, 146, 116],
+    [3, 58, 36, 2, 59, 37],
+    [4, 36, 16, 4, 37, 17],
+    [4, 36, 12, 4, 37, 13],
+    // 10
+    [2, 86, 68, 2, 87, 69],
+    [4, 69, 43, 1, 70, 44],
+    [6, 43, 19, 2, 44, 20],
+    [6, 43, 15, 2, 44, 16],
+    // 11
+    [4, 101, 81],
+    [1, 80, 50, 4, 81, 51],
+    [4, 50, 22, 4, 51, 23],
+    [3, 36, 12, 8, 37, 13],
+    // 12
+    [2, 116, 92, 2, 117, 93],
+    [6, 58, 36, 2, 59, 37],
+    [4, 46, 20, 6, 47, 21],
+    [7, 42, 14, 4, 43, 15],
+    // 13
+    [4, 133, 107],
+    [8, 59, 37, 1, 60, 38],
+    [8, 44, 20, 4, 45, 21],
+    [12, 33, 11, 4, 34, 12],
+    // 14
+    [3, 145, 115, 1, 146, 116],
+    [4, 64, 40, 5, 65, 41],
+    [11, 36, 16, 5, 37, 17],
+    [11, 36, 12, 5, 37, 13],
+    // 15
+    [5, 109, 87, 1, 110, 88],
+    [5, 65, 41, 5, 66, 42],
+    [5, 54, 24, 7, 55, 25],
+    [11, 36, 12, 7, 37, 13],
+    // 16
+    [5, 122, 98, 1, 123, 99],
+    [7, 73, 45, 3, 74, 46],
+    [15, 43, 19, 2, 44, 20],
+    [3, 45, 15, 13, 46, 16],
+    // 17
+    [1, 135, 107, 5, 136, 108],
+    [10, 74, 46, 1, 75, 47],
+    [1, 50, 22, 15, 51, 23],
+    [2, 42, 14, 17, 43, 15],
+    // 18
+    [5, 150, 120, 1, 151, 121],
+    [9, 69, 43, 4, 70, 44],
+    [17, 50, 22, 1, 51, 23],
+    [2, 42, 14, 19, 43, 15],
+    // 19
+    [3, 141, 113, 4, 142, 114],
+    [3, 70, 44, 11, 71, 45],
+    [17, 47, 21, 4, 48, 22],
+    [9, 39, 13, 16, 40, 14],
+    // 20
+    [3, 135, 107, 5, 136, 108],
+    [3, 67, 41, 13, 68, 42],
+    [15, 54, 24, 5, 55, 25],
+    [15, 43, 15, 10, 44, 16],
+    // 21
+    [4, 144, 116, 4, 145, 117],
+    [17, 68, 42],
+    [17, 50, 22, 6, 51, 23],
+    [19, 46, 16, 6, 47, 17],
+    // 22
+    [2, 139, 111, 7, 140, 112],
+    [17, 74, 46],
+    [7, 54, 24, 16, 55, 25],
+    [34, 37, 13],
+    // 23
+    [4, 151, 121, 5, 152, 122],
+    [4, 75, 47, 14, 76, 48],
+    [11, 54, 24, 14, 55, 25],
+    [16, 45, 15, 14, 46, 16],
+    // 24
+    [6, 147, 117, 4, 148, 118],
+    [6, 73, 45, 14, 74, 46],
+    [11, 54, 24, 16, 55, 25],
+    [30, 46, 16, 2, 47, 17],
+    // 25
+    [8, 132, 106, 4, 133, 107],
+    [8, 75, 47, 13, 76, 48],
+    [7, 54, 24, 22, 55, 25],
+    [22, 45, 15, 13, 46, 16],
+    // 26
+    [10, 142, 114, 2, 143, 115],
+    [19, 74, 46, 4, 75, 47],
+    [28, 50, 22, 6, 51, 23],
+    [33, 46, 16, 4, 47, 17],
+    // 27
+    [8, 152, 122, 4, 153, 123],
+    [22, 73, 45, 3, 74, 46],
+    [8, 53, 23, 26, 54, 24],
+    [12, 45, 15, 28, 46, 16],
+    // 28
+    [3, 147, 117, 10, 148, 118],
+    [3, 73, 45, 23, 74, 46],
+    [4, 54, 24, 31, 55, 25],
+    [11, 45, 15, 31, 46, 16],
+    // 29
+    [7, 146, 116, 7, 147, 117],
+    [21, 73, 45, 7, 74, 46],
+    [1, 53, 23, 37, 54, 24],
+    [19, 45, 15, 26, 46, 16],
+    // 30
+    [5, 145, 115, 10, 146, 116],
+    [19, 75, 47, 10, 76, 48],
+    [15, 54, 24, 25, 55, 25],
+    [23, 45, 15, 25, 46, 16],
+    // 31
+    [13, 145, 115, 3, 146, 116],
+    [2, 74, 46, 29, 75, 47],
+    [42, 54, 24, 1, 55, 25],
+    [23, 45, 15, 28, 46, 16],
+    // 32
+    [17, 145, 115],
+    [10, 74, 46, 23, 75, 47],
+    [10, 54, 24, 35, 55, 25],
+    [19, 45, 15, 35, 46, 16],
+    // 33
+    [17, 145, 115, 1, 146, 116],
+    [14, 74, 46, 21, 75, 47],
+    [29, 54, 24, 19, 55, 25],
+    [11, 45, 15, 46, 46, 16],
+    // 34
+    [13, 145, 115, 6, 146, 116],
+    [14, 74, 46, 23, 75, 47],
+    [44, 54, 24, 7, 55, 25],
+    [59, 46, 16, 1, 47, 17],
+    // 35
+    [12, 151, 121, 7, 152, 122],
+    [12, 75, 47, 26, 76, 48],
+    [39, 54, 24, 14, 55, 25],
+    [22, 45, 15, 41, 46, 16],
+    // 36
+    [6, 151, 121, 14, 152, 122],
+    [6, 75, 47, 34, 76, 48],
+    [46, 54, 24, 10, 55, 25],
+    [2, 45, 15, 64, 46, 16],
+    // 37
+    [17, 152, 122, 4, 153, 123],
+    [29, 74, 46, 14, 75, 47],
+    [49, 54, 24, 10, 55, 25],
+    [24, 45, 15, 46, 46, 16],
+    // 38
+    [4, 152, 122, 18, 153, 123],
+    [13, 74, 46, 32, 75, 47],
+    [48, 54, 24, 14, 55, 25],
+    [42, 45, 15, 32, 46, 16],
+    // 39
+    [20, 147, 117, 4, 148, 118],
+    [40, 75, 47, 7, 76, 48],
+    [43, 54, 24, 22, 55, 25],
+    [10, 45, 15, 67, 46, 16],
+    // 40
+    [19, 148, 118, 6, 149, 119],
+    [18, 75, 47, 31, 76, 48],
+    [34, 54, 24, 34, 55, 25],
+    [20, 45, 15, 61, 46, 16]
+  ];
+  const qrRSBlock = function(totalCount, dataCount) {
+    const _this2 = {};
+    _this2.totalCount = totalCount;
+    _this2.dataCount = dataCount;
+    return _this2;
+  };
+  const _this = {};
+  const getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+    switch (errorCorrectionLevel) {
+      case QRErrorCorrectionLevel.L:
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectionLevel.M:
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectionLevel.Q:
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectionLevel.H:
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default:
+        return void 0;
+    }
+  };
+  _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+    const rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+    if (typeof rsBlock == "undefined") {
+      throw "bad rs block @ typeNumber:" + typeNumber + "/errorCorrectionLevel:" + errorCorrectionLevel;
+    }
+    const length = rsBlock.length / 3;
+    const list = [];
+    for (let i = 0; i < length; i += 1) {
+      const count = rsBlock[i * 3 + 0];
+      const totalCount = rsBlock[i * 3 + 1];
+      const dataCount = rsBlock[i * 3 + 2];
+      for (let j = 0; j < count; j += 1) {
+        list.push(qrRSBlock(totalCount, dataCount));
+      }
+    }
+    return list;
+  };
+  return _this;
+}();
+const qrBitBuffer = function() {
+  const _buffer = [];
+  let _length = 0;
+  const _this = {};
+  _this.getBuffer = function() {
+    return _buffer;
+  };
+  _this.getAt = function(index2) {
+    const bufIndex = Math.floor(index2 / 8);
+    return (_buffer[bufIndex] >>> 7 - index2 % 8 & 1) == 1;
+  };
+  _this.put = function(num, length) {
+    for (let i = 0; i < length; i += 1) {
+      _this.putBit((num >>> length - i - 1 & 1) == 1);
+    }
+  };
+  _this.getLengthInBits = function() {
+    return _length;
+  };
+  _this.putBit = function(bit) {
+    const bufIndex = Math.floor(_length / 8);
+    if (_buffer.length <= bufIndex) {
+      _buffer.push(0);
+    }
+    if (bit) {
+      _buffer[bufIndex] |= 128 >>> _length % 8;
+    }
+    _length += 1;
+  };
+  return _this;
+};
+const qrNumber = function(data) {
+  const _mode = QRMode.MODE_NUMBER;
+  const _data = data;
+  const _this = {};
+  _this.getMode = function() {
+    return _mode;
+  };
+  _this.getLength = function(buffer2) {
+    return _data.length;
+  };
+  _this.write = function(buffer2) {
+    const data2 = _data;
+    let i = 0;
+    while (i + 2 < data2.length) {
+      buffer2.put(strToNum(data2.substring(i, i + 3)), 10);
+      i += 3;
+    }
+    if (i < data2.length) {
+      if (data2.length - i == 1) {
+        buffer2.put(strToNum(data2.substring(i, i + 1)), 4);
+      } else if (data2.length - i == 2) {
+        buffer2.put(strToNum(data2.substring(i, i + 2)), 7);
+      }
+    }
+  };
+  const strToNum = function(s2) {
+    let num = 0;
+    for (let i = 0; i < s2.length; i += 1) {
+      num = num * 10 + chatToNum(s2.charAt(i));
+    }
+    return num;
+  };
+  const chatToNum = function(c) {
+    if ("0" <= c && c <= "9") {
+      return c.charCodeAt(0) - "0".charCodeAt(0);
+    }
+    throw "illegal char :" + c;
+  };
+  return _this;
+};
+const qrAlphaNum = function(data) {
+  const _mode = QRMode.MODE_ALPHA_NUM;
+  const _data = data;
+  const _this = {};
+  _this.getMode = function() {
+    return _mode;
+  };
+  _this.getLength = function(buffer2) {
+    return _data.length;
+  };
+  _this.write = function(buffer2) {
+    const s2 = _data;
+    let i = 0;
+    while (i + 1 < s2.length) {
+      buffer2.put(
+        getCode(s2.charAt(i)) * 45 + getCode(s2.charAt(i + 1)),
+        11
+      );
+      i += 2;
+    }
+    if (i < s2.length) {
+      buffer2.put(getCode(s2.charAt(i)), 6);
+    }
+  };
+  const getCode = function(c) {
+    if ("0" <= c && c <= "9") {
+      return c.charCodeAt(0) - "0".charCodeAt(0);
+    } else if ("A" <= c && c <= "Z") {
+      return c.charCodeAt(0) - "A".charCodeAt(0) + 10;
+    } else {
+      switch (c) {
+        case " ":
+          return 36;
+        case "$":
+          return 37;
+        case "%":
+          return 38;
+        case "*":
+          return 39;
+        case "+":
+          return 40;
+        case "-":
+          return 41;
+        case ".":
+          return 42;
+        case "/":
+          return 43;
+        case ":":
+          return 44;
+        default:
+          throw "illegal char :" + c;
+      }
+    }
+  };
+  return _this;
+};
+const qr8BitByte = function(data) {
+  const _mode = QRMode.MODE_8BIT_BYTE;
+  const _bytes = qrcode.stringToBytes(data);
+  const _this = {};
+  _this.getMode = function() {
+    return _mode;
+  };
+  _this.getLength = function(buffer2) {
+    return _bytes.length;
+  };
+  _this.write = function(buffer2) {
+    for (let i = 0; i < _bytes.length; i += 1) {
+      buffer2.put(_bytes[i], 8);
+    }
+  };
+  return _this;
+};
+const qrKanji = function(data) {
+  const _mode = QRMode.MODE_KANJI;
+  const stringToBytes = qrcode.stringToBytes;
+  !function(c, code2) {
+    const test2 = stringToBytes(c);
+    if (test2.length != 2 || (test2[0] << 8 | test2[1]) != code2) {
+      throw "sjis not supported.";
+    }
+  }("友", 38726);
+  const _bytes = stringToBytes(data);
+  const _this = {};
+  _this.getMode = function() {
+    return _mode;
+  };
+  _this.getLength = function(buffer2) {
+    return ~~(_bytes.length / 2);
+  };
+  _this.write = function(buffer2) {
+    const data2 = _bytes;
+    let i = 0;
+    while (i + 1 < data2.length) {
+      let c = (255 & data2[i]) << 8 | 255 & data2[i + 1];
+      if (33088 <= c && c <= 40956) {
+        c -= 33088;
+      } else if (57408 <= c && c <= 60351) {
+        c -= 49472;
+      } else {
+        throw "illegal char at " + (i + 1) + "/" + c;
+      }
+      c = (c >>> 8 & 255) * 192 + (c & 255);
+      buffer2.put(c, 13);
+      i += 2;
+    }
+    if (i < data2.length) {
+      throw "illegal char at " + (i + 1);
+    }
+  };
+  return _this;
+};
+const byteArrayOutputStream = function() {
+  const _bytes = [];
+  const _this = {};
+  _this.writeByte = function(b) {
+    _bytes.push(b & 255);
+  };
+  _this.writeShort = function(i) {
+    _this.writeByte(i);
+    _this.writeByte(i >>> 8);
+  };
+  _this.writeBytes = function(b, off, len) {
+    off = off || 0;
+    len = len || b.length;
+    for (let i = 0; i < len; i += 1) {
+      _this.writeByte(b[i + off]);
+    }
+  };
+  _this.writeString = function(s2) {
+    for (let i = 0; i < s2.length; i += 1) {
+      _this.writeByte(s2.charCodeAt(i));
+    }
+  };
+  _this.toByteArray = function() {
+    return _bytes;
+  };
+  _this.toString = function() {
+    let s2 = "";
+    s2 += "[";
+    for (let i = 0; i < _bytes.length; i += 1) {
+      if (i > 0) {
+        s2 += ",";
+      }
+      s2 += _bytes[i];
+    }
+    s2 += "]";
+    return s2;
+  };
+  return _this;
+};
+const base64EncodeOutputStream = function() {
+  let _buffer = 0;
+  let _buflen = 0;
+  let _length = 0;
+  let _base64 = "";
+  const _this = {};
+  const writeEncoded = function(b) {
+    _base64 += String.fromCharCode(encode2(b & 63));
+  };
+  const encode2 = function(n2) {
+    if (n2 < 0) {
+      throw "n:" + n2;
+    } else if (n2 < 26) {
+      return 65 + n2;
+    } else if (n2 < 52) {
+      return 97 + (n2 - 26);
+    } else if (n2 < 62) {
+      return 48 + (n2 - 52);
+    } else if (n2 == 62) {
+      return 43;
+    } else if (n2 == 63) {
+      return 47;
+    } else {
+      throw "n:" + n2;
+    }
+  };
+  _this.writeByte = function(n2) {
+    _buffer = _buffer << 8 | n2 & 255;
+    _buflen += 8;
+    _length += 1;
+    while (_buflen >= 6) {
+      writeEncoded(_buffer >>> _buflen - 6);
+      _buflen -= 6;
+    }
+  };
+  _this.flush = function() {
+    if (_buflen > 0) {
+      writeEncoded(_buffer << 6 - _buflen);
+      _buffer = 0;
+      _buflen = 0;
+    }
+    if (_length % 3 != 0) {
+      const padlen = 3 - _length % 3;
+      for (let i = 0; i < padlen; i += 1) {
+        _base64 += "=";
+      }
+    }
+  };
+  _this.toString = function() {
+    return _base64;
+  };
+  return _this;
+};
+const base64DecodeInputStream = function(str) {
+  const _str = str;
+  let _pos = 0;
+  let _buffer = 0;
+  let _buflen = 0;
+  const _this = {};
+  _this.read = function() {
+    while (_buflen < 8) {
+      if (_pos >= _str.length) {
+        if (_buflen == 0) {
+          return -1;
+        }
+        throw "unexpected end of file./" + _buflen;
+      }
+      const c = _str.charAt(_pos);
+      _pos += 1;
+      if (c == "=") {
+        _buflen = 0;
+        return -1;
+      } else if (c.match(/^\s$/)) {
+        continue;
+      }
+      _buffer = _buffer << 6 | decode(c.charCodeAt(0));
+      _buflen += 6;
+    }
+    const n2 = _buffer >>> _buflen - 8 & 255;
+    _buflen -= 8;
+    return n2;
+  };
+  const decode = function(c) {
+    if (65 <= c && c <= 90) {
+      return c - 65;
+    } else if (97 <= c && c <= 122) {
+      return c - 97 + 26;
+    } else if (48 <= c && c <= 57) {
+      return c - 48 + 52;
+    } else if (c == 43) {
+      return 62;
+    } else if (c == 47) {
+      return 63;
+    } else {
+      throw "c:" + c;
+    }
+  };
+  return _this;
+};
+const gifImage = function(width, height) {
+  const _width = width;
+  const _height = height;
+  const _data = new Array(width * height);
+  const _this = {};
+  _this.setPixel = function(x, y, pixel) {
+    _data[y * _width + x] = pixel;
+  };
+  _this.write = function(out) {
+    out.writeString("GIF87a");
+    out.writeShort(_width);
+    out.writeShort(_height);
+    out.writeByte(128);
+    out.writeByte(0);
+    out.writeByte(0);
+    out.writeByte(0);
+    out.writeByte(0);
+    out.writeByte(0);
+    out.writeByte(255);
+    out.writeByte(255);
+    out.writeByte(255);
+    out.writeString(",");
+    out.writeShort(0);
+    out.writeShort(0);
+    out.writeShort(_width);
+    out.writeShort(_height);
+    out.writeByte(0);
+    const lzwMinCodeSize = 2;
+    const raster = getLZWRaster(lzwMinCodeSize);
+    out.writeByte(lzwMinCodeSize);
+    let offset = 0;
+    while (raster.length - offset > 255) {
+      out.writeByte(255);
+      out.writeBytes(raster, offset, 255);
+      offset += 255;
+    }
+    out.writeByte(raster.length - offset);
+    out.writeBytes(raster, offset, raster.length - offset);
+    out.writeByte(0);
+    out.writeString(";");
+  };
+  const bitOutputStream = function(out) {
+    const _out = out;
+    let _bitLength = 0;
+    let _bitBuffer = 0;
+    const _this2 = {};
+    _this2.write = function(data, length) {
+      if (data >>> length != 0) {
+        throw "length over";
+      }
+      while (_bitLength + length >= 8) {
+        _out.writeByte(255 & (data << _bitLength | _bitBuffer));
+        length -= 8 - _bitLength;
+        data >>>= 8 - _bitLength;
+        _bitBuffer = 0;
+        _bitLength = 0;
+      }
+      _bitBuffer = data << _bitLength | _bitBuffer;
+      _bitLength = _bitLength + length;
+    };
+    _this2.flush = function() {
+      if (_bitLength > 0) {
+        _out.writeByte(_bitBuffer);
+      }
+    };
+    return _this2;
+  };
+  const getLZWRaster = function(lzwMinCodeSize) {
+    const clearCode = 1 << lzwMinCodeSize;
+    const endCode = (1 << lzwMinCodeSize) + 1;
+    let bitLength = lzwMinCodeSize + 1;
+    const table = lzwTable();
+    for (let i = 0; i < clearCode; i += 1) {
+      table.add(String.fromCharCode(i));
+    }
+    table.add(String.fromCharCode(clearCode));
+    table.add(String.fromCharCode(endCode));
+    const byteOut = byteArrayOutputStream();
+    const bitOut = bitOutputStream(byteOut);
+    bitOut.write(clearCode, bitLength);
+    let dataIndex = 0;
+    let s2 = String.fromCharCode(_data[dataIndex]);
+    dataIndex += 1;
+    while (dataIndex < _data.length) {
+      const c = String.fromCharCode(_data[dataIndex]);
+      dataIndex += 1;
+      if (table.contains(s2 + c)) {
+        s2 = s2 + c;
+      } else {
+        bitOut.write(table.indexOf(s2), bitLength);
+        if (table.size() < 4095) {
+          if (table.size() == 1 << bitLength) {
+            bitLength += 1;
+          }
+          table.add(s2 + c);
+        }
+        s2 = c;
+      }
+    }
+    bitOut.write(table.indexOf(s2), bitLength);
+    bitOut.write(endCode, bitLength);
+    bitOut.flush();
+    return byteOut.toByteArray();
+  };
+  const lzwTable = function() {
+    const _map = {};
+    let _size = 0;
+    const _this2 = {};
+    _this2.add = function(key) {
+      if (_this2.contains(key)) {
+        throw "dup key:" + key;
+      }
+      _map[key] = _size;
+      _size += 1;
+    };
+    _this2.size = function() {
+      return _size;
+    };
+    _this2.indexOf = function(key) {
+      return _map[key];
+    };
+    _this2.contains = function(key) {
+      return typeof _map[key] != "undefined";
+    };
+    return _this2;
+  };
+  return _this;
+};
+const createDataURL = function(width, height, getPixel) {
+  const gif = gifImage(width, height);
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      gif.setPixel(x, y, getPixel(x, y));
+    }
+  }
+  const b = byteArrayOutputStream();
+  gif.write(b);
+  const base64 = base64EncodeOutputStream();
+  const bytes = b.toByteArray();
+  for (let i = 0; i < bytes.length; i += 1) {
+    base64.writeByte(bytes[i]);
+  }
+  base64.flush();
+  return "data:image/gif;base64," + base64;
+};
 exports.Pinia = Pinia;
 exports._export_sfc = _export_sfc;
 exports.computed = computed;
@@ -12456,8 +14180,10 @@ exports.onBeforeUnmount = onBeforeUnmount;
 exports.onLoad = onLoad;
 exports.onMounted = onMounted;
 exports.onPullDownRefresh = onPullDownRefresh;
+exports.onReachBottom = onReachBottom;
 exports.onShow = onShow;
 exports.p = p;
+exports.qrcode = qrcode;
 exports.reactive = reactive;
 exports.ref = ref;
 exports.resolveComponent = resolveComponent;

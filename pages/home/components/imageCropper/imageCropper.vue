@@ -40,8 +40,8 @@ watch(props.cropImage,(n,o)=>{
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding: 12px;
   height: calc(100vh - 20px);
-  
+  background: #f0f2f5;
 }
 </style>

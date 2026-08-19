@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/home/vehicleAccess/management",
     "pages/home/vehicleAccess/statistics",
     "pages/home/vehicleAccess/records",
     "pages/home/vehicleAccess/recordDetail",

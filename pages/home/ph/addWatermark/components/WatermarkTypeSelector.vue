@@ -46,42 +46,45 @@ defineProps({
 <style lang="less" scoped>
 .watermark-selector {
   background: #ffffff;
-  border-radius: 8px;
-  padding: 15px;
-  
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
   .type-list {
     white-space: nowrap;
-    
+
     .type-item {
       display: inline-flex;
       flex-direction: column;
       align-items: center;
-      margin-right: 20px;
-      
+      margin-right: 16px;
+
       &:last-child {
         margin-right: 0;
       }
-      
+
       .preview-image {
-        width: 120px;
-        height: 80px;
-        border-radius: 4px;
+        width: 100px;
+        height: 68px;
+        border-radius: 8px;
         border: 2px solid transparent;
         margin-bottom: 8px;
+        overflow: hidden;
       }
-      
+
       .type-name {
-        font-size: 14px;
+        font-size: 13px;
         color: #666;
       }
-      
+
       &.active {
         .preview-image {
-          border-color: #2979ff;
+          border-color: #487AFA;
         }
-        
+
         .type-name {
-          color: #2979ff;
+          color: #487AFA;
+          font-weight: 600;
         }
       }
     }

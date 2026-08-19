@@ -47,6 +47,35 @@ const useWatermark = (canvasId) => {
       currentY += lineHeight;
     });
   };
+  const drawTimeWatermark = (ctx, imageRect, info) => {
+    const { x: imageX, y: imageY, drawWidth: imageWidth, drawHeight: imageHeight } = imageRect;
+    ctx.save();
+    const fontSize = Math.min(imageWidth, imageHeight) * 0.06;
+    ctx.setFontSize(fontSize);
+    ctx.setTextAlign("center");
+    ctx.setTextBaseline("middle");
+    ctx.font = `bold ${fontSize}px sans-serif`;
+    const timeText = info.datetime || common_vendor.dayjs().format("YYYY-MM-DD HH:mm:ss");
+    ctx.translate(imageX + imageWidth / 2, imageY + imageHeight / 2);
+    ctx.setGlobalAlpha(0.7);
+    ctx.setLineWidth(3);
+    ctx.setStrokeStyle("#FFFFFF");
+    ctx.strokeText(timeText, 0, 0);
+    ctx.setGlobalAlpha(0.8);
+    ctx.setFillStyle("#333333");
+    ctx.fillText(timeText, 0, 0);
+    if (info.remark) {
+      const remarkFontSize = fontSize * 0.6;
+      ctx.setFontSize(remarkFontSize);
+      ctx.font = `normal ${remarkFontSize}px sans-serif`;
+      ctx.setGlobalAlpha(0.6);
+      ctx.setStrokeStyle("#FFFFFF");
+      ctx.strokeText(info.remark, 0, fontSize * 1.2);
+      ctx.setFillStyle("#666666");
+      ctx.fillText(info.remark, 0, fontSize * 1.2);
+    }
+    ctx.restore();
+  };
   const drawStandardWatermark = (ctx, imageRect, info) => {
     const { x: imageX, y: imageY, drawWidth: imageWidth, drawHeight: imageHeight } = imageRect;
     const fontSize = info.fontSize || 18;
@@ -75,7 +104,7 @@ const useWatermark = (canvasId) => {
   };
   const addWatermark = async ({ image, style, info }) => {
     if (!(image == null ? void 0 : image.path)) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:118", "无效的图片路径");
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:162", "无效的图片路径");
       return;
     }
     try {
@@ -101,10 +130,12 @@ const useWatermark = (canvasId) => {
         drawBottomWatermark(ctx, imageRect, info);
       } else if (style.id === 2) {
         drawStandardWatermark(ctx, imageRect, info);
+      } else if (style.id === 3) {
+        drawTimeWatermark(ctx, imageRect, info);
       }
       await new Promise((resolve) => ctx.draw(false, resolve));
     } catch (error) {
-      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:160", "绘制失败:", error);
+      common_vendor.index.__f__("error", "at pages/home/ph/addWatermark/hooks/useWatermark.js:207", "绘制失败:", error);
       common_vendor.index.showToast({
         title: "绘制失败",
         icon: "none"

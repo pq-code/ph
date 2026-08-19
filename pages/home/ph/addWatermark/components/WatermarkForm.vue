@@ -109,6 +109,27 @@
             @click="onInputChange"
           />
         </template>
+
+        <!-- 选择器 -->
+        <template v-if="field.type === 'select'">
+          <u-picker
+            :show="showPickerMap[field.field] || false"
+            :columns="[field.options || []]"
+            keyName="label"
+            @confirm="(e) => handleSelectConfirm(e, field.field)"
+            @cancel="showPickerMap[field.field] = false"
+            :closeOnClickOverlay="true"
+          />
+          <u-input
+            :value="getSelectDisplayValue(field)"
+            :placeholder="field.placeholder || '请选择'"
+            @click="showPickerMap[field.field] = true"
+            :clearable="false"
+            right-icon="arrow-down"
+            :customStyle="{zIndex: '0'}"
+            readonly
+          />
+        </template>
       </u-form-item>
     </u-form>
 
@@ -148,6 +169,7 @@ const emit = defineEmits(['dataChanged', 'update:modelValue']); // 添加缺失�
 
 const showPicker = ref(false)
 const tempDate = ref(dayjs().valueOf())
+const showPickerMap = ref({}) // 用于管理多个picker的显示状态
 
 // 保留 covers 的定义（如果需要在父组件操作标记点）
 const covers = ref([{
@@ -203,14 +225,35 @@ const getLocation = () => {
     }
   })
 }
+
+// 获取选择器的显示值
+const getSelectDisplayValue = (field) => {
+  const currentValue = props.modelValue[field.field]
+  if (!currentValue) return ''
+  const option = field.options?.find(opt => opt.value === currentValue || opt.label === currentValue)
+  return option?.label || currentValue
+}
+
+// 处理选择器确认
+const handleSelectConfirm = (e, field) => {
+  const selectedItem = e.value[0]
+  const selectedValue = selectedItem?.value || selectedItem?.label
+  emit('update:modelValue', {
+    ...props.modelValue,
+    [field]: selectedValue
+  })
+  showPickerMap.value[field] = false
+  onInputChange()
+}
 </script>
 
 <style lang="less" scoped>
 .watermark-form {
   background: #ffffff;
-  border-radius: 8px;
-  padding: 15px;
+  border-radius: 12px;
+  padding: 16px;
 }
+
 .u-form-item__body__right__content__slot {
   .u-popup {
     flex: 0;
@@ -223,5 +266,4 @@ const getLocation = () => {
   font-size: 14px;
   margin-top: 8px;
 }
-
-</style> 
+</style>
